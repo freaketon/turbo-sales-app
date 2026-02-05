@@ -40,6 +40,10 @@ export const salesFlow: Step[] = [
       'This is founder-to-founder. Direct and respectful.'
     ],
     scriptLines: [
+      '"Before we get started, I just want you to know that we record this to ensure that we capture everything in the event that you move forward to work with us, so you don\'t have to repeat yourself. Is that okay with you?"',
+      '',
+      '[Wait for consent]',
+      '',
       '"Founder to founder — quick gut check."',
       '"When an editor needs a very specific clip from a few months ago, does it show up in seconds… or does it turn into a hunt?"'
     ],
