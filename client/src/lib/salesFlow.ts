@@ -525,14 +525,19 @@ export const salesFlow: Step[] = [
       'Use this script verbatim.'
     ],
     scriptLines: [
-      '"Totally fair — this only makes sense when the footage hunt is already expensive."',
+      '"I appreciate your time. Based on what you\'ve shared, it sounds like this isn\'t a pressing issue for you right now."',
       '',
-      '"I\'ll mark this as not now."',
+      '"That\'s totally fine — we only work with teams where the footage search problem is costing real time and money."',
       '',
-      '"If it becomes painful later, reach back out."',
+      '"If things change and it becomes painful later, feel free to reach back out."',
       '',
-      'Optional (only if they offer):',
-      '"If someone comes to mind with multiple editors and archive chaos, happy to talk — no pressure."'
+      '"Quick question before we wrap: Do you know any other production companies or post houses with 3+ editors who are drowning in footage? Someone who\'s constantly searching through archives or dealing with re-shoots because they can\'t find the right clip?"',
+      '',
+      '[Wait for response]',
+      '',
+      'If yes: "Would you be comfortable making a quick intro via email? I\'ll keep it brief and mention you sent me their way."',
+      '',
+      'If no: "No worries at all. Thanks again for your time, and best of luck with your projects."'
     ],
     tips: [
       'Do not chase curious buyers',

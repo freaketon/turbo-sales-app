@@ -113,15 +113,20 @@ export default function Home() {
     const newAnswers = { ...answers, [questionId]: answer };
     setAnswers(newAnswers);
     
-    // Find the question and check for next step override
+    // Find the question and check for next step override or disqualifying answer
     const question = currentStep?.questions?.find(q => q.id === questionId);
     const selectedOption = question?.options?.find(o => o.value === answer);
     
     if (selectedOption?.nextStep) {
-      // Delay navigation slightly for animation
+      // Explicit next step override
       setTimeout(() => {
         setCurrentStepId(selectedOption.nextStep!);
       }, 300);
+    } else if (selectedOption?.isDisqualifying) {
+      // Auto-route to disqualify step for disqualifying answers
+      setTimeout(() => {
+        setCurrentStepId('disqualify');
+      }, 500); // Slightly longer delay to show the selection
     }
   };
   
