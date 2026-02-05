@@ -14,6 +14,7 @@ import StepCard, { StepHeader, StepContent, ScriptBox, TipsBox } from '@/compone
 import QuestionCard from '@/components/QuestionCard';
 import PaymentLink from '@/components/PaymentLink';
 import ObjectionHandler from '@/components/ObjectionHandler';
+import ObjectionQuickAccess from '@/components/ObjectionQuickAccess';
 import { 
   MessageSquare, 
   AlertTriangle, 
@@ -212,6 +213,8 @@ export default function Home() {
   
   return (
     <div className="min-h-screen bg-background py-8 md:py-12">
+      {/* Floating objection quick access button */}
+      <ObjectionQuickAccess />
       <div className="container max-w-4xl">
         {/* Header with restart button */}
         <div className="flex items-center justify-between mb-8">
