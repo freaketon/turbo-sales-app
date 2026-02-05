@@ -40,7 +40,7 @@ interface StepHeaderProps {
 
 export function StepHeader({ title, subtitle, icon }: StepHeaderProps) {
   return (
-    <div className="mb-6 diagonal-accent">
+    <div className="mb-6">
       <div className="flex items-start gap-4">
         {icon && (
           <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center text-primary">
