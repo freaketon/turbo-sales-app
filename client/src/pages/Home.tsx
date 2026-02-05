@@ -8,47 +8,54 @@ Design: Kinetic Energy Interface
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { salesFlow, getStepById, isQualified } from '@/lib/salesFlow';
+import { salesFlow, getStepById, isQualified, type StepType } from '@/lib/salesFlow';
 import ProgressIndicator from '@/components/ProgressIndicator';
 import StepCard, { StepHeader, StepContent, ScriptBox, TipsBox } from '@/components/StepCard';
 import QuestionCard from '@/components/QuestionCard';
 import PaymentLink from '@/components/PaymentLink';
 import ObjectionHandler from '@/components/ObjectionHandler';
 import ObjectionQuickAccess from '@/components/ObjectionQuickAccess';
+import CostCalculator from '@/components/CostCalculator';
 import { 
   MessageSquare, 
   AlertTriangle, 
   CheckCircle2, 
-  Target, 
-  Lightbulb, 
   Zap, 
-  Handshake, 
+  Lightbulb, 
+  Gift, 
+  Target, 
+  Shield, 
   XCircle, 
-  Trophy,
-  ArrowRight,
-  RotateCcw
+  PartyPopper,
+  RotateCcw,
+  DollarSign,
+  Clock,
+  ArrowRight
 } from 'lucide-react';
-
-const stepIcons: Record<string, React.ReactNode> = {
-  opening: <MessageSquare className="w-6 h-6" />,
-  problem: <AlertTriangle className="w-6 h-6" />,
-  qualification: <Target className="w-6 h-6" />,
-  urgency: <Zap className="w-6 h-6" />,
-  reframe: <Lightbulb className="w-6 h-6" />,
-  solution: <CheckCircle2 className="w-6 h-6" />,
-  offer: <Handshake className="w-6 h-6" />,
-  close: <Trophy className="w-6 h-6" />,
-  objection: <MessageSquare className="w-6 h-6" />,
-  disqualify: <XCircle className="w-6 h-6" />,
-  success: <Trophy className="w-6 h-6" />
-};
 
 export default function Home() {
   const [currentStepId, setCurrentStepId] = useState<string>('opening');
   const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [callStarted, setCallStarted] = useState(false);
+  const [qualified, setQualified] = useState<boolean | null>(null);
   
   const currentStep = getStepById(currentStepId);
+  
+  const stepIcons: Record<StepType, React.ReactNode> = {
+    opening: <MessageSquare className="w-6 h-6" />,
+    problem: <AlertTriangle className="w-6 h-6" />,
+    qualification: <CheckCircle2 className="w-6 h-6" />,
+    'cost-lock': <DollarSign className="w-6 h-6" />,
+    'stop-rule': <Clock className="w-6 h-6" />,
+    reframe: <Zap className="w-6 h-6" />,
+    solution: <Lightbulb className="w-6 h-6" />,
+    offer: <Gift className="w-6 h-6" />,
+    close: <Target className="w-6 h-6" />,
+    objection: <Shield className="w-6 h-6" />,
+    disqualify: <XCircle className="w-6 h-6" />,
+    success: <PartyPopper className="w-6 h-6" />
+  };
+  
+  const [callStarted, setCallStarted] = useState(false);
   const currentStepIndex = salesFlow.findIndex(s => s.id === currentStepId);
   const totalSteps = salesFlow.length;
   
@@ -84,8 +91,6 @@ export default function Home() {
     setAnswers({});
     setCallStarted(false);
   };
-  
-  const qualified = isQualified(answers);
   
   if (!callStarted) {
     return (
@@ -263,6 +268,15 @@ export default function Home() {
             {/* Objection handler for objection step */}
             {currentStep.id === 'objection' && (
               <ObjectionHandler />
+            )}
+            
+            {/* Cost calculator for cost-lock step */}
+            {currentStep.id === 'cost-lock' && (
+              <CostCalculator
+                editors={answers['cost-editors'] ? parseInt(answers['cost-editors']) : undefined}
+                hoursPerWeek={answers['cost-hours'] === '3-5' ? 4 : answers['cost-hours'] === '6-10' ? 8 : answers['cost-hours'] === '10+' ? 12 : undefined}
+                ratePerHour={answers['cost-rate'] ? parseInt(answers['cost-rate']) : undefined}
+              />
             )}
             
             {currentStep.scriptLines && currentStep.scriptLines.length > 0 && (
