@@ -57,6 +57,11 @@ export default function Home() {
   };
   
   const [callStarted, setCallStarted] = useState(false);
+  const [prospectInfo, setProspectInfo] = useState({
+    name: '',
+    company: '',
+    email: ''
+  });
   const currentStepIndex = salesFlow.findIndex(s => s.id === currentStepId);
   const totalSteps = salesFlow.length;
   
@@ -91,6 +96,7 @@ export default function Home() {
     setCurrentStepId('opening');
     setAnswers({});
     setCallStarted(false);
+    setProspectInfo({ name: '', company: '', email: '' });
   };
   
   if (!callStarted) {
@@ -179,30 +185,89 @@ export default function Home() {
               </ul>
             </div>
             
-            <Button
-              size="lg"
-              className="text-lg px-8 py-6 font-semibold group relative overflow-hidden"
-              onClick={() => setCallStarted(true)}
-            >
-              <span className="relative z-10 flex items-center gap-2">
-                Start Sales Call
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </span>
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-primary via-secondary to-primary"
-                animate={{
-                  backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: 'linear'
-                }}
-                style={{
-                  backgroundSize: '200% 200%'
-                }}
-              />
-            </Button>
+            {/* Prospect Information Form */}
+            <div className="glass-card rounded-2xl p-8 text-left">
+              <h3 className="text-lg font-semibold text-foreground mb-2 flex items-center gap-2">
+                <MessageSquare className="w-5 h-5 text-primary" />
+                Prospect Information
+              </h3>
+              <p className="text-sm text-muted-foreground mb-6">
+                Capture basic details before starting the call
+              </p>
+              
+              <div className="space-y-4 mb-6">
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    Name *
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="John Smith"
+                    value={prospectInfo.name}
+                    onChange={(e) => setProspectInfo({ ...prospectInfo, name: e.target.value })}
+                    className="w-full px-4 py-3 rounded-lg bg-background/50 border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    Company *
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Acme Productions"
+                    value={prospectInfo.company}
+                    onChange={(e) => setProspectInfo({ ...prospectInfo, company: e.target.value })}
+                    className="w-full px-4 py-3 rounded-lg bg-background/50 border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="john@acme.com"
+                    value={prospectInfo.email}
+                    onChange={(e) => setProspectInfo({ ...prospectInfo, email: e.target.value })}
+                    className="w-full px-4 py-3 rounded-lg bg-background/50 border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  />
+                </div>
+              </div>
+              
+              <Button
+                size="lg"
+                className="w-full text-lg py-6 font-semibold group relative overflow-hidden"
+                onClick={() => setCallStarted(true)}
+                disabled={!prospectInfo.name || !prospectInfo.company}
+              >
+                <span className="relative z-10 flex items-center justify-center gap-2">
+                  Start Sales Call
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </span>
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-primary via-secondary to-primary"
+                  animate={{
+                    backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: 'linear'
+                  }}
+                  style={{
+                    backgroundSize: '200% 200%'
+                  }}
+                />
+              </Button>
+              
+              {(!prospectInfo.name || !prospectInfo.company) && (
+                <p className="text-xs text-muted-foreground mt-3 text-center">
+                  Name and Company are required to start
+                </p>
+              )}
+            </div>
           </motion.div>
         </div>
       </div>
@@ -223,7 +288,7 @@ export default function Home() {
       <ObjectionQuickAccess />
       
       {/* Answers sidebar */}
-      <AnswersSidebar answers={answers} />
+      <AnswersSidebar answers={answers} prospectInfo={prospectInfo} />
       <div className="container max-w-4xl">
         {/* Header with restart button */}
         <div className="flex items-center justify-between mb-8">

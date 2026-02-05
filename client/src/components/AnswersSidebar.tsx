@@ -12,9 +12,14 @@ import { salesFlow } from '@/lib/salesFlow';
 
 interface AnswersSidebarProps {
   answers: Record<string, string>;
+  prospectInfo?: {
+    name: string;
+    company: string;
+    email: string;
+  };
 }
 
-export default function AnswersSidebar({ answers }: AnswersSidebarProps) {
+export default function AnswersSidebar({ answers, prospectInfo }: AnswersSidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const generateSummary = () => {
@@ -22,6 +27,16 @@ export default function AnswersSidebar({ answers }: AnswersSidebarProps) {
     let summary = `TURBO SALES CALL SUMMARY\n`;
     summary += `Generated: ${timestamp}\n`;
     summary += `${'='.repeat(60)}\n\n`;
+    
+    // Add prospect information
+    if (prospectInfo && (prospectInfo.name || prospectInfo.company)) {
+      summary += `PROSPECT INFORMATION\n`;
+      summary += `${'='.repeat(60)}\n`;
+      if (prospectInfo.name) summary += `Name: ${prospectInfo.name}\n`;
+      if (prospectInfo.company) summary += `Company: ${prospectInfo.company}\n`;
+      if (prospectInfo.email) summary += `Email: ${prospectInfo.email}\n`;
+      summary += `\n${'='.repeat(60)}\n\n`;
+    }
 
     // Calculate costs if available
     const editors = answers['cost-editors'] ? parseInt(answers['cost-editors']) : null;
