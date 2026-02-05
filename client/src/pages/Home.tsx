@@ -272,7 +272,7 @@ export default function Home() {
             )}
             
             {/* Navigation buttons */}
-            {currentStep.nextStep && !currentStep.questions && (
+            {currentStep.nextStep && (!currentStep.questions || (currentStep.questions && currentStep.questions.every(q => answers[q.id]))) && (
               <motion.div
                 className="mt-8 flex justify-end"
                 initial={{ opacity: 0 }}
