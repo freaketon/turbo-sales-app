@@ -12,6 +12,7 @@ import { salesFlow, getStepById, isQualified } from '@/lib/salesFlow';
 import ProgressIndicator from '@/components/ProgressIndicator';
 import StepCard, { StepHeader, StepContent, ScriptBox, TipsBox } from '@/components/StepCard';
 import QuestionCard from '@/components/QuestionCard';
+import PaymentLink from '@/components/PaymentLink';
 import { 
   MessageSquare, 
   AlertTriangle, 
@@ -249,6 +250,11 @@ export default function Home() {
             />
             
             <StepContent content={currentStep.content} />
+            
+            {/* Payment link for success step */}
+            {currentStep.id === 'success' && (
+              <PaymentLink url="https://pay.turbobroll.com/b/dRmaEZehHahQ4aFh268IU00" />
+            )}
             
             {currentStep.scriptLines && currentStep.scriptLines.length > 0 && (
               <ScriptBox lines={currentStep.scriptLines} />

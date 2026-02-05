@@ -370,7 +370,8 @@ export const salesFlow: Step[] = [
     subtitle: 'Close the Deal',
     content: [
       'They said yes. Now make it easy.',
-      'Send the link and set clear expectations.'
+      'Send the link and set clear expectations.',
+      'Payment Link: https://pay.turbobroll.com/b/dRmaEZehHahQ4aFh268IU00'
     ],
     scriptLines: [
       '"Perfect. I\'m sending you the payment link now."',
