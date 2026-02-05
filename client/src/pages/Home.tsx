@@ -34,9 +34,26 @@ import {
   ArrowRight
 } from 'lucide-react';
 
+const STORAGE_KEY = 'turbo-sales-call-data';
+
 export default function Home() {
-  const [currentStepId, setCurrentStepId] = useState<string>('opening');
-  const [answers, setAnswers] = useState<Record<string, string>>({});
+  // Load from localStorage on mount
+  const loadFromStorage = () => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    } catch (error) {
+      console.error('Failed to load from localStorage:', error);
+    }
+    return null;
+  };
+
+  const savedData = loadFromStorage();
+  
+  const [currentStepId, setCurrentStepId] = useState<string>(savedData?.currentStepId || 'opening');
+  const [answers, setAnswers] = useState<Record<string, string>>(savedData?.answers || {});
   const [qualified, setQualified] = useState<boolean | null>(null);
   
   const currentStep = getStepById(currentStepId);
@@ -56,14 +73,30 @@ export default function Home() {
     success: <PartyPopper className="w-6 h-6" />
   };
   
-  const [callStarted, setCallStarted] = useState(false);
-  const [prospectInfo, setProspectInfo] = useState({
+  const [callStarted, setCallStarted] = useState(savedData?.callStarted || false);
+  const [prospectInfo, setProspectInfo] = useState(savedData?.prospectInfo || {
     name: '',
     company: '',
     email: ''
   });
   const currentStepIndex = salesFlow.findIndex(s => s.id === currentStepId);
   const totalSteps = salesFlow.length;
+  
+  // Save to localStorage whenever state changes
+  useEffect(() => {
+    const dataToSave = {
+      currentStepId,
+      answers,
+      callStarted,
+      prospectInfo,
+      lastSaved: new Date().toISOString()
+    };
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+    } catch (error) {
+      console.error('Failed to save to localStorage:', error);
+    }
+  }, [currentStepId, answers, callStarted, prospectInfo]);
   
   useEffect(() => {
     // Scroll to top when step changes
@@ -97,6 +130,12 @@ export default function Home() {
     setAnswers({});
     setCallStarted(false);
     setProspectInfo({ name: '', company: '', email: '' });
+    // Clear localStorage
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (error) {
+      console.error('Failed to clear localStorage:', error);
+    }
   };
   
   if (!callStarted) {
@@ -299,6 +338,12 @@ export default function Home() {
             <p className="text-sm text-muted-foreground mt-1 font-mono">
               Founder-to-Founder | 15-20 minutes
             </p>
+            {savedData && savedData.lastSaved && (
+              <p className="text-xs text-accent mt-1 flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3" />
+                Resumed from {new Date(savedData.lastSaved).toLocaleTimeString()}
+              </p>
+            )}
           </div>
           <Button
             variant="outline"
