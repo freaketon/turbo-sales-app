@@ -8,7 +8,10 @@ Design: Kinetic Energy Interface
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import { Link } from 'wouter';
 import { salesFlow, getStepById, isQualified, type StepType } from '@/lib/salesFlow';
+import { saveCallToHistory, type CallRecord } from '@/lib/callHistory';
+import { nanoid } from 'nanoid';
 import ProgressIndicator from '@/components/ProgressIndicator';
 import StepCard, { StepHeader, StepContent, ScriptBox, TipsBox } from '@/components/StepCard';
 import QuestionCard from '@/components/QuestionCard';
@@ -31,7 +34,8 @@ import {
   RotateCcw,
   DollarSign,
   Clock,
-  ArrowRight
+  ArrowRight,
+  BarChart3
 } from 'lucide-react';
 
 const STORAGE_KEY = 'turbo-sales-call-data';
@@ -126,6 +130,45 @@ export default function Home() {
   };
   
   const handleRestart = () => {
+    // Save to history before restarting if call was started
+    if (callStarted && (prospectInfo.name || prospectInfo.company)) {
+      const outcome = currentStepId === 'success' ? 'qualified' as const : 
+                      currentStepId === 'disqualify' ? 'disqualified' as const : 
+                      'in-progress' as const;
+      
+      // Calculate cost analysis if available
+      let costAnalysis;
+      const editors = answers['cost-editors'] ? parseInt(answers['cost-editors']) : null;
+      const hoursPerWeek = answers['cost-hours'] === '3-5' ? 4 : 
+                           answers['cost-hours'] === '6-10' ? 8 : 
+                           answers['cost-hours'] === '10+' ? 12 : null;
+      const ratePerHour = answers['cost-rate'] ? parseInt(answers['cost-rate']) : null;
+      
+      if (editors && hoursPerWeek && ratePerHour) {
+        const annualCost = editors * hoursPerWeek * ratePerHour * 48;
+        const monthlyCost = annualCost / 12;
+        costAnalysis = {
+          editors,
+          hoursPerWeek,
+          ratePerHour,
+          annualCost,
+          monthlyCost
+        };
+      }
+      
+      const callRecord: CallRecord = {
+        id: nanoid(),
+        timestamp: new Date().toISOString(),
+        prospectInfo,
+        outcome,
+        finalStep: currentStepId,
+        answers,
+        costAnalysis
+      };
+      
+      saveCallToHistory(callRecord);
+    }
+    
     setCurrentStepId('opening');
     setAnswers({});
     setCallStarted(false);
@@ -345,15 +388,27 @@ export default function Home() {
               </p>
             )}
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleRestart}
-            className="gap-2"
-          >
-            <RotateCcw className="w-4 h-4" />
-            Restart
-          </Button>
+          <div className="flex gap-2">
+            <Link href="/dashboard">
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2"
+              >
+                <BarChart3 className="w-4 h-4" />
+                <span className="hidden sm:inline">Analytics</span>
+              </Button>
+            </Link>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRestart}
+              className="gap-2"
+            >
+              <RotateCcw className="w-4 h-4" />
+              Restart
+            </Button>
+          </div>
         </div>
         
         {/* Progress indicator */}
