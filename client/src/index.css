@@ -4,11 +4,11 @@
 @custom-variant dark (&:is(.dark *));
 
 /* 
-Design Philosophy: Kinetic Energy Interface
-- Dynamic diagonal compositions suggesting forward momentum
-- Layered depth with parallax and blur effects
-- Vibrant gradients: navy (#0f1419) to electric blue (#0ea5e9) to amber (#f59e0b)
-- Spring physics animations for fluid interactions
+Design Philosophy: TURBO Brand
+- Clean, professional interface with cyan/teal accent colors
+- Dark background with bright cyan highlights matching logo
+- Inter font family for modern, readable typography
+- Smooth animations and transitions
 */
 
 @theme inline {
@@ -51,11 +51,11 @@ Design Philosophy: Kinetic Energy Interface
 }
 
 :root {
-  /* Kinetic Energy color palette */
-  --primary: oklch(0.65 0.2 230); /* Electric blue */
+  /* TURBO Brand color palette */
+  --primary: oklch(0.70 0.15 200); /* Cyan/teal from logo */
   --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.75 0.15 70); /* Amber */
-  --secondary-foreground: oklch(0.15 0.02 240);
+  --secondary: oklch(0.60 0.12 200); /* Darker cyan */
+  --secondary-foreground: oklch(0.98 0 0);
   --accent: oklch(0.65 0.18 160); /* Green for qualified */
   --accent-foreground: oklch(0.98 0 0);
   --destructive: oklch(0.65 0.25 25); /* Red for disqualify */
@@ -157,13 +157,13 @@ Design Philosophy: Kinetic Energy Interface
     backdrop-filter: blur(20px);
     border: 1px solid oklch(0.35 0.05 240 / 0.3);
     box-shadow: 
-      0 8px 32px 0 rgba(14, 165, 233, 0.1),
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      0 8px 32px 0 rgba(0, 255, 255, 0.08),
+      inset 0 1px 0 0 rgba(0, 255, 255, 0.05);
   }
   
-  /* Gradient text effect */
+  /* Gradient text effect - TURBO cyan */
   .gradient-text {
-    background: linear-gradient(135deg, #0ea5e9 0%, #f59e0b 100%);
+    background: linear-gradient(135deg, #00ffff 0%, #00d4d4 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -181,7 +181,7 @@ Design Philosophy: Kinetic Energy Interface
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(135deg, #0ea5e9 0%, #f59e0b 100%);
+    background: linear-gradient(135deg, #00ffff 0%, #00d4d4 100%);
     transform: skewY(-1deg);
   }
 }

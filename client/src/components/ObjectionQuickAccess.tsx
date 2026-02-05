@@ -273,7 +273,7 @@ export default function ObjectionQuickAccess() {
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold gradient-text font-['Outfit']">
+            <DialogTitle className="text-2xl font-bold gradient-text">
               {showResponse ? 'Objection Response' : 'Quick Objection Handler'}
             </DialogTitle>
           </DialogHeader>

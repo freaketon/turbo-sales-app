@@ -48,7 +48,7 @@ export function StepHeader({ title, subtitle, icon }: StepHeaderProps) {
           </div>
         )}
         <div className="flex-1">
-          <h3 className="text-2xl md:text-3xl font-bold text-foreground font-['Outfit']">
+          <h3 className="text-2xl md:text-3xl font-bold text-foreground">
             {title}
           </h3>
           {subtitle && (

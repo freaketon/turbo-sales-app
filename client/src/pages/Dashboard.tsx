@@ -79,7 +79,7 @@ export default function Dashboard() {
                 Back to Call Guide
               </Button>
             </Link>
-            <h1 className="text-3xl md:text-4xl font-bold gradient-text font-['Outfit']">
+            <h1 className="text-3xl md:text-4xl font-bold gradient-text">
               Call Analytics
             </h1>
             <p className="text-muted-foreground mt-2">
@@ -144,7 +144,7 @@ export default function Dashboard() {
               >
                 <div className="flex items-center justify-between mb-4">
                   <Users className="w-8 h-8 text-primary" />
-                  <span className="text-3xl font-bold text-foreground font-['Outfit']">
+                  <span className="text-3xl font-bold text-foreground">
                     {stats.totalCalls}
                   </span>
                 </div>
@@ -160,7 +160,7 @@ export default function Dashboard() {
               >
                 <div className="flex items-center justify-between mb-4">
                   <TrendingUp className="w-8 h-8 text-accent" />
-                  <span className="text-3xl font-bold text-foreground font-['Outfit']">
+                  <span className="text-3xl font-bold text-foreground">
                     {stats.qualificationRate.toFixed(0)}%
                   </span>
                 </div>
@@ -192,7 +192,7 @@ export default function Dashboard() {
               >
                 <div className="flex items-center justify-between mb-4">
                   <DollarSign className="w-8 h-8 text-secondary" />
-                  <span className="text-3xl font-bold text-foreground font-['Outfit']">
+                  <span className="text-3xl font-bold text-foreground">
                     ${(stats.averageAnnualCost / 1000).toFixed(0)}k
                   </span>
                 </div>
@@ -211,7 +211,7 @@ export default function Dashboard() {
               >
                 <div className="flex items-center justify-between mb-4">
                   <BarChart3 className="w-8 h-8 text-primary" />
-                  <span className="text-3xl font-bold text-foreground font-['Outfit']">
+                  <span className="text-3xl font-bold text-foreground">
                     ${(stats.totalPotentialRevenue / 1000).toFixed(0)}k
                   </span>
                 </div>

@@ -27,7 +27,7 @@ export default function ProgressIndicator({ currentStep, totalSteps, stepTitle }
           </h2>
         </div>
         <div className="text-right">
-          <p className="text-2xl font-bold gradient-text font-['Outfit']">
+          <p className="text-2xl font-bold gradient-text">
             {Math.round(progress)}%
           </p>
         </div>

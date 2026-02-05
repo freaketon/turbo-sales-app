@@ -212,9 +212,9 @@ export default function Home() {
             }}
           >
             <motion.div
-              className="inline-block mb-6"
+              className="inline-block mb-8"
               animate={{
-                scale: [1, 1.05, 1],
+                scale: [1, 1.02, 1],
               }}
               transition={{
                 duration: 2,
@@ -222,12 +222,14 @@ export default function Home() {
                 ease: 'easeInOut'
               }}
             >
-              <Zap className="w-20 h-20 text-primary" />
+              <img 
+                src="/turbo-logo.png" 
+                alt="TURBO" 
+                className="h-16 md:h-20 w-auto mx-auto"
+              />
             </motion.div>
             
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 font-['Outfit']">
-              <span className="gradient-text">TURBO</span>
-              <br />
+            <h1 className="text-4xl md:text-6xl font-bold mb-6">
               <span className="text-foreground">Sales Call Guide</span>
             </h1>
             
@@ -376,13 +378,20 @@ export default function Home() {
       <div className="container max-w-4xl">
         {/* Header with restart button */}
         <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold gradient-text font-['Outfit']">
-              TURBO Sales Guide
-            </h1>
-            <p className="text-sm text-muted-foreground mt-1 font-mono">
-              Founder-to-Founder | 15-20 minutes
-            </p>
+          <div className="flex items-center gap-3">
+            <img 
+              src="/turbo-logo.png" 
+              alt="TURBO" 
+              className="h-8 md:h-10 w-auto"
+            />
+            <div>
+              <h1 className="text-xl md:text-2xl font-bold text-foreground">
+                Sales Guide
+              </h1>
+              <p className="text-xs text-muted-foreground">
+                Founder-to-Founder | 15-20 minutes
+              </p>
+            </div>
             {savedData && savedData.lastSaved && (
               <p className="text-xs text-accent mt-1 flex items-center gap-1">
                 <CheckCircle2 className="w-3 h-3" />

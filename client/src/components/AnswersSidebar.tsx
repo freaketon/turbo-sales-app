@@ -201,7 +201,7 @@ export default function AnswersSidebar({ answers, prospectInfo }: AnswersSidebar
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6">
                   <div>
-                    <h3 className="text-xl font-bold text-foreground font-['Outfit']">
+                    <h3 className="text-xl font-bold text-foreground">
                       Call Answers
                     </h3>
                     <p className="text-sm text-muted-foreground">

@@ -72,7 +72,7 @@ export default function CostCalculator({ editors = 0, hoursPerWeek = 0, ratePerH
             <DollarSign className="w-8 h-8 text-destructive" />
             <div>
               <motion.p
-                className="text-4xl font-bold text-destructive font-['Outfit']"
+                className="text-4xl font-bold text-destructive"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{
