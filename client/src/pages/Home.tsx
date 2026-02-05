@@ -16,6 +16,7 @@ import PaymentLink from '@/components/PaymentLink';
 import ObjectionHandler from '@/components/ObjectionHandler';
 import ObjectionQuickAccess from '@/components/ObjectionQuickAccess';
 import CostCalculator from '@/components/CostCalculator';
+import AnswersSidebar from '@/components/AnswersSidebar';
 import { 
   MessageSquare, 
   AlertTriangle, 
@@ -220,6 +221,9 @@ export default function Home() {
     <div className="min-h-screen bg-background py-8 md:py-12">
       {/* Floating objection quick access button */}
       <ObjectionQuickAccess />
+      
+      {/* Answers sidebar */}
+      <AnswersSidebar answers={answers} />
       <div className="container max-w-4xl">
         {/* Header with restart button */}
         <div className="flex items-center justify-between mb-8">
