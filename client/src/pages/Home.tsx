@@ -12,6 +12,7 @@ import { Link } from 'wouter';
 import { salesFlow, getStepById, isQualified, type StepType } from '@/lib/salesFlow';
 import { saveCallToHistory, type CallRecord } from '@/lib/callHistory';
 import { nanoid } from 'nanoid';
+import { exportCallToPDF } from '@/lib/pdfExport';
 import ProgressIndicator from '@/components/ProgressIndicator';
 import StepCard, { StepHeader, StepContent, ScriptBox, TipsBox } from '@/components/StepCard';
 import QuestionCard from '@/components/QuestionCard';
@@ -35,7 +36,8 @@ import {
   DollarSign,
   Clock,
   ArrowRight,
-  BarChart3
+  BarChart3,
+  FileDown
 } from 'lucide-react';
 
 const STORAGE_KEY = 'turbo-sales-call-data';
@@ -467,6 +469,30 @@ export default function Home() {
             
             {currentStep.tips && currentStep.tips.length > 0 && (
               <TipsBox tips={currentStep.tips} />
+            )}
+            
+            {/* Export PDF button for success/disqualify steps */}
+            {(currentStep.id === 'success' || currentStep.id === 'disqualify') && (
+              <motion.div
+                className="mt-6 flex justify-center"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+              >
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={() => exportCallToPDF({
+                    prospectInfo,
+                    answers,
+                    outcome: currentStep.id === 'success' ? 'qualified' : 'disqualified'
+                  })}
+                  className="gap-2 group"
+                >
+                  <FileDown className="w-5 h-5 group-hover:translate-y-0.5 transition-transform" />
+                  Export Call Summary (PDF)
+                </Button>
+              </motion.div>
             )}
             
             {/* Navigation buttons */}
