@@ -331,13 +331,9 @@ export const salesFlow: Step[] = [
       }
     ],
     tips: [
-      'MONEY: Walk back to editor math + guarantee. "$5k isn\'t the cost. It\'s the cap on how much this can fail."',
-      'TRUST: Remind them it\'s founder-led, white-glove, refundable. "If it doesn\'t work in your environment, you don\'t pay."',
-      'TIMING: Cost of delay + scarcity. "The Invisible Tax doesn\'t pause. Every month you wait is another few thousand burned."',
-      '',
-      'Then re-close:',
-      '"Given the guarantee, this either works or it doesn\'t — but waiting keeps the tax running."',
-      '"Do you want me to send the link, or should I release the seat?"'
+      'Click on each objection type below to see detailed responses',
+      'After handling any objection, always re-close with the guarantee',
+      'Use silence strategically - let them process the response'
     ],
     nextStep: 'close'
   },

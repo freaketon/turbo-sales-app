@@ -13,6 +13,7 @@ import ProgressIndicator from '@/components/ProgressIndicator';
 import StepCard, { StepHeader, StepContent, ScriptBox, TipsBox } from '@/components/StepCard';
 import QuestionCard from '@/components/QuestionCard';
 import PaymentLink from '@/components/PaymentLink';
+import ObjectionHandler from '@/components/ObjectionHandler';
 import { 
   MessageSquare, 
   AlertTriangle, 
@@ -254,6 +255,11 @@ export default function Home() {
             {/* Payment link for success step */}
             {currentStep.id === 'success' && (
               <PaymentLink url="https://pay.turbobroll.com/b/dRmaEZehHahQ4aFh268IU00" />
+            )}
+            
+            {/* Objection handler for objection step */}
+            {currentStep.id === 'objection' && (
+              <ObjectionHandler />
             )}
             
             {currentStep.scriptLines && currentStep.scriptLines.length > 0 && (
