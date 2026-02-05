@@ -402,13 +402,38 @@ export default function Home() {
               </Button>
             </Link>
             <Button
+              variant="default"
+              size="sm"
+              onClick={() => {
+                // Determine outcome based on current step
+                const outcome = currentStepId === 'success' ? 'qualified' as const : 
+                                currentStepId === 'disqualify' ? 'disqualified' as const : 
+                                'in-progress' as const;
+                
+                // Export PDF
+                exportCallToPDF({
+                  prospectInfo,
+                  answers,
+                  outcome
+                });
+                
+                // Then restart
+                setTimeout(() => handleRestart(), 500);
+              }}
+              className="gap-2"
+            >
+              <FileDown className="w-4 h-4" />
+              <span className="hidden sm:inline">Close Call & Export</span>
+              <span className="sm:hidden">Close</span>
+            </Button>
+            <Button
               variant="outline"
               size="sm"
               onClick={handleRestart}
               className="gap-2"
             >
               <RotateCcw className="w-4 h-4" />
-              Restart
+              <span className="hidden sm:inline">Restart</span>
             </Button>
           </div>
         </div>

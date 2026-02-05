@@ -10,7 +10,7 @@ interface ExportData {
     email: string;
   };
   answers: Record<string, string>;
-  outcome: 'qualified' | 'disqualified';
+  outcome: 'qualified' | 'disqualified' | 'in-progress';
 }
 
 export function exportCallToPDF(data: ExportData): void {
@@ -135,9 +135,12 @@ export function exportCallToPDF(data: ExportData): void {
   if (data.outcome === 'qualified') {
     doc.setTextColor(0, 150, 0);
     doc.text('✓ QUALIFIED', margin + 5, yPosition);
-  } else {
+  } else if (data.outcome === 'disqualified') {
     doc.setTextColor(200, 0, 0);
     doc.text('✗ DISQUALIFIED', margin + 5, yPosition);
+  } else {
+    doc.setTextColor(100, 100, 100);
+    doc.text('○ IN PROGRESS (Call ended early)', margin + 5, yPosition);
   }
   yPosition += 10;
 
