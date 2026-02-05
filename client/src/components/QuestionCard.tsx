@@ -8,6 +8,7 @@ Design: Kinetic Energy Interface
 import { motion } from 'framer-motion';
 import { Question } from '@/lib/salesFlow';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 
 interface QuestionCardProps {
@@ -46,6 +47,19 @@ export default function QuestionCard({ question, onAnswer, currentAnswer }: Ques
         </p>
       )}
       
+      {/* Text or Number Input */}
+      {(question.type === 'text' || question.type === 'number') && (
+        <Input
+          type={question.type}
+          placeholder={question.placeholder}
+          value={selectedValue}
+          onChange={(e) => handleSelect(e.target.value)}
+          className="text-lg py-6"
+        />
+      )}
+      
+      {/* Multiple choice options */}
+      {question.options && (
       <div className={`grid gap-3 ${
         question.type === 'binary' ? 'grid-cols-2' : 'grid-cols-1'
       }`}>
@@ -130,6 +144,7 @@ export default function QuestionCard({ question, onAnswer, currentAnswer }: Ques
           );
         })}
       </div>
+      )}
     </motion.div>
   );
 }
