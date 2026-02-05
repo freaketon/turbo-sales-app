@@ -7,7 +7,7 @@ Design: Kinetic Energy Interface
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, CheckCircle2, XCircle, FileText } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CheckCircle2, XCircle, FileText, Download } from 'lucide-react';
 import { salesFlow } from '@/lib/salesFlow';
 
 interface AnswersSidebarProps {
@@ -16,6 +16,82 @@ interface AnswersSidebarProps {
 
 export default function AnswersSidebar({ answers }: AnswersSidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
+
+  const generateSummary = () => {
+    const timestamp = new Date().toLocaleString();
+    let summary = `TURBO SALES CALL SUMMARY\n`;
+    summary += `Generated: ${timestamp}\n`;
+    summary += `${'='.repeat(60)}\n\n`;
+
+    // Calculate costs if available
+    const editors = answers['cost-editors'] ? parseInt(answers['cost-editors']) : null;
+    const hoursPerWeek = answers['cost-hours'] === '3-5' ? 4 : answers['cost-hours'] === '6-10' ? 8 : answers['cost-hours'] === '10+' ? 12 : null;
+    const ratePerHour = answers['cost-rate'] ? parseInt(answers['cost-rate']) : null;
+    
+    if (editors && hoursPerWeek && ratePerHour) {
+      const annualCost = editors * hoursPerWeek * ratePerHour * 48;
+      const monthlyCost = annualCost / 12;
+      
+      summary += `COST ANALYSIS\n`;
+      summary += `${'='.repeat(60)}\n`;
+      summary += `Editors: ${editors}\n`;
+      summary += `Hours per week searching: ${hoursPerWeek}\n`;
+      summary += `Hourly rate: $${ratePerHour}\n`;
+      summary += `\nAnnual Cost of Inaction: $${annualCost.toLocaleString()}\n`;
+      summary += `Monthly Cost: $${monthlyCost.toLocaleString()}\n`;
+      summary += `\nCost Agreement: ${answers['cost-agreement'] || 'Not answered'}\n`;
+      summary += `\n${'='.repeat(60)}\n\n`;
+    }
+
+    // Check qualification status
+    const hasDisqualifying = answersByStep.some(step => 
+      step?.answers.some(a => a?.isDisqualifying)
+    );
+    
+    summary += `QUALIFICATION STATUS\n`;
+    summary += `${'='.repeat(60)}\n`;
+    summary += hasDisqualifying ? `❌ DISQUALIFIED\n` : `✅ QUALIFIED\n`;
+    summary += `\n${'='.repeat(60)}\n\n`;
+
+    // Add all Q&A by step
+    summary += `CALL TRANSCRIPT\n`;
+    summary += `${'='.repeat(60)}\n\n`;
+    
+    answersByStep.forEach(stepData => {
+      if (!stepData) return;
+      
+      summary += `${stepData.stepTitle.toUpperCase()}\n`;
+      summary += `${'-'.repeat(60)}\n`;
+      
+      stepData.answers.forEach(answerData => {
+        if (!answerData) return;
+        
+        summary += `\nQ: ${answerData.questionText}\n`;
+        summary += `A: ${answerData.answer}`;
+        
+        if (answerData.isDisqualifying) {
+          summary += ` [DISQUALIFYING]`;
+        }
+        summary += `\n`;
+      });
+      
+      summary += `\n`;
+    });
+
+    summary += `\n${'='.repeat(60)}\n`;
+    summary += `End of Summary\n`;
+
+    // Create and download file
+    const blob = new Blob([summary], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `turbo-sales-call-${new Date().toISOString().slice(0, 10)}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   // Group answers by step
   const answersByStep = salesFlow.map(step => {
@@ -117,13 +193,26 @@ export default function AnswersSidebar({ answers }: AnswersSidebarProps) {
                       {totalAnswers} response{totalAnswers !== 1 ? 's' : ''} recorded
                     </p>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    <ChevronRight className="w-5 h-5" />
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    {totalAnswers > 0 && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={generateSummary}
+                        className="gap-2"
+                      >
+                        <Download className="w-4 h-4" />
+                        <span className="hidden sm:inline">Download</span>
+                      </Button>
+                    )}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </Button>
+                  </div>
                 </div>
 
                 {/* Answers list */}
