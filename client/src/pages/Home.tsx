@@ -21,7 +21,7 @@ import ImprovedObjectionHandler from '@/components/ImprovedObjectionHandler';
 import ObjectionQuickAccess from '@/components/ObjectionQuickAccess';
 import CostCalculator from '@/components/CostCalculator';
 import AnswersSidebar from '@/components/AnswersSidebar';
-import { LiveNotes } from '@/components/LiveNotes';
+import { SalesCoach } from '@/components/SalesCoach';
 import { 
   MessageSquare, 
   AlertTriangle, 
@@ -382,7 +382,7 @@ export default function Home() {
       <ObjectionQuickAccess />
       
       {/* Live notes with AI guidance */}
-      <LiveNotes currentStep={currentStepId} />
+      <SalesCoach currentStep={currentStepId} />
       
       {/* Answers sidebar */}
       <AnswersSidebar answers={answers} prospectInfo={prospectInfo} />

@@ -47,3 +47,9 @@
 - [x] Add routing logic in Home.tsx for pain articulation step
 - [x] Test pain articulation flow end-to-end
 - [ ] Update PDF export to include pain articulation responses
+
+## Current Work - Unified Chat Interface
+- [x] Create unified chat component merging Live Notes and AI coaching
+- [x] Replace separate Live Notes and AI chat buttons with single chat button
+- [x] Ensure notes are saved and AI provides coaching in same conversation flow
+- [x] Test unified chat interface end-to-end
