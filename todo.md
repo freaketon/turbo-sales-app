@@ -59,3 +59,9 @@
 - [x] Implement sticky side panel or bottom panel layout
 - [x] Ensure calculator updates in real-time as questions are answered
 - [x] Test on different screen sizes
+
+## Current Work - Back Button Navigation
+- [x] Add Back button next to Continue button throughout sales flow
+- [x] Implement previousStep logic in salesFlow
+- [x] Handle back navigation in Home.tsx
+- [x] Test back navigation across all steps

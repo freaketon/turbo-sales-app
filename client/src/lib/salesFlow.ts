@@ -27,6 +27,7 @@ export interface Step {
   content: string[];
   questions?: Question[];
   nextStep?: string;
+  previousStep?: string;
   scriptLines?: string[];
   tips?: string[];
 }

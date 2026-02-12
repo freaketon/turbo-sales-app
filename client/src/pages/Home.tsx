@@ -139,6 +139,20 @@ export default function Home() {
     }
   };
   
+  const handleBack = () => {
+    // Find the previous step in the flow
+    const currentIndex = salesFlow.findIndex(s => s.id === currentStepId);
+    if (currentIndex > 0) {
+      setCurrentStepId(salesFlow[currentIndex - 1].id);
+    }
+  };
+  
+  const canGoBack = () => {
+    const currentIndex = salesFlow.findIndex(s => s.id === currentStepId);
+    // Can't go back from first step, disqualify, or success
+    return currentIndex > 0 && currentStepId !== 'disqualify' && currentStepId !== 'success';
+  };
+  
   const handleRestart = () => {
     // Save to history before restarting if call was started
     if (callStarted && (prospectInfo.name || prospectInfo.company)) {
@@ -504,15 +518,25 @@ export default function Home() {
                 {/* Navigation buttons */}
                 {currentStep.nextStep && (!currentStep.questions || (currentStep.questions && currentStep.questions.every(q => answers[q.id]))) && (
                   <motion.div
-                    className="mt-8 flex justify-end"
+                    className="mt-8 flex gap-3 justify-between"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.5 }}
                   >
+                    {canGoBack() && (
+                      <Button
+                        size="lg"
+                        variant="outline"
+                        onClick={handleBack}
+                        className="gap-2"
+                      >
+                        Back
+                      </Button>
+                    )}
                     <Button
                       size="lg"
                       onClick={handleNext}
-                      className="gap-2 group"
+                      className="gap-2 group ml-auto"
                     >
                       Continue
                       <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -599,15 +623,25 @@ export default function Home() {
               {/* Navigation buttons */}
               {currentStep.nextStep && (!currentStep.questions || (currentStep.questions && currentStep.questions.every(q => answers[q.id]))) && (
                 <motion.div
-                  className="mt-8 flex justify-end"
+                  className="mt-8 flex gap-3 justify-between"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5 }}
                 >
+                  {canGoBack() && (
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      onClick={handleBack}
+                      className="gap-2"
+                    >
+                      Back
+                    </Button>
+                  )}
                   <Button
                     size="lg"
                     onClick={handleNext}
-                    className="gap-2 group"
+                    className="gap-2 group ml-auto"
                   >
                     Continue
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
