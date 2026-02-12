@@ -53,3 +53,9 @@
 - [x] Replace separate Live Notes and AI chat buttons with single chat button
 - [x] Ensure notes are saved and AI provides coaching in same conversation flow
 - [x] Test unified chat interface end-to-end
+
+## Current Work - Cost Calculator Visibility
+- [x] Redesign cost calculator to be persistently visible during cost-lock questions
+- [x] Implement sticky side panel or bottom panel layout
+- [x] Ensure calculator updates in real-time as questions are answered
+- [x] Test on different screen sizes

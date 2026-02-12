@@ -465,136 +465,193 @@ export default function Home() {
           stepTitle={currentStep.title}
         />
         
-        {/* Main step card */}
+        {/* Main step card - with special layout for cost-lock */}
         <AnimatePresence mode="wait">
-          <StepCard key={currentStep.id}>
-            <StepHeader
-              title={currentStep.title}
-              subtitle={currentStep.subtitle}
-              icon={stepIcons[currentStep.type]}
-            />
+          {currentStep.id === 'cost-lock' ? (
+            // Special two-column layout for cost-lock step
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Left: Questions */}
+              <StepCard key={currentStep.id}>
+                <StepHeader
+                  title={currentStep.title}
+                  subtitle={currentStep.subtitle}
+                  icon={stepIcons[currentStep.type]}
+                />
+                
+                <StepContent content={currentStep.content} />
             
-            <StepContent content={currentStep.content} />
-            
-            {/* Payment link for success step */}
-            {currentStep.id === 'success' && (
-              <PaymentLink url="https://pay.turbobroll.com/b/dRmaEZehHahQ4aFh268IU00" />
-            )}
-            
-            {/* Objection handler for objection step */}
-            {currentStep.id === 'objection' && (
-              <ImprovedObjectionHandler />
-            )}
-            
-            {/* Cost calculator for cost-lock step */}
-            {currentStep.id === 'cost-lock' && (
-              <CostCalculator
-                editors={answers['cost-editors'] ? parseInt(answers['cost-editors']) : undefined}
-                hoursPerWeek={answers['cost-hours'] === '3-5' ? 4 : answers['cost-hours'] === '6-10' ? 8 : answers['cost-hours'] === '10+' ? 12 : undefined}
-                ratePerHour={answers['cost-rate'] ? parseInt(answers['cost-rate']) : undefined}
-              />
-            )}
-            
-            {currentStep.scriptLines && currentStep.scriptLines.length > 0 && (
-              <ScriptBox lines={currentStep.scriptLines} />
-            )}
-            
-            {currentStep.questions && currentStep.questions.length > 0 && (
-              <div className="mb-6">
-                {currentStep.questions.map((question) => (
-                  <QuestionCard
-                    key={question.id}
-                    question={question}
-                    onAnswer={handleAnswer}
-                    currentAnswer={answers[question.id]}
-                  />
-                ))}
-              </div>
-            )}
-            
-            {currentStep.tips && currentStep.tips.length > 0 && (
-              <TipsBox tips={currentStep.tips} />
-            )}
-            
-            {/* Export PDF button for success/disqualify steps */}
-            {(currentStep.id === 'success' || currentStep.id === 'disqualify') && (
-              <motion.div
-                className="mt-6 flex justify-center"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-              >
-                <Button
-                  size="lg"
-                  variant="outline"
-                  onClick={() => exportCallToPDF({
-                    prospectInfo,
-                    answers,
-                    outcome: currentStep.id === 'success' ? 'qualified' : 'disqualified'
-                  })}
-                  className="gap-2 group"
-                >
-                  <FileDown className="w-5 h-5 group-hover:translate-y-0.5 transition-transform" />
-                  Export Call Summary (PDF)
-                </Button>
-              </motion.div>
-            )}
-            
-            {/* Navigation buttons */}
-            {currentStep.nextStep && (!currentStep.questions || (currentStep.questions && currentStep.questions.every(q => answers[q.id]))) && (
-              <motion.div
-                className="mt-8 flex justify-end"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-              >
-                <Button
-                  size="lg"
-                  onClick={handleNext}
-                  className="gap-2 group"
-                >
-                  Continue
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </motion.div>
-            )}
-            
-            {/* Qualification status indicator */}
-            {currentStep.id === 'urgency' && answers['urgency-q1'] && (
-              <motion.div
-                className={`mt-6 p-4 rounded-xl border ${
-                  qualified
-                    ? 'bg-accent/10 border-accent/30 text-accent'
-                    : 'bg-destructive/10 border-destructive/30 text-destructive'
-                }`}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{
-                  type: 'spring',
-                  stiffness: 300,
-                  damping: 20
-                }}
-              >
-                <div className="flex items-center gap-3">
-                  {qualified ? (
-                    <CheckCircle2 className="w-6 h-6" />
-                  ) : (
-                    <XCircle className="w-6 h-6" />
-                  )}
-                  <div>
-                    <p className="font-semibold">
-                      {qualified ? 'Strong Fit Detected' : 'Qualification Status'}
-                    </p>
-                    <p className="text-sm opacity-90">
-                      {qualified
-                        ? 'This prospect meets all qualification criteria. Proceed with confidence.'
-                        : 'Review answers to assess fit before moving forward.'}
-                    </p>
+                {currentStep.scriptLines && currentStep.scriptLines.length > 0 && (
+                  <ScriptBox lines={currentStep.scriptLines} />
+                )}
+                
+                {currentStep.questions && currentStep.questions.length > 0 && (
+                  <div className="mb-6">
+                    {currentStep.questions.map((question) => (
+                      <QuestionCard
+                        key={question.id}
+                        question={question}
+                        onAnswer={handleAnswer}
+                        currentAnswer={answers[question.id]}
+                      />
+                    ))}
                   </div>
+                )}
+            
+                {currentStep.tips && currentStep.tips.length > 0 && (
+                  <TipsBox tips={currentStep.tips} />
+                )}
+                
+                {/* Navigation buttons */}
+                {currentStep.nextStep && (!currentStep.questions || (currentStep.questions && currentStep.questions.every(q => answers[q.id]))) && (
+                  <motion.div
+                    className="mt-8 flex justify-end"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5 }}
+                  >
+                    <Button
+                      size="lg"
+                      onClick={handleNext}
+                      className="gap-2 group"
+                    >
+                      Continue
+                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </motion.div>
+                )}
+              </StepCard>
+              
+              {/* Right: Sticky Calculator */}
+              <div className="lg:sticky lg:top-6 lg:self-start">
+                <CostCalculator
+                  editors={answers['cost-editors'] ? parseInt(answers['cost-editors']) : undefined}
+                  hoursPerWeek={answers['cost-hours'] === '3-5' ? 4 : answers['cost-hours'] === '6-10' ? 8 : answers['cost-hours'] === '10+' ? 12 : undefined}
+                  ratePerHour={answers['cost-rate'] ? parseInt(answers['cost-rate']) : undefined}
+                />
+              </div>
+            </div>
+          ) : (
+            // Standard single-column layout for all other steps
+            <StepCard key={currentStep.id}>
+              <StepHeader
+                title={currentStep.title}
+                subtitle={currentStep.subtitle}
+                icon={stepIcons[currentStep.type]}
+              />
+              
+              <StepContent content={currentStep.content} />
+              
+              {/* Payment link for success step */}
+              {currentStep.id === 'success' && (
+                <PaymentLink url="https://pay.turbobroll.com/b/dRmaEZehHahQ4aFh268IU00" />
+              )}
+              
+              {/* Objection handler for objection step */}
+              {currentStep.id === 'objection' && (
+                <ImprovedObjectionHandler />
+              )}
+              
+              {currentStep.scriptLines && currentStep.scriptLines.length > 0 && (
+                <ScriptBox lines={currentStep.scriptLines} />
+              )}
+              
+              {currentStep.questions && currentStep.questions.length > 0 && (
+                <div className="mb-6">
+                  {currentStep.questions.map((question) => (
+                    <QuestionCard
+                      key={question.id}
+                      question={question}
+                      onAnswer={handleAnswer}
+                      currentAnswer={answers[question.id]}
+                    />
+                  ))}
                 </div>
-              </motion.div>
-            )}
-          </StepCard>
+              )}
+              
+              {currentStep.tips && currentStep.tips.length > 0 && (
+                <TipsBox tips={currentStep.tips} />
+              )}
+              
+              {/* Export PDF button for success/disqualify steps */}
+              {(currentStep.id === 'success' || currentStep.id === 'disqualify') && (
+                <motion.div
+                  className="mt-6 flex justify-center"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    onClick={() => exportCallToPDF({
+                      prospectInfo,
+                      answers,
+                      outcome: currentStep.id === 'success' ? 'qualified' : 'disqualified'
+                    })}
+                    className="gap-2 group"
+                  >
+                    <FileDown className="w-5 h-5 group-hover:translate-y-0.5 transition-transform" />
+                    Export Call Summary (PDF)
+                  </Button>
+                </motion.div>
+              )}
+              
+              {/* Navigation buttons */}
+              {currentStep.nextStep && (!currentStep.questions || (currentStep.questions && currentStep.questions.every(q => answers[q.id]))) && (
+                <motion.div
+                  className="mt-8 flex justify-end"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  <Button
+                    size="lg"
+                    onClick={handleNext}
+                    className="gap-2 group"
+                  >
+                    Continue
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </motion.div>
+              )}
+              
+              {/* Qualification status indicator */}
+              {currentStep.id === 'urgency' && answers['urgency-q1'] && (
+                <motion.div
+                  className={`mt-6 p-4 rounded-xl border ${
+                    qualified
+                      ? 'bg-accent/10 border-accent/30 text-accent'
+                      : 'bg-destructive/10 border-destructive/30 text-destructive'
+                  }`}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{
+                    type: 'spring',
+                    stiffness: 300,
+                    damping: 20
+                  }}
+                >
+                  <div className="flex items-center gap-3">
+                    {qualified ? (
+                      <CheckCircle2 className="w-6 h-6" />
+                    ) : (
+                      <XCircle className="w-6 h-6" />
+                    )}
+                    <div>
+                      <p className="font-semibold">
+                        {qualified ? 'Strong Fit Detected' : 'Qualification Status'}
+                      </p>
+                      <p className="text-sm opacity-90">
+                        {qualified
+                          ? 'This prospect meets all qualification criteria. Proceed with confidence.'
+                          : 'Review answers to assess fit before moving forward.'}
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </StepCard>
+          )}
         </AnimatePresence>
       </div>
     </div>
