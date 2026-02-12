@@ -1,142 +1,86 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { StickyNote, Send, TrendingUp, AlertTriangle, CheckCircle2, Lightbulb } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
+import { StickyNote, Send, Loader2, AlertTriangle, CheckCircle2, Target, Lightbulb } from 'lucide-react';
+import { trpc } from '@/lib/trpc';
 
-interface Note {
+type Note = {
   id: string;
   text: string;
   timestamp: Date;
   guidance?: {
+    text: string;
     type: 'positive' | 'warning' | 'neutral' | 'action';
-    message: string;
   };
-}
+};
 
-interface LiveNotesProps {
+type LiveNotesProps = {
   currentStep: string;
-}
+  answers?: Record<string, string>;
+};
 
-export function LiveNotes({ currentStep }: LiveNotesProps) {
+export function LiveNotes({ currentStep, answers = {} }: LiveNotesProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
   const [notes, setNotes] = useState<Note[]>([]);
   const [currentNote, setCurrentNote] = useState('');
-  const [isExpanded, setIsExpanded] = useState(false);
 
-  const analyzeNote = (noteText: string, step: string): Note['guidance'] => {
-    const lowerNote = noteText.toLowerCase();
-    
-    // Positive buying signals
-    if (
-      lowerNote.includes('budget') ||
-      lowerNote.includes('when can we start') ||
-      lowerNote.includes('sounds good') ||
-      lowerNote.includes('interested') ||
-      lowerNote.includes('this would help') ||
-      lowerNote.includes('we need this') ||
-      lowerNote.includes('pain point') ||
-      lowerNote.includes('struggling with') ||
-      lowerNote.includes('costing us')
-    ) {
-      return {
-        type: 'positive',
-        message: '🎯 Strong buying signal detected! They\'re showing pain and interest. Continue building urgency and move toward the offer.'
-      };
-    }
-    
-    // Red flags / objections
-    if (
-      lowerNote.includes('expensive') ||
-      lowerNote.includes('too much') ||
-      lowerNote.includes('not sure') ||
-      lowerNote.includes('need to think') ||
-      lowerNote.includes('talk to team') ||
-      lowerNote.includes('maybe later') ||
-      lowerNote.includes('not priority') ||
-      lowerNote.includes('already have')
-    ) {
-      return {
-        type: 'warning',
-        message: '⚠️ Potential objection detected. Use the objection handler (bottom-right button) to address this concern before moving forward.'
-      };
-    }
-    
-    // Scale/complexity indicators
-    if (
-      lowerNote.includes('editor') ||
-      lowerNote.includes('team') ||
-      lowerNote.includes('hours') ||
-      lowerNote.includes('footage') ||
-      lowerNote.includes('archive') ||
-      lowerNote.includes('search')
-    ) {
-      return {
-        type: 'action',
-        message: '💡 Good intel on scale/pain. Quantify this in the cost-lock step: ask for specific numbers (hours wasted, team size, frequency).'
-      };
-    }
-    
-    // Decision-maker signals
-    if (
-      lowerNote.includes('i decide') ||
-      lowerNote.includes('my call') ||
-      lowerNote.includes('i can approve') ||
-      lowerNote.includes('founder') ||
-      lowerNote.includes('owner')
-    ) {
-      return {
-        type: 'positive',
-        message: '✅ Decision-maker confirmed! You can close today. No need to involve others—push for calendar commitment.'
-      };
-    }
-    
-    // Timing concerns
-    if (
-      lowerNote.includes('busy') ||
-      lowerNote.includes('next quarter') ||
-      lowerNote.includes('next month') ||
-      lowerNote.includes('later')
-    ) {
-      return {
-        type: 'warning',
-        message: '⏰ Timing objection. Use urgency check: "Is this a now problem or a later problem?" If later, consider disqualifying.'
-      };
-    }
-    
-    // Default neutral guidance based on step
-    const stepGuidance: Record<string, string> = {
-      opening: 'Listen for binary answer. If they say "hunt", dig into frequency and pain.',
-      problem: 'Quantify the invisible tax. Get real numbers: hours, frequency, team size.',
-      qualification: 'Hard gates: 3+ editors, frequent reuse, real operational impact. Disqualify fast if not fit.',
-      'cost-lock': 'Lock in the math BEFORE discussing price. They must agree on annual waste.',
-      'stop-rule': 'Decision point: now or later problem? If later, disqualify gracefully.',
-      reframe: 'Position as workflow upgrade, not storage. Emphasize speed and confidence.',
-      solution: 'Demo the value prop. Keep it brief—focus on their specific pain points.',
-      offer: 'Present Founders Circle. Emphasize double-win guarantee and immediate start.',
-      close: 'Calendar or no. Nothing else acceptable. If objection, handle and re-close.',
-      objection: 'Diagnose root cause: money, trust, or timing. Address and re-close.',
-      disqualify: 'Exit cleanly. Ask for referrals: "Know anyone with 3+ editors drowning in footage?"'
-    };
-    
-    return {
-      type: 'neutral',
-      message: stepGuidance[step] || 'Note captured. Stay focused on their pain and buying signals.'
-    };
-  };
+  const analyzeNoteMutation = trpc.salesCoach.analyzeNote.useMutation();
 
-  const handleAddNote = () => {
+  const handleAddNote = async () => {
     if (!currentNote.trim()) return;
-    
+
     const newNote: Note = {
       id: Date.now().toString(),
       text: currentNote.trim(),
       timestamp: new Date(),
-      guidance: analyzeNote(currentNote, currentStep)
     };
-    
-    setNotes([newNote, ...notes]);
+
+    setNotes(prev => [newNote, ...prev]);
     setCurrentNote('');
+
+    // Get AI guidance
+    try {
+      const result = await analyzeNoteMutation.mutateAsync({
+        note: currentNote.trim(),
+        currentStep,
+        previousNotes: notes.map(n => n.text),
+        answers,
+      });
+
+      // Update the note with guidance
+      const guidanceText = typeof result.guidance === 'string' ? result.guidance : 'Note captured.';
+      setNotes(prev =>
+        prev.map(n =>
+          n.id === newNote.id
+            ? {
+                ...n,
+                guidance: {
+                  text: guidanceText,
+                  type: result.type,
+                },
+              }
+            : n
+        )
+      );
+    } catch (error) {
+      console.error('Failed to get AI guidance:', error);
+      // Add fallback guidance
+      setNotes(prev =>
+        prev.map(n =>
+          n.id === newNote.id
+            ? {
+                ...n,
+                guidance: {
+                  text: 'Note captured. Continue gathering information and watch for buying signals.',
+                  type: 'neutral' as const,
+                },
+              }
+            : n
+        )
+      );
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -146,32 +90,18 @@ export function LiveNotes({ currentStep }: LiveNotesProps) {
     }
   };
 
-  const getGuidanceIcon = (type?: 'positive' | 'warning' | 'neutral' | 'action') => {
-    if (!type) return null;
-    switch (type) {
-      case 'positive':
-        return <CheckCircle2 className="w-4 h-4 text-accent" />;
-      case 'warning':
-        return <AlertTriangle className="w-4 h-4 text-destructive" />;
-      case 'action':
-        return <Lightbulb className="w-4 h-4 text-primary" />;
-      default:
-        return <TrendingUp className="w-4 h-4 text-muted-foreground" />;
-    }
+  const guidanceIcons = {
+    positive: <CheckCircle2 className="w-4 h-4 text-green-500" />,
+    warning: <AlertTriangle className="w-4 h-4 text-amber-500" />,
+    action: <Target className="w-4 h-4 text-blue-500" />,
+    neutral: <Lightbulb className="w-4 h-4 text-muted-foreground" />,
   };
 
-  const getGuidanceColor = (type?: 'positive' | 'warning' | 'neutral' | 'action') => {
-    if (!type) return 'border-border bg-muted/20';
-    switch (type) {
-      case 'positive':
-        return 'border-accent/30 bg-accent/5';
-      case 'warning':
-        return 'border-destructive/30 bg-destructive/5';
-      case 'action':
-        return 'border-primary/30 bg-primary/5';
-      default:
-        return 'border-border bg-muted/20';
-    }
+  const guidanceColors = {
+    positive: 'bg-green-500/10 border-green-500/30',
+    warning: 'bg-amber-500/10 border-amber-500/30',
+    action: 'bg-blue-500/10 border-blue-500/30',
+    neutral: 'bg-muted/50 border-border',
   };
 
   return (
@@ -191,7 +121,7 @@ export function LiveNotes({ currentStep }: LiveNotesProps) {
                 Live Call Notes
               </h3>
               <p className="text-xs text-muted-foreground mt-1">
-                Capture insights • Get real-time guidance
+                AI Sales Coach • Real-time guidance
               </p>
             </div>
 
@@ -201,10 +131,10 @@ export function LiveNotes({ currentStep }: LiveNotesProps) {
                 <div className="text-center py-8 text-muted-foreground text-sm">
                   <StickyNote className="w-12 h-12 mx-auto mb-2 opacity-20" />
                   <p>No notes yet</p>
-                  <p className="text-xs mt-1">Type observations and press Enter</p>
+                  <p className="text-xs mt-1">Type observations and get expert coaching</p>
                 </div>
               ) : (
-                notes.map((note) => (
+                notes.map(note => (
                   <motion.div
                     key={note.id}
                     initial={{ opacity: 0, x: 20 }}
@@ -218,17 +148,26 @@ export function LiveNotes({ currentStep }: LiveNotesProps) {
                         {note.timestamp.toLocaleTimeString()}
                       </p>
                     </Card>
-                    
-                    {/* AI Guidance */}
-                    {note.guidance && (
-                      <Card className={`p-3 border ${getGuidanceColor(note.guidance.type)}`}>
+
+                    {/* AI guidance */}
+                    {note.guidance ? (
+                      <Card
+                        className={`p-3 border ${
+                          guidanceColors[note.guidance.type]
+                        }`}
+                      >
                         <div className="flex items-start gap-2">
-                          {getGuidanceIcon(note.guidance.type)}
-                          <p className="text-xs text-foreground/90 leading-relaxed">
-                            {note.guidance.message}
+                          {guidanceIcons[note.guidance.type]}
+                          <p className="text-xs text-foreground/90 leading-relaxed flex-1">
+                            {note.guidance.text}
                           </p>
                         </div>
                       </Card>
+                    ) : (
+                      <div className="flex items-center gap-2 text-muted-foreground px-3 py-2">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <p className="text-xs">AI coach analyzing...</p>
+                      </div>
                     )}
                   </motion.div>
                 ))
@@ -240,22 +179,27 @@ export function LiveNotes({ currentStep }: LiveNotesProps) {
               <div className="flex gap-2">
                 <Textarea
                   value={currentNote}
-                  onChange={(e) => setCurrentNote(e.target.value)}
+                  onChange={e => setCurrentNote(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="Type observation... (Enter to save)"
                   className="flex-1 min-h-[60px] resize-none text-sm"
+                  disabled={analyzeNoteMutation.isPending}
                 />
                 <Button
                   onClick={handleAddNote}
-                  disabled={!currentNote.trim()}
+                  disabled={!currentNote.trim() || analyzeNoteMutation.isPending}
                   size="sm"
                   className="self-end"
                 >
-                  <Send className="w-4 h-4" />
+                  {analyzeNoteMutation.isPending ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Send className="w-4 h-4" />
+                  )}
                 </Button>
               </div>
               <p className="text-xs text-muted-foreground mt-2">
-                Shift+Enter for new line • Enter to save
+                Shift+Enter for new line • Enter for AI coaching
               </p>
             </div>
           </motion.div>
