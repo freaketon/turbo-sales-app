@@ -68,6 +68,8 @@ export default function Home() {
   const stepIcons: Record<StepType, React.ReactNode> = {
     opening: <MessageSquare className="w-6 h-6" />,
     problem: <AlertTriangle className="w-6 h-6" />,
+    'pain-articulation': <MessageSquare className="w-6 h-6" />,
+    'pain-quantification': <DollarSign className="w-6 h-6" />,
     qualification: <CheckCircle2 className="w-6 h-6" />,
     'cost-lock': <DollarSign className="w-6 h-6" />,
     'stop-rule': <Clock className="w-6 h-6" />,

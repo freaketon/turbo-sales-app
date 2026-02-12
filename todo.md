@@ -40,3 +40,10 @@
 - [ ] Add visual indicators for which discovery path is active
 - [ ] Update PDF export to include pain articulation notes
 - [ ] Add AI coach guidance for new discovery paths
+
+## Current Work - Pain Articulation Integration
+- [x] Add pain articulation step to salesFlow.ts
+- [x] Update step ordering to place pain articulation after qualification
+- [x] Add routing logic in Home.tsx for pain articulation step
+- [x] Test pain articulation flow end-to-end
+- [ ] Update PDF export to include pain articulation responses

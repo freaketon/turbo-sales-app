@@ -1,7 +1,7 @@
 // Enhanced sales flow based on Rocket Demo framework analysis
 // Key improvements: Better qualification, cost lock, stop rule, hard close
 
-export type StepType = 'opening' | 'problem' | 'qualification' | 'cost-lock' | 'stop-rule' | 'reframe' | 'solution' | 'offer' | 'close' | 'objection' | 'disqualify' | 'success';
+export type StepType = 'opening' | 'problem' | 'pain-articulation' | 'pain-quantification' | 'qualification' | 'cost-lock' | 'stop-rule' | 'reframe' | 'solution' | 'offer' | 'close' | 'objection' | 'disqualify' | 'success';
 
 export type QuestionType = 'binary' | 'multiple' | 'text' | 'number';
 
@@ -92,8 +92,8 @@ export const salesFlow: Step[] = [
         text: 'Does that math feel directionally right?',
         type: 'binary',
         options: [
-          { value: 'yes', label: 'Yes', nextStep: 'qualification' },
-          { value: 'no', label: 'No - dig deeper', nextStep: 'qualification' }
+          { value: 'yes', label: 'Yes', nextStep: 'pain-articulation' },
+          { value: 'no', label: 'No - dig deeper', nextStep: 'pain-articulation' }
         ],
         guidance: 'If they say no, ask clarifying questions about their actual costs before moving forward.'
       }
@@ -102,6 +102,129 @@ export const salesFlow: Step[] = [
       'Use pauses strategically. Let the numbers sink in.',
       'This is not a pitch. It\'s a diagnosis.',
       'If you\'re explaining, you\'re losing control - keep it tight'
+    ],
+    nextStep: 'pain-articulation'
+  },
+  // Pain Articulation Checkpoint - Discipline Discovery
+  {
+    id: 'pain-articulation',
+    type: 'pain-articulation',
+    title: 'Pain Articulation Checkpoint',
+    subtitle: 'They Must Say It - Not You',
+    content: [
+      'CRITICAL: Before showing anything, prospect must articulate pain in their own words.',
+      'If they can\'t state the problem clearly, don\'t pitch - ask better questions or disqualify.',
+      'This is the discipline that separates strong closers from feature-dumpers.'
+    ],
+    scriptLines: [
+      '"Before I show you anything..."',
+      '',
+      '"In your own words: What\'s the specific pain you\'re trying to solve?"',
+      '',
+      '[WAIT. Do not fill the silence.]',
+      '',
+      'Listen for:',
+      '• Specific scenarios ("When we need X...")',
+      '• Time quantification ("Editors spend Y hours...")',
+      '• Frequency ("This happens Z times per week...")',
+      '• Business impact ("We can\'t reuse...", "We have to reshoot...")',
+      '',
+      'If vague, dig deeper:',
+      '"Can you walk me through the last time that happened?"',
+      '"How much time did that cost you?"',
+      '"How often does that happen?"'
+    ],
+    questions: [
+      {
+        id: 'pain-articulation-q1',
+        text: 'Did they clearly articulate the pain in their own words?',
+        type: 'binary',
+        options: [
+          { value: 'yes', label: 'Yes - clear pain stated', nextStep: 'pain-quantification' },
+          { value: 'no', label: 'No - vague or unclear' }
+        ],
+        guidance: 'If no: Ask follow-up questions. Do not move forward until pain is clear.'
+      },
+      {
+        id: 'pain-notes',
+        text: 'Capture their exact words describing the pain:',
+        type: 'text',
+        placeholder: 'e.g., "We waste hours every week searching through old projects..."'
+      }
+    ],
+    tips: [
+      'This is a gate. Do not skip it.',
+      'If they can\'t articulate pain, they won\'t buy.',
+      'Your job: Ask questions until they say it themselves.',
+      'Never pitch before this step is complete.'
+    ],
+    nextStep: 'pain-quantification'
+  },
+  {
+    id: 'pain-quantification',
+    type: 'pain-quantification',
+    title: 'Pain Quantification',
+    subtitle: 'They Must Give You Numbers',
+    content: [
+      'Now that they\'ve stated the pain, get them to quantify it.',
+      'Use their words. Reflect back what they said.',
+      'Get specific numbers: hours, frequency, team size, cost.'
+    ],
+    scriptLines: [
+      '[Reflect their pain back]',
+      '',
+      '"So you said [their words]. Let\'s put some numbers on that."',
+      '',
+      '"How many hours per week does your team spend on this?"',
+      '',
+      '[Wait for answer]',
+      '',
+      '"How many people does this affect?"',
+      '',
+      '[Wait for answer]',
+      '',
+      '"How often does this happen - daily, weekly?"',
+      '',
+      '[Wait for answer]',
+      '',
+      '"What does that cost you - in time, money, or missed opportunities?"'
+    ],
+    questions: [
+      {
+        id: 'pain-hours',
+        text: 'Hours per week spent on this problem:',
+        type: 'number',
+        placeholder: 'e.g., 10'
+      },
+      {
+        id: 'pain-people',
+        text: 'Number of people affected:',
+        type: 'number',
+        placeholder: 'e.g., 3'
+      },
+      {
+        id: 'pain-frequency',
+        text: 'How often does this happen?',
+        type: 'multiple',
+        options: [
+          { value: 'daily', label: 'Daily' },
+          { value: 'weekly', label: 'Weekly' },
+          { value: 'monthly', label: 'Monthly' },
+          { value: 'rarely', label: 'Rarely', isDisqualifying: true }
+        ]
+      },
+      {
+        id: 'pain-cost',
+        text: 'What does this cost them? (their words)',
+        type: 'text',
+        placeholder: 'e.g., "We miss deadlines", "We have to reshoot", "Editors are frustrated"'
+      }
+    ],
+    tips: [
+      'Use their language, not yours',
+      'Get specific numbers - vague answers = weak close',
+      'This builds the foundation for cost lock',
+      'If they can\'t quantify, dig deeper or disqualify'
     ],
     nextStep: 'qualification'
   },
