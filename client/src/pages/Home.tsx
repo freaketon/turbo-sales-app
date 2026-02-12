@@ -21,6 +21,7 @@ import ObjectionHandler from '@/components/ObjectionHandler';
 import ObjectionQuickAccess from '@/components/ObjectionQuickAccess';
 import CostCalculator from '@/components/CostCalculator';
 import AnswersSidebar from '@/components/AnswersSidebar';
+import { LiveNotes } from '@/components/LiveNotes';
 import { 
   MessageSquare, 
   AlertTriangle, 
@@ -377,6 +378,9 @@ export default function Home() {
     <div className="min-h-screen bg-background py-8 md:py-12">
       {/* Floating objection quick access button */}
       <ObjectionQuickAccess />
+      
+      {/* Live notes with AI guidance */}
+      <LiveNotes currentStep={currentStepId} />
       
       {/* Answers sidebar */}
       <AnswersSidebar answers={answers} prospectInfo={prospectInfo} />
