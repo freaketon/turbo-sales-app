@@ -1,0 +1,42 @@
+# TURBO Sales Guide - Implementation TODO
+
+## Completed Features
+- [x] Basic sales flow with step-by-step guidance
+- [x] Qualification questions
+- [x] Cost lock calculator
+- [x] Objection handling
+- [x] Live notes with AI sales coach
+- [x] Analytics dashboard
+- [x] PDF export
+- [x] Call history tracking
+- [x] localStorage persistence
+- [x] Prospect information capture
+- [x] Payment link integration
+- [x] Answers sidebar
+- [x] TURBO branding and cyan color scheme
+
+## Coach Recommendations - In Progress
+- [ ] Implement Pain Articulation Checkpoint (Discipline Discovery Sequence)
+  - [ ] Create pain articulation step before solution/demo
+  - [ ] Add pain quantification step
+  - [ ] Integrate into main sales flow
+  - [ ] Update Home.tsx to handle new steps
+
+- [ ] Build Second Discovery Path (Moment-Finding Pain)
+  - [ ] Create moment-finding discovery step
+  - [ ] Create moment-cost-lock step
+  - [ ] Add routing logic for "solved chaos but not speed" scenarios
+  - [ ] Integrate into main sales flow
+
+- [x] Improve Objection Handling (Acknowledge → Clarify → Reframe)
+  - [x] Create improved objection responses library
+  - [x] Build ImprovedObjectionHandler component
+  - [x] Update ObjectionQuickAccess with new framework
+  - [x] Replace old objection handler in Home.tsx
+
+## Next Steps
+- [ ] Test pain articulation checkpoint flow
+- [ ] Test second discovery path routing
+- [ ] Add visual indicators for which discovery path is active
+- [ ] Update PDF export to include pain articulation notes
+- [ ] Add AI coach guidance for new discovery paths

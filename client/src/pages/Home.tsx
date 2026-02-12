@@ -17,7 +17,7 @@ import ProgressIndicator from '@/components/ProgressIndicator';
 import StepCard, { StepHeader, StepContent, ScriptBox, TipsBox } from '@/components/StepCard';
 import QuestionCard from '@/components/QuestionCard';
 import PaymentLink from '@/components/PaymentLink';
-import ObjectionHandler from '@/components/ObjectionHandler';
+import ImprovedObjectionHandler from '@/components/ImprovedObjectionHandler';
 import ObjectionQuickAccess from '@/components/ObjectionQuickAccess';
 import CostCalculator from '@/components/CostCalculator';
 import AnswersSidebar from '@/components/AnswersSidebar';
@@ -481,7 +481,7 @@ export default function Home() {
             
             {/* Objection handler for objection step */}
             {currentStep.id === 'objection' && (
-              <ObjectionHandler />
+              <ImprovedObjectionHandler />
             )}
             
             {/* Cost calculator for cost-lock step */}
