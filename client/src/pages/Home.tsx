@@ -59,25 +59,25 @@ export default function Home() {
 
   const savedData = loadFromStorage();
   
-  const [currentStepId, setCurrentStepId] = useState<string>(savedData?.currentStepId || 'opening');
+  const [currentStepId, setCurrentStepId] = useState<string>(savedData?.currentStepId || 'frame-call');
   const [answers, setAnswers] = useState<Record<string, string>>(savedData?.answers || {});
   const [qualified, setQualified] = useState<boolean | null>(null);
   
   const currentStep = getStepById(currentStepId);
   
   const stepIcons: Record<StepType, React.ReactNode> = {
-    opening: <MessageSquare className="w-6 h-6" />,
-    problem: <AlertTriangle className="w-6 h-6" />,
-    'pain-articulation': <MessageSquare className="w-6 h-6" />,
-    'pain-quantification': <DollarSign className="w-6 h-6" />,
-    qualification: <CheckCircle2 className="w-6 h-6" />,
-    'cost-lock': <DollarSign className="w-6 h-6" />,
-    'stop-rule': <Clock className="w-6 h-6" />,
-    reframe: <Zap className="w-6 h-6" />,
-    solution: <Lightbulb className="w-6 h-6" />,
-    offer: <Gift className="w-6 h-6" />,
-    close: <Target className="w-6 h-6" />,
-    objection: <Shield className="w-6 h-6" />,
+    'frame-call': <MessageSquare className="w-6 h-6" />,
+    'problem-exposure': <AlertTriangle className="w-6 h-6" />,
+    'alternative-solutions': <Shield className="w-6 h-6" />,
+    'dream-outcome': <Lightbulb className="w-6 h-6" />,
+    'price-anchor': <DollarSign className="w-6 h-6" />,
+    'transition-demo': <ArrowRight className="w-6 h-6" />,
+    'demo-ask-loop': <CheckCircle2 className="w-6 h-6" />,
+    'impact-measurement': <BarChart3 className="w-6 h-6" />,
+    'recap': <MessageSquare className="w-6 h-6" />,
+    'availability-check': <Clock className="w-6 h-6" />,
+    'the-offer': <Gift className="w-6 h-6" />,
+    'close': <Target className="w-6 h-6" />,
     disqualify: <XCircle className="w-6 h-6" />,
     success: <PartyPopper className="w-6 h-6" />
   };
@@ -396,7 +396,7 @@ export default function Home() {
       <ObjectionQuickAccess />
       
       {/* Live notes with AI guidance */}
-      <SalesCoach currentStep={currentStepId} />
+      <SalesCoach currentStep={currentStepId} answers={answers} />
       
       {/* Answers sidebar */}
       <AnswersSidebar answers={answers} prospectInfo={prospectInfo} />
@@ -479,10 +479,10 @@ export default function Home() {
           stepTitle={currentStep.title}
         />
         
-        {/* Main step card - with special layout for cost-lock */}
+        {/* Main step card - with special layout for impact-measurement */}
         <AnimatePresence mode="wait">
-          {currentStep.id === 'cost-lock' ? (
-            // Special two-column layout for cost-lock step
+          {currentStep.id === 'impact-measurement' ? (
+            // Special two-column layout for impact-measurement step
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Left: Questions */}
               <StepCard key={currentStep.id}>
@@ -548,9 +548,9 @@ export default function Home() {
               {/* Right: Sticky Calculator */}
               <div className="lg:sticky lg:top-6 lg:self-start">
                 <CostCalculator
-                  editors={answers['cost-editors'] ? parseInt(answers['cost-editors']) : undefined}
-                  hoursPerWeek={answers['cost-hours'] === '3-5' ? 4 : answers['cost-hours'] === '6-10' ? 8 : answers['cost-hours'] === '10+' ? 12 : undefined}
-                  ratePerHour={answers['cost-rate'] ? parseInt(answers['cost-rate']) : undefined}
+                  editors={answers['num-editors'] ? parseInt(answers['num-editors']) : undefined}
+                  hoursPerWeek={answers['hours-saved'] ? parseInt(answers['hours-saved']) : undefined}
+                  ratePerHour={answers['hourly-rate'] ? parseInt(answers['hourly-rate']) : undefined}
                 />
               </div>
             </div>
@@ -648,42 +648,7 @@ export default function Home() {
                   </Button>
                 </motion.div>
               )}
-              
-              {/* Qualification status indicator */}
-              {currentStep.id === 'urgency' && answers['urgency-q1'] && (
-                <motion.div
-                  className={`mt-6 p-4 rounded-xl border ${
-                    qualified
-                      ? 'bg-accent/10 border-accent/30 text-accent'
-                      : 'bg-destructive/10 border-destructive/30 text-destructive'
-                  }`}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{
-                    type: 'spring',
-                    stiffness: 300,
-                    damping: 20
-                  }}
-                >
-                  <div className="flex items-center gap-3">
-                    {qualified ? (
-                      <CheckCircle2 className="w-6 h-6" />
-                    ) : (
-                      <XCircle className="w-6 h-6" />
-                    )}
-                    <div>
-                      <p className="font-semibold">
-                        {qualified ? 'Strong Fit Detected' : 'Qualification Status'}
-                      </p>
-                      <p className="text-sm opacity-90">
-                        {qualified
-                          ? 'This prospect meets all qualification criteria. Proceed with confidence.'
-                          : 'Review answers to assess fit before moving forward.'}
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
+
             </StepCard>
           )}
         </AnimatePresence>

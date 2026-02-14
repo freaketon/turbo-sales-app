@@ -65,3 +65,29 @@
 - [x] Implement previousStep logic in salesFlow
 - [x] Handle back navigation in Home.tsx
 - [x] Test back navigation across all steps
+
+## Current Work - New Discovery Call Script Implementation
+- [x] Restructure salesFlow.ts to match new 12-section script
+  - [x] Section 1: Frame the Call (2 min)
+  - [x] Section 2: Problem Exposure (8-10 min) - 7 discovery questions
+  - [x] Section 3: Alternative Solutions - what they've tried
+  - [x] Section 4: Dream Outcome - magic wand question
+  - [x] Section 5: Price Anchor (before demo)
+  - [x] Section 6: Transition to Demo
+  - [x] Section 7: Demo-Ask Loop (3-5 features with validation)
+  - [x] Section 8: Impact Measurement (calculate hours/$ saved)
+  - [x] Section 9: Recap (repeat everything back)
+  - [x] Section 10: Availability Check (soft close)
+  - [x] Section 11: The Offer (Founders Circle $5k)
+  - [x] Section 12: Close
+- [x] Enhance SalesCoach chat component
+  - [x] Add ability to capture customer answers as they speak
+  - [x] Provide "repeat back" framing suggestions based on captured answers
+  - [x] Auto-generate mirror statements from customer responses
+  - [x] Add section-specific prompts for what to capture
+- [x] Update UI to support new flow
+  - [x] Remove old qualification/cost-lock steps
+  - [x] Add mirror/repeat-back prompts at key moments
+  - [x] Update calculator to work with Section 8 (Impact Measurement)
+  - [x] Add Founders Circle offer presentation in Section 11
+- [x] Test complete 12-section flow end-to-end

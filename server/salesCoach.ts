@@ -43,6 +43,43 @@ When analyzing notes, consider:
 Provide guidance that helps close the deal or disqualify quickly.`;
 
 export const salesCoachRouter = router({
+  generateMirror: publicProcedure
+    .input(
+      z.object({
+        customerAnswers: z.array(z.string()),
+        currentStep: z.string(),
+        answers: z.record(z.string(), z.string()).optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { customerAnswers, currentStep, answers = {} } = input;
+
+      // Build context for mirror generation
+      const contextInfo = `Current step: ${currentStep}\n\nCustomer's answers during this section:\n${customerAnswers.map((a, i) => `${i + 1}. ${a}`).join('\n')}`;
+
+      const mirrorPrompt = `You are helping a salesperson repeat back what the customer said during a discovery call. Based on the customer's answers below, generate a natural "mirror" statement that repeats back what they said in their own words.\n\n${contextInfo}\n\nGenerate a mirror statement that:\n1. Starts with "So what I'm hearing is:" or "So if I understand correctly:"\n2. Summarizes their key points using their language\n3. Ends with "Did I get that right?" or "Is that accurate?"\n\nKeep it conversational and authentic. Use bullet points if there are multiple points to repeat back.`;
+
+      try {
+        const response = await invokeLLM({
+          messages: [
+            { role: "system", content: "You are an expert at active listening and mirroring customer statements in B2B sales conversations. Your mirrors are natural, conversational, and use the customer's own language." },
+            { role: "user", content: mirrorPrompt },
+          ],
+        });
+
+        const mirrorStatement = response.choices[0]?.message?.content || "So what I'm hearing is: [summarize their key points]. Did I get that right?";
+
+        return {
+          mirrorStatement: typeof mirrorStatement === 'string' ? mirrorStatement : '',
+        };
+      } catch (error) {
+        console.error("Failed to generate mirror:", error);
+        return {
+          mirrorStatement: "So what I'm hearing is: [summarize their key points from your notes]. Did I get that right?",
+        };
+      }
+    }),
+
   analyzeNote: publicProcedure
     .input(
       z.object({

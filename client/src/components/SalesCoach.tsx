@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { MessageSquare, X, Send, Loader2 } from 'lucide-react';
+import { MessageSquare, X, Send, Loader2, Copy, CheckCircle2 } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 
 interface Note {
@@ -9,18 +9,51 @@ interface Note {
   text: string;
   timestamp: Date;
   aiGuidance?: string;
+  type: 'user' | 'system' | 'mirror';
 }
 
 interface SalesCoachProps {
   currentStep: string;
+  answers: Record<string, string>;
 }
 
-export function SalesCoach({ currentStep }: SalesCoachProps) {
+// Section-specific prompts for what to capture
+const SECTION_PROMPTS: Record<string, string> = {
+  'problem-exposure': '💡 Capture their answers: What slows them down? How do they find footage? Time spent searching?',
+  'alternative-solutions': '💡 Capture: What have they tried? Why didn\'t it work? How much invested?',
+  'dream-outcome': '💡 Capture: Their magic wand solution. What would it solve? Financial impact?',
+  'price-anchor': '💡 Capture: Reasonable price? Unreasonable price?',
+  'demo-ask-loop': '💡 Capture: Their reaction to each feature. Any objections?',
+  'impact-measurement': '💡 Capture: Hours saved per week. Number of editors. Hourly rate.',
+  'recap': '💡 Time to repeat EVERYTHING back - check your notes!',
+  'the-offer': '💡 Capture: Their reaction to Founders Circle. Price objection?'
+};
+
+export function SalesCoach({ currentStep, answers }: SalesCoachProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [notes, setNotes] = useState<Note[]>([]);
   const [input, setInput] = useState('');
+  const [copiedId, setCopiedId] = useState<string | null>(null);
   
   const getGuidanceMutation = trpc.salesCoach.analyzeNote.useMutation();
+  const generateMirrorMutation = trpc.salesCoach.generateMirror.useMutation();
+
+  // Show section-specific prompt when step changes
+  useEffect(() => {
+    if (SECTION_PROMPTS[currentStep]) {
+      const promptNote: Note = {
+        id: `prompt-${currentStep}-${Date.now()}`,
+        text: SECTION_PROMPTS[currentStep],
+        timestamp: new Date(),
+        type: 'system'
+      };
+      setNotes(prev => {
+        // Don't add duplicate prompts
+        if (prev.some(n => n.text === promptNote.text)) return prev;
+        return [...prev, promptNote];
+      });
+    }
+  }, [currentStep]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +62,8 @@ export function SalesCoach({ currentStep }: SalesCoachProps) {
     const newNote: Note = {
       id: Date.now().toString(),
       text: input.trim(),
-      timestamp: new Date()
+      timestamp: new Date(),
+      type: 'user'
     };
 
     setNotes(prev => [...prev, newNote]);
@@ -40,8 +74,8 @@ export function SalesCoach({ currentStep }: SalesCoachProps) {
       const result = await getGuidanceMutation.mutateAsync({
         note: newNote.text,
         currentStep,
-        previousNotes: notes.map(n => n.text),
-        answers: {}
+        previousNotes: notes.filter(n => n.type === 'user').map(n => n.text),
+        answers
       });
 
       // Convert guidance to string if it's an array
@@ -64,6 +98,43 @@ export function SalesCoach({ currentStep }: SalesCoachProps) {
     }
   };
 
+  const handleGenerateMirror = async () => {
+    // Get all user notes from current section
+    const userNotes = notes.filter(n => n.type === 'user').map(n => n.text);
+    
+    if (userNotes.length === 0) {
+      return;
+    }
+
+    try {
+      const result = await generateMirrorMutation.mutateAsync({
+        customerAnswers: userNotes,
+        currentStep,
+        answers
+      });
+
+      const mirrorNote: Note = {
+        id: `mirror-${Date.now()}`,
+        text: result.mirrorStatement,
+        timestamp: new Date(),
+        type: 'mirror'
+      };
+
+      setNotes(prev => [...prev, mirrorNote]);
+    } catch (error) {
+      console.error('Failed to generate mirror:', error);
+    }
+  };
+
+  const handleCopy = (text: string, id: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  // Show "Generate Mirror" button for sections that need mirroring
+  const showMirrorButton = ['problem-exposure', 'alternative-solutions', 'dream-outcome', 'recap'].includes(currentStep);
+
   return (
     <>
       {/* Floating button */}
@@ -84,13 +155,13 @@ export function SalesCoach({ currentStep }: SalesCoachProps) {
             <MessageSquare className="w-6 h-6" />
           )}
         </Button>
-        {notes.length > 0 && !isOpen && (
+        {notes.filter(n => n.type === 'user').length > 0 && !isOpen && (
           <motion.div
             className="absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
           >
-            {notes.length}
+            {notes.filter(n => n.type === 'user').length}
           </motion.div>
         )}
       </motion.div>
@@ -105,14 +176,14 @@ export function SalesCoach({ currentStep }: SalesCoachProps) {
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
           >
-            <div className="glass-card rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[500px]">
+            <div className="glass-card rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[600px]">
               {/* Header */}
               <div className="p-4 border-b border-border bg-card/50">
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="font-semibold text-foreground">Sales Coach</h3>
                     <p className="text-xs text-muted-foreground">
-                      Take notes • Get AI guidance
+                      Capture answers • Get perfect framing
                     </p>
                   </div>
                   <Button
@@ -130,28 +201,63 @@ export function SalesCoach({ currentStep }: SalesCoachProps) {
                 {notes.length === 0 ? (
                   <div className="text-center text-muted-foreground py-8">
                     <MessageSquare className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                    <p className="text-sm">
-                      Type observations during the call.
+                    <p className="text-sm font-medium">
+                      Your Co-Pilot for Perfect Framing
                     </p>
-                    <p className="text-xs mt-1">
-                      AI will provide strategic coaching.
+                    <p className="text-xs mt-2 px-4">
+                      Type what the customer says during the call.
+                      <br />
+                      I'll help you repeat it back perfectly.
                     </p>
                   </div>
                 ) : (
                   notes.map(note => (
                     <div key={note.id} className="space-y-2">
-                      {/* User note */}
-                      <div className="flex justify-end">
-                        <div className="bg-primary text-primary-foreground rounded-2xl rounded-tr-sm px-4 py-2 max-w-[85%]">
-                          <p className="text-sm">{note.text}</p>
-                          <p className="text-xs opacity-70 mt-1">
-                            {note.timestamp.toLocaleTimeString()}
-                          </p>
+                      {/* System prompt */}
+                      {note.type === 'system' && (
+                        <div className="bg-accent/10 border border-accent/30 rounded-lg px-3 py-2">
+                          <p className="text-xs text-accent-foreground">{note.text}</p>
                         </div>
-                      </div>
+                      )}
+
+                      {/* User note */}
+                      {note.type === 'user' && (
+                        <div className="flex justify-end">
+                          <div className="bg-primary text-primary-foreground rounded-2xl rounded-tr-sm px-4 py-2 max-w-[85%]">
+                            <p className="text-sm">{note.text}</p>
+                            <p className="text-xs opacity-70 mt-1">
+                              {note.timestamp.toLocaleTimeString()}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Mirror statement */}
+                      {note.type === 'mirror' && (
+                        <div className="bg-secondary/20 border-2 border-secondary rounded-lg px-4 py-3">
+                          <div className="flex items-start justify-between gap-2 mb-2">
+                            <p className="text-xs font-semibold text-secondary-foreground">
+                              🎯 REPEAT BACK (Copy & Use)
+                            </p>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleCopy(note.text, note.id)}
+                              className="h-6 px-2"
+                            >
+                              {copiedId === note.id ? (
+                                <CheckCircle2 className="w-3 h-3 text-green-500" />
+                              ) : (
+                                <Copy className="w-3 h-3" />
+                              )}
+                            </Button>
+                          </div>
+                          <p className="text-sm text-foreground whitespace-pre-wrap">{note.text}</p>
+                        </div>
+                      )}
 
                       {/* AI guidance */}
-                      {note.aiGuidance && (
+                      {note.type === 'user' && note.aiGuidance && (
                         <div className="flex justify-start">
                           <div className="bg-accent/20 text-accent-foreground rounded-2xl rounded-tl-sm px-4 py-2 max-w-[85%] border border-accent/30">
                             <p className="text-xs font-semibold text-accent mb-1">
@@ -163,7 +269,7 @@ export function SalesCoach({ currentStep }: SalesCoachProps) {
                       )}
 
                       {/* Loading indicator */}
-                      {!note.aiGuidance && (
+                      {note.type === 'user' && !note.aiGuidance && (
                         <div className="flex justify-start">
                           <div className="bg-muted rounded-2xl rounded-tl-sm px-4 py-2">
                             <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
@@ -175,6 +281,31 @@ export function SalesCoach({ currentStep }: SalesCoachProps) {
                 )}
               </div>
 
+              {/* Mirror button */}
+              {showMirrorButton && notes.filter(n => n.type === 'user').length > 0 && (
+                <div className="px-4 pb-2">
+                  <Button
+                    onClick={handleGenerateMirror}
+                    disabled={generateMirrorMutation.isPending}
+                    className="w-full gap-2"
+                    variant="secondary"
+                    size="sm"
+                  >
+                    {generateMirrorMutation.isPending ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <MessageSquare className="w-4 h-4" />
+                        Generate "Repeat Back" Statement
+                      </>
+                    )}
+                  </Button>
+                </div>
+              )}
+
               {/* Input */}
               <form onSubmit={handleSubmit} className="p-4 border-t border-border bg-card/50">
                 <div className="flex gap-2">
@@ -182,7 +313,7 @@ export function SalesCoach({ currentStep }: SalesCoachProps) {
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    placeholder="Type your observation..."
+                    placeholder="Type what customer said..."
                     className="flex-1 px-4 py-2 rounded-lg bg-background/50 border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
                     disabled={getGuidanceMutation.isPending}
                   />
