@@ -17,6 +17,7 @@ import ProgressIndicator from '@/components/ProgressIndicator';
 import StepCard, { StepHeader, StepContent, ScriptBox, TipsBox } from '@/components/StepCard';
 import QuestionCard from '@/components/QuestionCard';
 import PaymentLink from '@/components/PaymentLink';
+import MirrorBox from '@/components/MirrorBox';
 import ImprovedObjectionHandler from '@/components/ImprovedObjectionHandler';
 import ObjectionQuickAccess from '@/components/ObjectionQuickAccess';
 import CostCalculator from '@/components/CostCalculator';
@@ -521,15 +522,26 @@ export default function Home() {
               )}
               
               {currentStep.questions && currentStep.questions.length > 0 && (
-                <div className="mb-6">
-                  {currentStep.questions.map((question) => (
-                    <QuestionCard
-                      key={question.id}
-                      question={question}
-                      onAnswer={handleAnswer}
-                      currentAnswer={answers[question.id]}
+                <div className="mb-6 space-y-6">
+                  <div>
+                    {currentStep.questions.map((question) => (
+                      <QuestionCard
+                        key={question.id}
+                        question={question}
+                        onAnswer={handleAnswer}
+                        currentAnswer={answers[question.id]}
+                      />
+                    ))}
+                  </div>
+                  
+                  {/* Auto-generate mirror for steps that need it */}
+                  {['problem-exposure', 'alternative-solutions', 'dream-outcome', 'recap'].includes(currentStep.id) && (
+                    <MirrorBox
+                      stepId={currentStep.id}
+                      answers={answers}
+                      questionIds={currentStep.questions.map(q => q.id)}
                     />
-                  ))}
+                  )}
                 </div>
               )}
               

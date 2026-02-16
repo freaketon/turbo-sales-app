@@ -103,3 +103,10 @@
 - [x] Fix "Step not found" error when loading app
 - [x] Clear old localStorage data with invalid step IDs
 - [x] Add validation to handle missing/invalid steps gracefully
+
+## Current Work - Question/Answer/Mirror Layout Redesign
+- [x] Redesign step layout to show questions at top, answer fields in middle, mirror script at bottom
+- [x] Make mirror script auto-generate as answers are typed (no button click needed)
+- [x] Ensure all three sections visible without scrolling on standard screen
+- [x] Add clear visual separation between question, answer, and mirror sections
+- [x] Test layout on different screen sizes
