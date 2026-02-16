@@ -25,6 +25,10 @@ import ObjectionQuickAccess from '@/components/ObjectionQuickAccess';
 import CostCalculator from '@/components/CostCalculator';
 import AnswersSidebar from '@/components/AnswersSidebar';
 import { SalesCoach } from '@/components/SalesCoach';
+import CallFrameOpener from '@/components/CallFrameOpener';
+import CuriosityTonalityCoach from '@/components/CuriosityTonalityCoach';
+import HelpfulReinforcementNudge from '@/components/HelpfulReinforcementNudge';
+import DemoPermissionGate from '@/components/DemoPermissionGate';
 import { 
   MessageSquare, 
   AlertTriangle, 
@@ -511,6 +515,37 @@ export default function Home() {
               />
               
               <StepContent content={currentStep.content} />
+              
+              {/* Call Frame Opener for frame-call step */}
+              {currentStep.id === 'frame-call' && (
+                <div className="mb-6">
+                  <CallFrameOpener
+                    prospectName={prospectInfo.name}
+                    onDelivered={() => {}}
+                  />
+                </div>
+              )}
+              
+              {/* Curiosity Tonality Coach for discovery steps */}
+              {['problem-exposure', 'alternative-solutions', 'dream-outcome'].includes(currentStep.id) && (
+                <div className="mb-6">
+                  <CuriosityTonalityCoach />
+                </div>
+              )}
+              
+              {/* Helpful Reinforcement Nudge for discovery steps */}
+              {['problem-exposure', 'alternative-solutions', 'dream-outcome'].includes(currentStep.id) && (
+                <div className="mb-6">
+                  <HelpfulReinforcementNudge />
+                </div>
+              )}
+              
+              {/* Demo Permission Gate before demo */}
+              {currentStep.id === 'transition-demo' && (
+                <div className="mb-6">
+                  <DemoPermissionGate onPermissionGranted={() => {}} />
+                </div>
+              )}
               
               {/* Payment link for success step */}
               {currentStep.id === 'success' && (

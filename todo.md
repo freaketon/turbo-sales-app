@@ -155,3 +155,10 @@
 - [x] Rank pain points by severity based on customer's language and emphasis
 - [x] Generate demo order showing features for most painful problems first
 - [x] Display pain → feature connection in demo script ("You mentioned X, here's how we solve it")
+
+## Current Work - Feedback-First Discovery Changes
+- [x] A) Add mandatory call frame opener (must click "Delivered" to proceed)
+- [x] B) Create curiosity tonality coach panel (rotating prompts during discovery)
+- [x] C) Add helpful reinforcement nudge button with suggested one-liners
+- [x] D) Add demo permission gate before demo section
+- [x] E) Update Early Adopter offer with exact 3-part framing (Bridge → Permission → Offer)

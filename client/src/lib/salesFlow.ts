@@ -62,17 +62,9 @@ export const salesFlow: Step[] = [
       'This sets the tone for a consultative conversation, not a pitch.'
     ],
     scriptLines: [
-      '"Hey, thanks for making time."',
-      '"This is a feedback call."',
-      '"I want to understand how your video operation works,"',
-      '"What friction exists around finding footage,"',
-      '"And see if what we\'re building actually solves a real problem."',
+      '"Hey [Name], appreciate you making time. We\'re super early on this, still beta. I\'m not here to sell you on anything today. I\'m trying to learn how you run video and where the friction is so we build the right thing. I\'m going to ask a bunch of questions, and if we have time I can show a rough prototype to get your feedback. Cool?"',
       '',
-      '"Then if it makes sense, I\'ll show you an early prototype and get your honest feedback."',
-      '',
-      '"Sound fair?"',
-      '',
-      '[Pause and wait for their "yes"]'
+      '[Wait for their agreement before proceeding]'
     ],
     tips: [
       'Keep it casual and founder-to-founder',
@@ -736,34 +728,29 @@ export const salesFlow: Step[] = [
       'Present the offer: $5k for Founders Circle with guarantee.'
     ],
     scriptLines: [
-      '[Lower your tone - intimate, not salesy]',
+      '--- PART 1: BRIDGE ---',
       '',
-      '"Look, I see you\'re a fit."',
-      '"This feedback has been incredibly valuable."',
+      '"[Name], this has been super helpful. I learned a ton. You clearly know this space and you\'re exactly the kind of person we want feedback from while we build."',
       '',
-      '"We\'re building a Founders Circle - only 10 people."',
-      '"We launch publicly in 3 months at a way higher price."',
+      '--- PART 2: PERMISSION ---',
       '',
-      '"Here\'s what you get:"',
-      '• White-glove setup - we do everything',
-      '• Direct line to me and the engineering team',
-      '• Voice in the roadmap - build your dream tool',
-      '• Beta access to every release',
-      '• Private Founders Circle chat',
-      '• Grandfather pricing forever',
+      '"Before you go, if you\'ve got a couple more minutes, I wasn\'t even going to mention this because it\'s not open to the public. We\'ve been hand-picking a few people because they\'ve been so helpful and because this feels like a fit. Would you be open to hearing about an early adopter thing we\'re doing?"',
       '',
-      '"Commitment: One hour a month of feedback."',
+      '[Wait for their yes]',
       '',
-      '"Price: $5,000."',
-      '"That\'s less than $420 a month from the moment you start searching."',
+      '--- PART 3: OFFER (read verbatim) ---',
       '',
-      '"Guarantee: If you don\'t save 50 hours in 90 days, full refund + I pay you $500."',
+      '"We\'re launching in about six months."',
       '',
-      '"You in?"',
+      '"We\'re bringing in a small group to use it early and shape it around their workflow."',
       '',
-      '[SILENCE. DO NOT BREAK IT.]',
+      '"All we ask is one call per month, feedback, and trying early prototypes."',
       '',
-      '"Is this something you want to be part of?"'
+      '"In return you get a massive discount. $5k for 12 months, grandfathered pricing, and beta access."',
+      '',
+      '"You get direct access to me plus engineering."',
+      '',
+      '"Zero-Touch setup. We connect it and get you live without your team doing work."'
     ],
     questions: [
       {
