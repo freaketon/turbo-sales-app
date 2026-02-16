@@ -347,7 +347,7 @@ export default function Home() {
       
       {/* Answers sidebar */}
       <AnswersSidebar answers={answers} prospectInfo={prospectInfo} />
-      <div className="container max-w-4xl pr-[340px]">
+      <div className="container max-w-4xl lg:pr-[340px]">
         {/* Header with restart button */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">

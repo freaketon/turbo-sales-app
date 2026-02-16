@@ -123,3 +123,11 @@
 - [x] Fix Continue button being hidden behind Customer Answers tracker
 - [x] Add padding or margin to main content area to account for fixed sidebar
 - [x] Ensure buttons are always visible on all screen sizes
+
+## Current Work - Mobile Responsiveness
+- [x] Hide Customer Answers tracker on mobile/tablet screens (shows only on lg+ screens)
+- [ ] Add toggle button to show/hide tracker on mobile
+- [x] Remove fixed right padding on mobile screens (only applies on lg+ screens)
+- [x] Make all components stack vertically on mobile
+- [ ] Test on different mobile screen sizes (phone, tablet)
+- [x] Ensure buttons and text are readable on small screens

@@ -79,7 +79,7 @@ export default function CustomerAnswersTracker({ answers, currentStepId }: Custo
   }
 
   return (
-    <Card className="fixed right-4 top-20 w-80 bg-card/95 backdrop-blur-sm border-border shadow-lg z-40">
+    <Card className="hidden lg:block fixed right-4 top-20 w-80 bg-card/95 backdrop-blur-sm border-border shadow-lg z-40">
       <div 
         className="flex items-center justify-between p-4 cursor-pointer border-b border-border"
         onClick={() => setIsExpanded(!isExpanded)}
