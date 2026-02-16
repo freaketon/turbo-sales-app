@@ -118,3 +118,8 @@
 - [x] Show all mirrored statements in tracker so you can always reference what they said
 - [x] Build dynamic demo script generator based on discovery pain points
 - [x] Auto-prioritize demo features based on their biggest pain from answers
+
+## Current Work - Continue Button Visibility Fix
+- [x] Fix Continue button being hidden behind Customer Answers tracker
+- [x] Add padding or margin to main content area to account for fixed sidebar
+- [x] Ensure buttons are always visible on all screen sizes
