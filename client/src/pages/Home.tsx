@@ -183,7 +183,11 @@ export default function Home() {
       const callRecord: CallRecord = {
         id: nanoid(),
         timestamp: new Date().toISOString(),
-        prospectInfo,
+        prospectInfo: {
+          name: answers['prospect-name'] || '',
+          company: answers['prospect-company'] || '',
+          email: answers['prospect-email'] || ''
+        },
         outcome,
         finalStep: currentStepId,
         answers,
@@ -193,7 +197,7 @@ export default function Home() {
       saveCallToHistory(callRecord);
     }
     
-    setCurrentStepId('opening');
+    setCurrentStepId('frame-call');
     setAnswers({});
     setCallStarted(false);
     setProspectInfo({ name: '', company: '', email: '' });
@@ -207,22 +211,8 @@ export default function Home() {
   
   if (!callStarted) {
     return (
-      <div className="min-h-screen relative overflow-hidden">
-        {/* Animated gradient background */}
-        <div 
-          className="absolute inset-0 z-0"
-          style={{
-            backgroundImage: `url('https://private-us-east-1.manuscdn.com/sessionFile/wbyCIPSlnMREuEVSzY6GcU/sandbox/ArIUZUBejbhFB0idX7dKx8-img-1_1770319555000_na1fn_aGVyby1ncmFkaWVudC1iZw.png?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvd2J5Q0lQU2xuTVJFdUVWU3pZNkdjVS9zYW5kYm94L0FySVVaVUJlamJoRkIwaWRYN2RLeDgtaW1nLTFfMTc3MDMxOTU1NTAwMF9uYTFmbl9hR1Z5YnkxbmNtRmthV1Z1ZEMxaVp3LnBuZz94LW9zcy1wcm9jZXNzPWltYWdlL3Jlc2l6ZSx3XzE5MjAsaF8xOTIwL2Zvcm1hdCx3ZWJwL3F1YWxpdHkscV84MCIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc5ODc2MTYwMH19fV19&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=O3w3eJGfmzJL2lZ5N~9jOviNzDD7f9o3PuSlP6~iAhhwSDOnWzG6YUuJK-Ouq1tQqy10a1iiuHdgsP~5QdTDJ2mHdOg57qo46uLQxBwGrzZtQXEPdx0ZmuXpkjG2KHHhuK95POCRty-flsSvAVAWotH2nOsgBO5LmVjF2Cb-zHXVOZJUH0lXdW18F0f~2tUh50bJhIpzWOC-2U4d5u-TyQZ7m~NKvm7sqbz4nVcKZoKq38qjBtzU-h56mrS6Ye27YlcN2kr5nvBub9gmsmGHwotVG5cgh~VDdtYEGPRRNvFlDuszJ7P0Yq9ENBS09gCCydbjQDgsvytmNea99tQiMg__')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center'
-          }}
-        />
-        
-        {/* Overlay gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-background/80 via-background/60 to-background/80 z-0" />
-        
-        {/* Content */}
-        <div className="relative z-10 container min-h-screen flex flex-col items-center justify-center py-12">
+      <div className="min-h-screen relative overflow-hidden bg-background">
+        <div className="container min-h-screen flex flex-col items-center justify-center py-12">
           <motion.div
             className="max-w-3xl w-full text-center"
             initial={{ opacity: 0, y: 30 }}
@@ -293,89 +283,35 @@ export default function Home() {
               </ul>
             </div>
             
-            {/* Prospect Information Form */}
-            <div className="glass-card rounded-2xl p-8 text-left">
-              <h3 className="text-lg font-semibold text-foreground mb-2 flex items-center gap-2">
-                <MessageSquare className="w-5 h-5 text-primary" />
-                Prospect Information
-              </h3>
-              <p className="text-sm text-muted-foreground mb-6">
-                Capture basic details before starting the call
-              </p>
-              
-              <div className="space-y-4 mb-6">
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Name *
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="John Smith"
-                    value={prospectInfo.name}
-                    onChange={(e) => setProspectInfo({ ...prospectInfo, name: e.target.value })}
-                    className="w-full px-4 py-3 rounded-lg bg-background/50 border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Company *
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Acme Productions"
-                    value={prospectInfo.company}
-                    onChange={(e) => setProspectInfo({ ...prospectInfo, company: e.target.value })}
-                    className="w-full px-4 py-3 rounded-lg bg-background/50 border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="john@acme.com"
-                    value={prospectInfo.email}
-                    onChange={(e) => setProspectInfo({ ...prospectInfo, email: e.target.value })}
-                    className="w-full px-4 py-3 rounded-lg bg-background/50 border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-                  />
-                </div>
-              </div>
-              
-              <Button
-                size="lg"
-                className="w-full text-lg py-6 font-semibold group relative overflow-hidden"
-                onClick={() => setCallStarted(true)}
-                disabled={!prospectInfo.name || !prospectInfo.company}
-              >
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                  Start Sales Call
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </span>
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-primary via-secondary to-primary"
-                  animate={{
-                    backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: 'linear'
-                  }}
-                  style={{
-                    backgroundSize: '200% 200%'
-                  }}
-                />
-              </Button>
-              
-              {(!prospectInfo.name || !prospectInfo.company) && (
-                <p className="text-xs text-muted-foreground mt-3 text-center">
-                  Name and Company are required to start
-                </p>
-              )}
-            </div>
+            {/* Simple Start Button */}
+            <Button
+              size="lg"
+              className="w-full max-w-md text-lg py-8 font-semibold group relative overflow-hidden"
+              onClick={() => setCallStarted(true)}
+            >
+              <span className="relative z-10 flex items-center justify-center gap-2">
+                Start Call
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </span>
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-primary via-secondary to-primary"
+                animate={{
+                  backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: 'linear'
+                }}
+                style={{
+                  backgroundSize: '200% 200%'
+                }}
+              />
+            </Button>
+            
+            <p className="text-sm text-muted-foreground mt-4">
+              Jump straight into the call. You'll capture prospect details at the end.
+            </p>
           </motion.div>
         </div>
       </div>

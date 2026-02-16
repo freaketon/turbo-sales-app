@@ -91,3 +91,10 @@
   - [x] Update calculator to work with Section 8 (Impact Measurement)
   - [x] Add Founders Circle offer presentation in Section 11
 - [x] Test complete 12-section flow end-to-end
+
+## Current Work - UX Improvements
+- [x] Remove prospect info form from start screen
+- [x] Add simple "Start Call" button to begin immediately
+- [x] Switch app theme to dark black background (prevent screen reflection)
+- [x] Move prospect name/email capture to end of call flow
+- [x] Show prospect info form before saving call history

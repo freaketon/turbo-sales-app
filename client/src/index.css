@@ -61,11 +61,11 @@ Design Philosophy: TURBO Brand
   --destructive: oklch(0.65 0.25 25); /* Red for disqualify */
   --destructive-foreground: oklch(0.98 0 0);
   
-  --background: oklch(0.12 0.02 240); /* Deep navy #0f1419 */
+  --background: oklch(0.00 0 0); /* Pure black to prevent screen reflection */
   --foreground: oklch(0.95 0.01 240);
-  --card: oklch(0.18 0.025 240 / 0.6); /* Glassmorphic */
+  --card: oklch(0.10 0.01 240 / 0.8); /* Darker glassmorphic */
   --card-foreground: oklch(0.95 0.01 240);
-  --popover: oklch(0.16 0.025 240 / 0.95);
+  --popover: oklch(0.08 0.01 240 / 0.95);
   --popover-foreground: oklch(0.95 0.01 240);
   
   --muted: oklch(0.25 0.02 240);
@@ -74,7 +74,7 @@ Design Philosophy: TURBO Brand
   --input: oklch(0.25 0.03 240 / 0.5);
   --ring: oklch(0.65 0.2 230);
   
-  --sidebar: oklch(0.14 0.02 240);
+  --sidebar: oklch(0.05 0.01 240);
   --sidebar-foreground: oklch(0.95 0.01 240);
   --sidebar-primary: oklch(0.65 0.2 230);
   --sidebar-primary-foreground: oklch(0.98 0 0);
@@ -153,7 +153,7 @@ Design Philosophy: TURBO Brand
   
   /* Glassmorphic card effect */
   .glass-card {
-    background: oklch(0.18 0.025 240 / 0.6);
+    background: oklch(0.10 0.01 240 / 0.8);
     backdrop-filter: blur(20px);
     border: 1px solid oklch(0.35 0.05 240 / 0.3);
     box-shadow: 

@@ -895,11 +895,30 @@ export const salesFlow: Step[] = [
     id: 'success',
     type: 'success',
     title: 'Deal Closed! 🎉',
-    subtitle: 'Welcome to the Founders Circle',
+    subtitle: 'Capture prospect details for your records',
     content: [
       'Congratulations! You closed a Founders Circle member.',
-      'Next steps: Send payment link and schedule onboarding.',
-      'Export the call summary and add to CRM.'
+      'Before exporting, capture their contact details for your CRM.'
+    ],
+    questions: [
+      {
+        id: 'prospect-name',
+        text: 'Prospect Name',
+        type: 'text',
+        placeholder: 'John Smith'
+      },
+      {
+        id: 'prospect-company',
+        text: 'Company',
+        type: 'text',
+        placeholder: 'Acme Productions'
+      },
+      {
+        id: 'prospect-email',
+        text: 'Email (optional)',
+        type: 'text',
+        placeholder: 'john@acme.com'
+      }
     ],
     scriptLines: [
       '"Welcome to the Founders Circle!"',
