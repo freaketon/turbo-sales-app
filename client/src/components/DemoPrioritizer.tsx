@@ -1,9 +1,17 @@
 import { Card } from '@/components/ui/card';
-import { Zap, Clock, Search, FolderTree, Sparkles } from 'lucide-react';
-import { useMemo } from 'react';
+import { Zap, Clock, Search, FolderTree, Sparkles, Loader2, AlertCircle } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { trpc } from '@/lib/trpc';
 
 interface DemoPrioritizerProps {
   answers: Record<string, string>;
+}
+
+interface RankedPain {
+  painPoint: string;
+  severity: 'high' | 'medium' | 'low';
+  feature: string;
+  evidence: string;
 }
 
 interface DemoFeature {
@@ -11,141 +19,163 @@ interface DemoFeature {
   title: string;
   icon: React.ReactNode;
   painPoint: string;
+  evidence: string;
   script: string[];
   validation: string;
-  priority: number;
+  severity: 'high' | 'medium' | 'low';
 }
 
+const FEATURE_DETAILS: Record<string, {
+  title: string;
+  icon: React.ReactNode;
+  script: (painPoint: string) => string[];
+  validation: string;
+}> = {
+  'intent-search': {
+    title: 'Intent Search',
+    icon: <Search className="w-5 h-5" />,
+    script: (pain) => [
+      `"You mentioned: ${pain}"`,
+      '"Here\'s how we\'re thinking about that."',
+      '',
+      'Show: Search: "Find the clip where pricing was mentioned in Q3."',
+      'Results appear instantly.',
+    ],
+    validation: '"Would this work for you? Could you see yourself using this?"',
+  },
+  'no-tagging': {
+    title: 'No Tagging Required',
+    icon: <Sparkles className="w-5 h-5" />,
+    script: (pain) => [
+      `"You said: ${pain}"`,
+      '',
+      '"This requires no tagging."',
+      '"No reorganization."',
+      '"We index what already exists."',
+    ],
+    validation: '"Would that remove friction for your editors?"',
+  },
+  'zero-touch': {
+    title: 'Zero-Touch Setup',
+    icon: <Zap className="w-5 h-5" />,
+    script: (pain) => [
+      `"You mentioned: ${pain}"`,
+      '',
+      '"We connect to your storage."',
+      '"Index your archive."',
+      '"Calibrate."',
+      '"You search."',
+    ],
+    validation: '"Would that work for your team?"',
+  },
+  'archive-org': {
+    title: 'Unified Archive View',
+    icon: <FolderTree className="w-5 h-5" />,
+    script: (pain) => [
+      `"You said: ${pain}"`,
+      '',
+      '"TURBO creates a single search layer."',
+      '"Across all your storage."',
+      '"No migration needed."',
+    ],
+    validation: '"Would that simplify things for you?"',
+  },
+  'time-savings': {
+    title: 'Instant Retrieval',
+    icon: <Clock className="w-5 h-5" />,
+    script: (pain) => [
+      `"You mentioned: ${pain}"`,
+      '',
+      '"TURBO turns 20 minutes into 20 seconds."',
+      '"Natural language search."',
+      '"Instant results."',
+    ],
+    validation: '"How much would that save your team per week?"',
+  },
+};
+
 export default function DemoPrioritizer({ answers }: DemoPrioritizerProps) {
-  const prioritizedFeatures = useMemo(() => {
-    const features: DemoFeature[] = [];
+  const [features, setFeatures] = useState<DemoFeature[]>([]);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-    // Analyze answers to determine pain points
-    const problemAnswers = Object.entries(answers)
-      .filter(([key]) => key.startsWith('problem-'))
-      .map(([_, value]) => value.toLowerCase());
+  const analyzePains = trpc.salesCoach.analyzePainPoints.useMutation();
 
-    const allAnswersText = problemAnswers.join(' ');
+  useEffect(() => {
+    // Check if we have problem-exposure answers
+    const hasProblemAnswers = Object.keys(answers).some(key => 
+      key.startsWith('problem-') && answers[key]
+    );
 
-    // Feature 1: Intent Search (if they mention time searching, finding clips, etc.)
-    if (allAnswersText.includes('search') || 
-        allAnswersText.includes('find') || 
-        allAnswersText.includes('minutes') ||
-        allAnswersText.includes('looking for')) {
-      features.push({
-        id: 'intent-search',
-        title: 'Intent Search',
-        icon: <Search className="w-5 h-5" />,
-        painPoint: 'Time wasted searching for clips',
-        script: [
-          '"You mentioned it takes time to find specific moments."',
-          '"Here\'s how we\'re thinking about that."',
-          '',
-          'Show: Search: "Find the clip where pricing was mentioned in Q3."',
-          'Results appear instantly.',
-        ],
-        validation: '"Would this work for you? Could you see yourself using this?"',
-        priority: 10
-      });
+    if (!hasProblemAnswers) {
+      setFeatures([]);
+      return;
     }
 
-    // Feature 2: No Tagging (if they mention tagging, organization, metadata)
-    if (allAnswersText.includes('tag') || 
-        allAnswersText.includes('organiz') || 
-        allAnswersText.includes('metadata') ||
-        allAnswersText.includes('label')) {
-      features.push({
-        id: 'no-tagging',
-        title: 'No Tagging Required',
-        icon: <Sparkles className="w-5 h-5" />,
-        painPoint: 'Tagging never sticks',
-        script: [
-          '"You also said tagging never sticks."',
-          '',
-          '"This requires no tagging."',
-          '"No reorganization."',
-          '"We index what already exists."',
-        ],
-        validation: '"Would that remove friction for your editors?"',
-        priority: 8
-      });
-    }
+    setIsAnalyzing(true);
+    setError(null);
 
-    // Feature 3: Zero-Touch Setup (if they mention time, setup, migration, overhaul)
-    if (allAnswersText.includes('time') || 
-        allAnswersText.includes('setup') || 
-        allAnswersText.includes('migration') ||
-        allAnswersText.includes('overhaul')) {
-      features.push({
-        id: 'zero-touch',
-        title: 'Zero-Touch Setup',
-        icon: <Zap className="w-5 h-5" />,
-        painPoint: 'No time to overhaul storage',
-        script: [
-          '"You mentioned no one has time to overhaul storage."',
-          '',
-          '"We connect to your storage."',
-          '"Index your archive."',
-          '"Calibrate."',
-          '"You search."',
-        ],
-        validation: '"Would that work for your team?"',
-        priority: 7
-      });
-    }
+    analyzePains.mutate(
+      { answers },
+      {
+        onSuccess: (data) => {
+          const { rankedPains } = data;
+          
+          const demoFeatures: DemoFeature[] = rankedPains.map((pain: RankedPain) => {
+            const featureDetail = FEATURE_DETAILS[pain.feature];
+            if (!featureDetail) return null;
 
-    // Feature 4: Archive Organization (if they mention scattered, chaos, multiple locations)
-    if (allAnswersText.includes('scatter') || 
-        allAnswersText.includes('chaos') || 
-        allAnswersText.includes('location') ||
-        allAnswersText.includes('drive')) {
-      features.push({
-        id: 'archive-org',
-        title: 'Unified Archive View',
-        icon: <FolderTree className="w-5 h-5" />,
-        painPoint: 'Footage scattered across multiple locations',
-        script: [
-          '"You said footage lives in multiple places."',
-          '',
-          '"TURBO creates a single search layer."',
-          '"Across all your storage."',
-          '"No migration needed."',
-        ],
-        validation: '"Would that simplify things for you?"',
-        priority: 6
-      });
-    }
+            return {
+              id: pain.feature,
+              title: featureDetail.title,
+              icon: featureDetail.icon,
+              painPoint: pain.painPoint,
+              evidence: pain.evidence,
+              script: featureDetail.script(pain.painPoint),
+              validation: featureDetail.validation,
+              severity: pain.severity,
+            };
+          }).filter(Boolean) as DemoFeature[];
 
-    // Feature 5: Time Savings (if they mentioned hours, wasted time, efficiency)
-    if (allAnswersText.includes('hour') || 
-        allAnswersText.includes('waste') || 
-        allAnswersText.includes('slow')) {
-      features.push({
-        id: 'time-savings',
-        title: 'Instant Retrieval',
-        icon: <Clock className="w-5 h-5" />,
-        painPoint: 'Hours wasted on manual search',
-        script: [
-          '"You said editors spend hours searching."',
-          '',
-          '"TURBO turns 20 minutes into 20 seconds."',
-          '"Natural language search."',
-          '"Instant results."',
-        ],
-        validation: '"How much would that save your team per week?"',
-        priority: 9
-      });
-    }
-
-    // Sort by priority (highest first)
-    return features.sort((a, b) => b.priority - a.priority).slice(0, 3);
+          setFeatures(demoFeatures);
+          setIsAnalyzing(false);
+        },
+        onError: (err) => {
+          console.error('Failed to analyze pain points:', err);
+          setError('Failed to analyze pain points. Using basic feature list.');
+          setIsAnalyzing(false);
+        },
+      }
+    );
   }, [answers]);
 
-  if (prioritizedFeatures.length === 0) {
+  if (isAnalyzing) {
+    return (
+      <Card className="p-6 bg-muted/30 border-border">
+        <div className="flex items-center gap-3 text-muted-foreground">
+          <Loader2 className="w-5 h-5 animate-spin" />
+          <p className="text-sm">Analyzing pain points to create personalized demo...</p>
+        </div>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card className="p-6 bg-destructive/10 border-destructive/30">
+        <div className="flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-destructive">{error}</p>
+        </div>
+      </Card>
+    );
+  }
+
+  if (features.length === 0) {
     return (
       <Card className="p-6 bg-muted/30 border-border">
         <p className="text-sm text-muted-foreground">
-          💡 Complete the discovery questions to generate a personalized demo script
+          💡 Complete the Problem Exposure questions (Section 2) to generate a personalized demo script
         </p>
       </Card>
     );
@@ -159,12 +189,12 @@ export default function DemoPrioritizer({ answers }: DemoPrioritizerProps) {
           Personalized Demo Script
         </h3>
         <p className="text-sm text-muted-foreground mt-1">
-          Show these {prioritizedFeatures.length} features based on their pain points
+          Show these {features.length} features in order of pain severity (most painful first)
         </p>
       </div>
 
       <div className="space-y-6">
-        {prioritizedFeatures.map((feature, index) => (
+        {features.map((feature, index) => (
           <div 
             key={feature.id}
             className="p-4 rounded-lg bg-background/50 border border-accent/20"
@@ -174,11 +204,25 @@ export default function DemoPrioritizer({ answers }: DemoPrioritizerProps) {
                 {feature.icon}
               </div>
               <div className="flex-1">
-                <h4 className="font-semibold text-foreground">
-                  Feature {index + 1}: {feature.title}
-                </h4>
+                <div className="flex items-center gap-2">
+                  <h4 className="font-semibold text-foreground">
+                    Feature {index + 1}: {feature.title}
+                  </h4>
+                  <span className={`text-xs px-2 py-0.5 rounded-full ${
+                    feature.severity === 'high' 
+                      ? 'bg-destructive/20 text-destructive' 
+                      : feature.severity === 'medium'
+                      ? 'bg-yellow-500/20 text-yellow-500'
+                      : 'bg-muted text-muted-foreground'
+                  }`}>
+                    {feature.severity} pain
+                  </span>
+                </div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Addresses: {feature.painPoint}
+                  Solves: {feature.painPoint}
+                </p>
+                <p className="text-xs text-accent/70 mt-1 italic">
+                  "{feature.evidence}"
                 </p>
               </div>
             </div>

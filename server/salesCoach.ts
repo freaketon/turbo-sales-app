@@ -43,6 +43,83 @@ When analyzing notes, consider:
 Provide guidance that helps close the deal or disqualify quickly.`;
 
 export const salesCoachRouter = router({
+  analyzePainPoints: publicProcedure
+    .input(
+      z.object({
+        answers: z.record(z.string(), z.string()),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { answers } = input;
+
+      // Extract problem-exposure answers (Section 2)
+      const problemAnswers = Object.entries(answers)
+        .filter(([key]) => key.startsWith('problem-'))
+        .map(([key, value]) => ({ question: key, answer: value }));
+
+      if (problemAnswers.length === 0) {
+        return {
+          rankedPains: [],
+          demoOrder: [],
+        };
+      }
+
+      const analysisPrompt = `You are analyzing discovery call answers to identify the customer's MOST PAINFUL problems and rank them by severity.
+
+Customer's answers to problem-exposure questions:
+${problemAnswers.map(({ question, answer }) => `Q: ${question}\nA: ${answer}`).join('\n\n')}
+
+Analyze these answers and:
+1. Identify the TOP 3 most painful problems based on:
+   - Emotional language (frustration, waste, chaos)
+   - Quantified impact (hours, money, frequency)
+   - Urgency indicators ("always", "every day", "constantly")
+   - Consequences mentioned (missed deadlines, re-shoots, delays)
+
+2. For each pain, determine which TURBO feature best solves it:
+   - Intent Search: Solves time wasted searching, finding specific moments
+   - No Tagging: Solves tagging/organization burden, metadata chaos
+   - Zero-Touch Setup: Solves migration/setup time, no resources for overhaul
+   - Unified Archive: Solves scattered footage, multiple locations, chaos
+   - Instant Retrieval: Solves hours wasted, slow manual search
+
+Return ONLY a JSON array of the top 3 pains in order of severity (most painful first):
+[
+  {
+    "painPoint": "exact description of their pain in their words",
+    "severity": "high"|"medium"|"low",
+    "feature": "intent-search"|"no-tagging"|"zero-touch"|"archive-org"|"time-savings",
+    "evidence": "quote from their answer showing this pain"
+  }
+]
+
+Return ONLY the JSON array, no other text.`;
+
+      try {
+        const response = await invokeLLM({
+          messages: [
+            { role: "system", content: "You are an expert at analyzing B2B sales discovery calls and identifying customer pain points. You understand how to rank problems by severity and map them to product features." },
+            { role: "user", content: analysisPrompt },
+          ],
+        });
+
+        const content = response.choices[0]?.message?.content || '[]';
+        const jsonMatch = typeof content === 'string' ? content.match(/\[[\s\S]*\]/) : null;
+        const rankedPains = jsonMatch ? JSON.parse(jsonMatch[0]) : [];
+
+        return {
+          rankedPains,
+          demoOrder: rankedPains.map((p: any) => p.feature),
+        };
+      } catch (error) {
+        console.error("Failed to analyze pain points:", error);
+        return {
+          rankedPains: [],
+          demoOrder: [],
+        };
+      }
+    }),
+
   generateMirror: publicProcedure
     .input(
       z.object({
