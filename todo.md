@@ -110,3 +110,11 @@
 - [x] Ensure all three sections visible without scrolling on standard screen
 - [x] Add clear visual separation between question, answer, and mirror sections
 - [x] Test layout on different screen sizes
+
+## Current Work - Script Layout & Customer Tracker Improvements
+- [x] Hide/minimize script lines when questions exist (questions ARE the script)
+- [ ] Make script lines collapsible/expandable for reference if needed
+- [x] Create persistent "Customer Answers" tracker sidebar
+- [x] Show all mirrored statements in tracker so you can always reference what they said
+- [x] Build dynamic demo script generator based on discovery pain points
+- [x] Auto-prioritize demo features based on their biggest pain from answers

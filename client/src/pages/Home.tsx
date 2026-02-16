@@ -18,6 +18,8 @@ import StepCard, { StepHeader, StepContent, ScriptBox, TipsBox } from '@/compone
 import QuestionCard from '@/components/QuestionCard';
 import PaymentLink from '@/components/PaymentLink';
 import MirrorBox from '@/components/MirrorBox';
+import CustomerAnswersTracker from '@/components/CustomerAnswersTracker';
+import DemoPrioritizer from '@/components/DemoPrioritizer';
 import ImprovedObjectionHandler from '@/components/ImprovedObjectionHandler';
 import ObjectionQuickAccess from '@/components/ObjectionQuickAccess';
 import CostCalculator from '@/components/CostCalculator';
@@ -340,6 +342,9 @@ export default function Home() {
       {/* Live notes with AI guidance */}
       <SalesCoach currentStep={currentStepId} answers={answers} />
       
+      {/* Customer answers tracker - always visible */}
+      <CustomerAnswersTracker answers={answers} currentStepId={currentStepId} />
+      
       {/* Answers sidebar */}
       <AnswersSidebar answers={answers} prospectInfo={prospectInfo} />
       <div className="container max-w-4xl">
@@ -517,7 +522,13 @@ export default function Home() {
                 <ImprovedObjectionHandler />
               )}
               
-              {currentStep.scriptLines && currentStep.scriptLines.length > 0 && (
+              {/* Demo prioritizer for demo-ask-loop step */}
+              {currentStep.id === 'demo-ask-loop' && (
+                <DemoPrioritizer answers={answers} />
+              )}
+              
+              {/* Only show script lines if there are NO questions (questions ARE the script) */}
+              {currentStep.scriptLines && currentStep.scriptLines.length > 0 && !currentStep.questions && (
                 <ScriptBox lines={currentStep.scriptLines} />
               )}
               
