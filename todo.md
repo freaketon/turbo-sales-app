@@ -98,3 +98,8 @@
 - [x] Switch app theme to dark black background (prevent screen reflection)
 - [x] Move prospect name/email capture to end of call flow
 - [x] Show prospect info form before saving call history
+
+## Current Work - Bug Fixes
+- [x] Fix "Step not found" error when loading app
+- [x] Clear old localStorage data with invalid step IDs
+- [x] Add validation to handle missing/invalid steps gracefully

@@ -59,7 +59,12 @@ export default function Home() {
 
   const savedData = loadFromStorage();
   
-  const [currentStepId, setCurrentStepId] = useState<string>(savedData?.currentStepId || 'frame-call');
+  // Validate saved step ID exists in new flow, otherwise reset to frame-call
+  const validatedStepId = savedData?.currentStepId && getStepById(savedData.currentStepId) 
+    ? savedData.currentStepId 
+    : 'frame-call';
+  
+  const [currentStepId, setCurrentStepId] = useState<string>(validatedStepId);
   const [answers, setAnswers] = useState<Record<string, string>>(savedData?.answers || {});
   const [qualified, setQualified] = useState<boolean | null>(null);
   
