@@ -136,3 +136,15 @@
 - [x] Find why Continue button is missing in Section 7: Demo-Ask Loop
 - [x] Add Continue button to demo-ask-loop step
 - [x] Ensure button is visible and functional
+
+## Current Work - Script Improvements & All Questions Optional
+- [x] Make ALL questions optional across all sections (user can skip any question)
+- [x] Update Frame Call intro to position as "feedback call" not sales call
+- [x] Add "Thank you" prompts after each mirror statement
+- [x] Rewrite The Offer section with compelling Founders Circle pitch
+  - [x] Emphasize exclusivity (10 founders only)
+  - [x] Highlight 3-month launch timeline at higher price
+  - [x] Mention white glove service, beta access, roadmap voice
+  - [x] State pricing: $5k (<$420/month from moment of search)
+  - [x] Include grandfather pricing guarantee
+  - [x] Add 50-hour guarantee in 90 days or money back + $500 bonus

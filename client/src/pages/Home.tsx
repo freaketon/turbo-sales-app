@@ -584,8 +584,8 @@ export default function Home() {
                 </motion.div>
               )}
               
-              {/* Navigation buttons */}
-              {currentStep.nextStep && (!currentStep.questions || (currentStep.questions && currentStep.questions.filter(q => !q.optional).every(q => answers[q.id]))) && (
+              {/* Navigation buttons - Always show Continue button if nextStep exists */}
+              {currentStep.nextStep && (
                 <motion.div
                   className="mt-8 flex gap-3 justify-between"
                   initial={{ opacity: 0 }}

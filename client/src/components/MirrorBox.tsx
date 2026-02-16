@@ -109,6 +109,9 @@ export default function MirrorBox({ stepId, answers, questionIds }: MirrorBoxPro
           <p className="text-xs text-muted-foreground italic">
             💡 Pause after reading and wait for their "yes, that's right"
           </p>
+          <p className="text-xs text-accent font-medium mt-2">
+            ✨ After they confirm: "This has been super valuable. Thank you."
+          </p>
         </div>
       )}
     </Card>
