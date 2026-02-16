@@ -131,3 +131,8 @@
 - [x] Make all components stack vertically on mobile
 - [ ] Test on different mobile screen sizes (phone, tablet)
 - [x] Ensure buttons and text are readable on small screens
+
+## Current Work - Demo-Ask Loop Continue Button Fix
+- [x] Find why Continue button is missing in Section 7: Demo-Ask Loop
+- [x] Add Continue button to demo-ask-loop step
+- [x] Ensure button is visible and functional

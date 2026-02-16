@@ -585,7 +585,7 @@ export default function Home() {
               )}
               
               {/* Navigation buttons */}
-              {currentStep.nextStep && (!currentStep.questions || (currentStep.questions && currentStep.questions.every(q => answers[q.id]))) && (
+              {currentStep.nextStep && (!currentStep.questions || (currentStep.questions && currentStep.questions.filter(q => !q.optional).every(q => answers[q.id]))) && (
                 <motion.div
                   className="mt-8 flex gap-3 justify-between"
                   initial={{ opacity: 0 }}

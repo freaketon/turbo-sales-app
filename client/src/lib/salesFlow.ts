@@ -31,6 +31,7 @@ export interface Question {
   }[];
   guidance?: string;
   placeholder?: string;
+  optional?: boolean;
 }
 
 export interface Step {
@@ -515,7 +516,8 @@ export const salesFlow: Step[] = [
         id: 'feature-1-objection',
         text: 'If objection: What was their concern?',
         type: 'text',
-        placeholder: 'e.g., "Worried about accuracy", "Need multi-language support"'
+        placeholder: 'e.g., "Worried about accuracy", "Need multi-language support"',
+        optional: true
       },
       {
         id: 'feature-1-handled',
@@ -524,7 +526,8 @@ export const salesFlow: Step[] = [
         options: [
           { value: 'yes', label: 'Yes - resolved' },
           { value: 'no', label: 'No - still concerned' }
-        ]
+        ],
+        optional: true
       },
       {
         id: 'feature-2-validation',
@@ -548,6 +551,7 @@ export const salesFlow: Step[] = [
         id: 'additional-features',
         text: 'Did you show any additional features? (Optional)',
         type: 'text',
+        optional: true,
         placeholder: 'List any other features shown and their reaction...'
       }
     ],
