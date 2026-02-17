@@ -612,53 +612,20 @@ export const salesFlow: Step[] = [
     id: 'recap',
     type: 'recap',
     title: 'Section 9: Recap',
-    subtitle: 'Repeat EVERYTHING back - get final confirmation',
+    subtitle: 'The Ultimate Mirror - Everything They Said',
     content: [
-      'This is the master summary.',
-      'Repeat back all their pain, attempts, dream outcome, and math.',
-      'Get their final "yes, that\'s right" before moving to close.'
+      'This is the BIGGEST mirror of the entire call.',
+      'The AI will auto-generate a comprehensive recap of ALL the pain points, problems, and statements they shared.',
+      'Read it back to them word-for-word, then pause and wait for confirmation.'
     ],
-    scriptLines: [
-      '"To recap:"',
-      '[REPEAT BACK what they said]',
-      '',
-      '"Okay, so I just want to make sure I\'ve got all this."',
-      '',
-      '"Your biggest challenges with editing are:"',
-      '• A, B and C',
-      '',
-      '"You\'ve tried X, Y and Z solutions, and they didn\'t work because of E, F and G."',
-      '',
-      '"In a perfect world, there would be a tool that would do L, M, N, O and P."',
-      '',
-      '"And if that tool existed, it would save you about XXX hours per year and $YYY dollars per year, and you\'d be willing to invest about $AAA to $BBB to get that outcome."',
-      '',
-      '"Did I get all that right?"',
-      '"Anything you would add to that?"',
-      '',
-      '[Pause]'
-    ],
-    questions: [
-      {
-        id: 'recap-confirmation',
-        text: 'Did they confirm the entire recap?',
-        type: 'binary',
-        options: [
-          { value: 'yes', label: 'Yes - everything is correct' },
-          { value: 'corrections', label: 'They made corrections' }
-        ]
-      },
-      {
-        id: 'recap-notes',
-        text: 'Any corrections or additions they made?',
-        type: 'text',
-        placeholder: 'Note any changes to the recap...'
-      }
-    ],
+    scriptLines: [],
+    // NO questions - this section auto-populates from all previous mirrors
+    questions: [],
     tips: [
       'This is your trial close - if they don\'t agree here, don\'t move forward',
-      'Use their exact words from earlier in the call',
-      'The pause after "Did I get all that right?" is critical'
+      'Use their exact words from the auto-generated recap',
+      'The pause after "Did I get all that right?" is critical',
+      'This section summarizes EVERYTHING from Problem Exposure, Alternative Solutions, and Dream Outcome'
     ],
     nextStep: 'availability-check'
   },
@@ -721,36 +688,38 @@ export const salesFlow: Step[] = [
     id: 'the-offer',
     type: 'the-offer',
     title: 'Section 11: The Offer',
-    subtitle: 'Founders Circle - $5k with guarantee',
+    subtitle: 'Early Adopter Founders Circle',
     content: [
-      'Lower your tone - this is intimate.',
-      'Frame it as exclusive and valuable.',
-      'Present the offer: $5k for Founders Circle with guarantee.'
+      'This is a 3-part structure: Bridge → Permission → Offer',
+      'Lower your tone - this is intimate and exclusive.',
+      'Read the offer bullets VERBATIM - don\'t paraphrase.'
     ],
     scriptLines: [
-      '--- PART 1: BRIDGE ---',
+      '━━━ PART 1: BRIDGE ━━━',
       '',
       '"[Name], this has been super helpful. I learned a ton. You clearly know this space and you\'re exactly the kind of person we want feedback from while we build."',
       '',
-      '--- PART 2: PERMISSION ---',
+      '━━━ PART 2: PERMISSION ━━━',
       '',
-      '"Before you go, if you\'ve got a couple more minutes, I wasn\'t even going to mention this because it\'s not open to the public. We\'ve been hand-picking a few people because they\'ve been so helpful and because this feels like a fit. Would you be open to hearing about an early adopter thing we\'re doing?"',
+      '"Before you go, if you\'ve got a couple more minutes... would you be open to hearing about an early adopter thing we\'re doing?"',
       '',
-      '[Wait for their yes]',
+      '[Wait for their YES]',
       '',
-      '--- PART 3: OFFER (read verbatim) ---',
+      '━━━ PART 3: THE OFFER (Read these bullets verbatim) ━━━',
       '',
-      '"We\'re launching in about six months."',
+      '• "We\'re launching in about 3 months."',
       '',
-      '"We\'re bringing in a small group to use it early and shape it around their workflow."',
+      '• "We\'re bringing in a small group of about 10 founders to use it early and shape it around their workflow."',
       '',
-      '"All we ask is one call per month, feedback, and trying early prototypes."',
+      '• "All we ask is one call per month where you give us feedback and try early prototypes."',
       '',
-      '"In return you get a massive discount. $5k for 12 months, grandfathered pricing, and beta access."',
+      '• "In return, you get $5,000 for 12 months — that\'s less than $420 a month."',
       '',
-      '"You get direct access to me plus engineering."',
+      '• "You get grandfathered pricing forever, so when we raise prices, you stay at this rate."',
       '',
-      '"Zero-Touch setup. We connect it and get you live without your team doing work."'
+      '• "You get direct access to me and the engineering team."',
+      '',
+      '• "Zero-Touch setup — we connect it and get you live without your team doing any work."'
     ],
     questions: [
       {

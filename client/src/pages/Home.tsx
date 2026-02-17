@@ -29,6 +29,7 @@ import CallFrameOpener from '@/components/CallFrameOpener';
 import CuriosityTonalityCoach from '@/components/CuriosityTonalityCoach';
 import HelpfulReinforcementNudge from '@/components/HelpfulReinforcementNudge';
 import DemoPermissionGate from '@/components/DemoPermissionGate';
+import RecapSummary from '@/components/RecapSummary';
 import { 
   MessageSquare, 
   AlertTriangle, 
@@ -564,6 +565,13 @@ export default function Home() {
                 <DemoPrioritizer answers={answers} />
               )}
               
+              {/* Recap Summary for recap step - auto-populates from all mirrors */}
+              {currentStep.id === 'recap' && (
+                <div className="mb-6">
+                  <RecapSummary answers={answers} />
+                </div>
+              )}
+              
               {/* Only show script lines if there are NO questions (questions ARE the script) */}
               {currentStep.scriptLines && currentStep.scriptLines.length > 0 && !currentStep.questions && (
                 <ScriptBox lines={currentStep.scriptLines} />
@@ -582,8 +590,8 @@ export default function Home() {
                     ))}
                   </div>
                   
-                  {/* Auto-generate mirror for steps that need it */}
-                  {['problem-exposure', 'alternative-solutions', 'dream-outcome', 'recap'].includes(currentStep.id) && (
+                  {/* Auto-generate mirror for steps that need it (NOT recap - that has its own component) */}
+                  {['problem-exposure', 'alternative-solutions', 'dream-outcome'].includes(currentStep.id) && (
                     <MirrorBox
                       stepId={currentStep.id}
                       answers={answers}

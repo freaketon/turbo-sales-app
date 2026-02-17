@@ -168,3 +168,12 @@
 - [x] Add "Clear Progress & Start Fresh" button to header (Restart button already exists)
 - [x] Fix localStorage resume showing mid-call state on load (validation added)
 - [x] Ensure all components render in correct positions without overlap
+
+## Current Work - Section 9 Recap & Section 11 Offer Framing
+- [x] Update Section 9 (Recap) to auto-populate with all previous mirror statements
+- [x] Show most powerful pain points and problems from all discovery sections
+- [x] Remove mirror box from Section 9 (this section IS the mirror)
+- [x] Restructure Section 11 (The Offer) with exact 3-part framing
+  - [x] Part 1: Bridge (appreciation + feedback value)
+  - [x] Part 2: Permission (ask to hear about early adopter program)
+  - [x] Part 3: Offer (7 bullet points to read verbatim)
