@@ -185,3 +185,6 @@
 - [x] Section 8: Calculator overlapping with text content
 - [x] Section 9: Recap not showing (RecapSummary component not rendering)
 - [x] Section 11: Offer missing verbatim bullet points (7 bullets not displaying)
+
+## NEW BUG - React Duplicate Key Error
+- [x] Fix duplicate key 'intent-search' causing React warning

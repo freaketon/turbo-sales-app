@@ -196,7 +196,7 @@ export default function DemoPrioritizer({ answers }: DemoPrioritizerProps) {
       <div className="space-y-6">
         {features.map((feature, index) => (
           <div 
-            key={feature.id}
+            key={`${feature.id}-${index}`}
             className="p-4 rounded-lg bg-background/50 border border-accent/20"
           >
             <div className="flex items-start gap-3 mb-3">
