@@ -177,3 +177,11 @@
   - [x] Part 1: Bridge (appreciation + feedback value)
   - [x] Part 2: Permission (ask to hear about early adopter program)
   - [x] Part 3: Offer (7 bullet points to read verbatim)
+
+## CRITICAL BUGS - Fix Immediately
+- [x] Section 1: Remove duplicate script (script shows in both Call Frame Opener AND Script box)
+- [x] Mirror confirmation should come AFTER mirror script (currently shows before)
+- [x] Section 3: Mirror not updating when answers change
+- [x] Section 8: Calculator overlapping with text content
+- [x] Section 9: Recap not showing (RecapSummary component not rendering)
+- [x] Section 11: Offer missing verbatim bullet points (7 bullets not displaying)

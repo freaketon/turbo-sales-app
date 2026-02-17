@@ -573,7 +573,9 @@ export default function Home() {
               )}
               
               {/* Only show script lines if there are NO questions (questions ARE the script) */}
-              {currentStep.scriptLines && currentStep.scriptLines.length > 0 && !currentStep.questions && (
+              {/* Also exclude frame-call since it has CallFrameOpener component */}
+              {/* EXCEPT for the-offer which needs to show verbatim bullets */}
+              {currentStep.scriptLines && currentStep.scriptLines.length > 0 && (!currentStep.questions || currentStep.id === 'the-offer') && currentStep.id !== 'frame-call' && (
                 <ScriptBox lines={currentStep.scriptLines} />
               )}
               

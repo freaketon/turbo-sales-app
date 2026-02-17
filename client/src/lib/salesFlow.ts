@@ -163,16 +163,6 @@ export const salesFlow: Step[] = [
           { value: 'yes', label: 'Yes' },
           { value: 'no', label: 'No' }
         ]
-      },
-      {
-        id: 'mirror-confirmation',
-        text: 'Did they confirm your mirror was accurate?',
-        type: 'binary',
-        options: [
-          { value: 'yes', label: 'Yes - confirmed' },
-          { value: 'clarified', label: 'They clarified/added more' }
-        ],
-        guidance: 'Make sure they agree with your summary before moving forward'
       }
     ],
     tips: [
@@ -241,15 +231,6 @@ export const salesFlow: Step[] = [
         text: 'How much time or money has gone into trying to fix it?',
         type: 'text',
         placeholder: 'e.g., "$10k on consultants, 3 months of team time"'
-      },
-      {
-        id: 'mirror-confirmation-2',
-        text: 'Did they confirm your mirror of their attempts?',
-        type: 'binary',
-        options: [
-          { value: 'yes', label: 'Yes - confirmed' },
-          { value: 'clarified', label: 'They clarified/added more' }
-        ]
       }
     ],
     tips: [
@@ -322,15 +303,6 @@ export const salesFlow: Step[] = [
         text: 'What would that mean financially?',
         type: 'text',
         placeholder: 'e.g., "Save $50k/year, ship 2x faster"'
-      },
-      {
-        id: 'dream-confirmation',
-        text: 'Did they confirm your summary of their ideal state?',
-        type: 'binary',
-        options: [
-          { value: 'yes', label: 'Yes - confirmed' },
-          { value: 'clarified', label: 'They clarified/added more' }
-        ]
       }
     ],
     tips: [

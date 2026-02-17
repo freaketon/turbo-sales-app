@@ -31,7 +31,7 @@ export default function CostCalculator({ editors = 0, hoursPerWeek = 0, ratePerH
   
   return (
     <motion.div
-      className="my-6 p-6 rounded-xl border-2 border-destructive/50 bg-destructive/10"
+      className="p-6 rounded-xl border-2 border-destructive/50 bg-destructive/10"
       data-has-values={hasAllValues}
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}

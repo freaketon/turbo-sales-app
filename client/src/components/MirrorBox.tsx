@@ -112,6 +112,24 @@ export default function MirrorBox({ stepId, answers, questionIds }: MirrorBoxPro
           <p className="text-xs text-accent font-medium mt-2">
             ✨ After they confirm: "This has been super valuable. Thank you."
           </p>
+          
+          {/* Mirror confirmation - always comes AFTER the mirror script */}
+          <div className="mt-6 pt-4 border-t border-accent/20">
+            <p className="text-sm font-medium text-foreground mb-3">
+              Did they confirm your mirror was accurate?
+            </p>
+            <p className="text-xs text-muted-foreground mb-3">
+              Make sure they agree with your summary before moving forward
+            </p>
+            <div className="flex gap-3">
+              <button className="px-4 py-2 rounded-lg bg-accent/20 hover:bg-accent/30 text-accent text-sm font-medium transition-colors">
+                Yes - confirmed
+              </button>
+              <button className="px-4 py-2 rounded-lg bg-background/50 hover:bg-background/70 text-foreground text-sm font-medium transition-colors border border-border">
+                They clarified/added more
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </Card>
