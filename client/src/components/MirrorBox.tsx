@@ -8,12 +8,16 @@ interface MirrorBoxProps {
   stepId: string;
   answers: Record<string, string>;
   questionIds: string[];
+  onAnswer: (questionId: string, answer: string) => void;
 }
 
-export default function MirrorBox({ stepId, answers, questionIds }: MirrorBoxProps) {
+export default function MirrorBox({ stepId, answers, questionIds, onAnswer }: MirrorBoxProps) {
+  const confirmationId = `${stepId}-mirror-confirmation`;
+  
   const [mirrorText, setMirrorText] = useState<string>('');
   const [copied, setCopied] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [confirmation, setConfirmation] = useState<string | null>(answers[confirmationId] || null);
 
   const generateMirror = trpc.salesCoach.generateMirror.useMutation();
 
@@ -122,10 +126,32 @@ export default function MirrorBox({ stepId, answers, questionIds }: MirrorBoxPro
               Make sure they agree with your summary before moving forward
             </p>
             <div className="flex gap-3">
-              <button className="px-4 py-2 rounded-lg bg-accent/20 hover:bg-accent/30 text-accent text-sm font-medium transition-colors">
+              <button 
+                onClick={() => {
+                  setConfirmation('yes');
+                  onAnswer(confirmationId, 'yes');
+                }}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  confirmation === 'yes'
+                    ? 'bg-accent text-accent-foreground'
+                    : 'bg-accent/20 hover:bg-accent/30 text-accent'
+                }`}
+              >
+                {confirmation === 'yes' && <Check className="w-4 h-4 inline mr-2" />}
                 Yes - confirmed
               </button>
-              <button className="px-4 py-2 rounded-lg bg-background/50 hover:bg-background/70 text-foreground text-sm font-medium transition-colors border border-border">
+              <button 
+                onClick={() => {
+                  setConfirmation('clarified');
+                  onAnswer(confirmationId, 'clarified');
+                }}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors border ${
+                  confirmation === 'clarified'
+                    ? 'bg-accent/20 border-accent text-accent'
+                    : 'bg-background/50 hover:bg-background/70 text-foreground border-border'
+                }`}
+              >
+                {confirmation === 'clarified' && <Check className="w-4 h-4 inline mr-2" />}
                 They clarified/added more
               </button>
             </div>

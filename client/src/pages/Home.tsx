@@ -598,6 +598,7 @@ export default function Home() {
                       stepId={currentStep.id}
                       answers={answers}
                       questionIds={currentStep.questions.map(q => q.id)}
+                      onAnswer={handleAnswer}
                     />
                   )}
                 </div>

@@ -188,3 +188,8 @@
 
 ## NEW BUG - React Duplicate Key Error
 - [x] Fix duplicate key 'intent-search' causing React warning
+
+## Mirror Confirmation Buttons Not Functional
+- [x] Make "Yes - confirmed" and "They clarified/added more" buttons actually work
+- [x] Store confirmation response in answers state
+- [x] Show visual feedback when button is clicked
