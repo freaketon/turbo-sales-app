@@ -416,9 +416,11 @@ export default function Home() {
               size="sm"
               onClick={handleRestart}
               className="gap-2"
+              title="Clear all progress and start a new call"
             >
               <RotateCcw className="w-4 h-4" />
-              <span className="hidden sm:inline">Restart</span>
+              <span className="hidden sm:inline">Clear & Restart</span>
+              <span className="sm:hidden">Restart</span>
             </Button>
           </div>
         </div>

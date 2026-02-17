@@ -162,3 +162,9 @@
 - [x] C) Add helpful reinforcement nudge button with suggested one-liners
 - [x] D) Add demo permission gate before demo section
 - [x] E) Update Early Adopter offer with exact 3-part framing (Bridge → Permission → Offer)
+
+## Current Work - Layout & Resume Issues
+- [x] Fix overlapping components in Section 8 (Impact Measurement)
+- [x] Add "Clear Progress & Start Fresh" button to header (Restart button already exists)
+- [x] Fix localStorage resume showing mid-call state on load (validation added)
+- [x] Ensure all components render in correct positions without overlap
