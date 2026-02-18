@@ -205,3 +205,8 @@
 - [x] Add "Objection Guide" button to header
 - [x] Create dialog/modal to display ObjectionGuide component
 - [x] Make it accessible from any section during the call
+
+## Header Layout Cleanup
+- [x] Move "Sales Guide" text below the logo
+- [x] Remove "Founder-to-Founder | 15-20 minutes" text
+- [x] Keep only "Resumed from" timestamp when present

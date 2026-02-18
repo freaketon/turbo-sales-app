@@ -362,23 +362,18 @@ export default function Home() {
       <AnswersSidebar answers={answers} prospectInfo={prospectInfo} />
       <div className="container max-w-4xl lg:pr-[340px]">
         {/* Header with restart button */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-3">
+        <div className="flex items-start justify-between mb-8 gap-4">
+          <div className="flex flex-col items-start gap-1">
             <img 
               src="/turbo-logo.png" 
               alt="TURBO" 
               className="h-8 md:h-10 w-auto"
             />
-            <div>
-              <h1 className="text-xl md:text-2xl font-bold text-foreground">
-                Sales Guide
-              </h1>
-              <p className="text-xs text-muted-foreground">
-                Founder-to-Founder | 15-20 minutes
-              </p>
-            </div>
+            <h1 className="text-lg md:text-xl font-bold text-foreground">
+              Sales Guide
+            </h1>
             {savedData && savedData.lastSaved && (
-              <p className="text-xs text-accent mt-1 flex items-center gap-1">
+              <p className="text-xs text-accent flex items-center gap-1">
                 <CheckCircle2 className="w-3 h-3" />
                 Resumed from {new Date(savedData.lastSaved).toLocaleTimeString()}
               </p>
