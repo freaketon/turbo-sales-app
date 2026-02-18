@@ -200,3 +200,8 @@
 - [x] Add TURBO Objection Guide section (accessible from offer section)
 - [x] Add 3A Loop framework (Acknowledge → Associate → Ask → Bridge → Re-close)
 - [x] Add 25 objection examples with AAA scripts
+
+## Make Objection Guide Globally Accessible
+- [x] Add "Objection Guide" button to header
+- [x] Create dialog/modal to display ObjectionGuide component
+- [x] Make it accessible from any section during the call

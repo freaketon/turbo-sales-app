@@ -31,6 +31,12 @@ import HelpfulReinforcementNudge from '@/components/HelpfulReinforcementNudge';
 import DemoPermissionGate from '@/components/DemoPermissionGate';
 import RecapSummary from '@/components/RecapSummary';
 import ObjectionGuide from '@/components/ObjectionGuide';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { 
   MessageSquare, 
   AlertTriangle, 
@@ -97,6 +103,7 @@ export default function Home() {
   };
   
   const [callStarted, setCallStarted] = useState(savedData?.callStarted || false);
+  const [objectionGuideOpen, setObjectionGuideOpen] = useState(false);
   const [prospectInfo, setProspectInfo] = useState(savedData?.prospectInfo || {
     name: '',
     company: '',
@@ -378,6 +385,16 @@ export default function Home() {
             )}
           </div>
           <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setObjectionGuideOpen(true)}
+              className="gap-2"
+            >
+              <Shield className="w-4 h-4" />
+              <span className="hidden sm:inline">Objection Guide</span>
+              <span className="sm:hidden">Objections</span>
+            </Button>
             <Link href="/dashboard">
               <Button
                 variant="outline"
@@ -573,13 +590,7 @@ export default function Home() {
                 </div>
               )}
               
-              {/* Objection Guide for the-offer step - shows BEFORE questions */}
-              {currentStep.id === 'the-offer' && (
-                <div className="mb-6">
-                  <ObjectionGuide />
-                </div>
-              )}
-              
+
               {/* Only show script lines if there are NO questions (questions ARE the script) */}
               {/* Also exclude frame-call since it has CallFrameOpener component */}
               {/* EXCEPT for the-offer which needs to show verbatim bullets */}
@@ -673,6 +684,16 @@ export default function Home() {
           )}
         </AnimatePresence>
       </div>
+      
+      {/* Objection Guide Dialog - accessible from anywhere */}
+      <Dialog open={objectionGuideOpen} onOpenChange={setObjectionGuideOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">TURBO Objection Guide</DialogTitle>
+          </DialogHeader>
+          <ObjectionGuide />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
