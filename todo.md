@@ -210,3 +210,10 @@
 - [x] Move "Sales Guide" text below the logo
 - [x] Remove "Founder-to-Founder | 15-20 minutes" text
 - [x] Keep only "Resumed from" timestamp when present
+
+## Objection Guide Enhancements
+- [x] Add search/filter bar to quickly find objections by keyword
+- [x] Make objection list collapsible (accordion style) to reduce visual clutter
+- [x] Add chat input field for custom objections not in the list
+- [x] Generate AI-powered 3A response for custom objections using the framework
+- [x] Search filters objections in real-time across title and content

@@ -223,4 +223,102 @@ Return ONLY the JSON array, no other text.`;
         };
       }
     }),
+  
+  generateObjectionResponse: publicProcedure
+    .input(
+      z.object({
+        objection: z.string(),
+      })
+    )
+    .output(
+      z.object({
+        acknowledge: z.string(),
+        associate: z.string(),
+        ask: z.string(),
+        bridge: z.string(),
+        reclose: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      try {
+        const response = await invokeLLM({
+          messages: [
+            {
+              role: "system",
+              content: `You are an expert sales coach specializing in the TURBO 3A Loop objection handling framework.
+
+**The 3A Loop Framework:**
+1. **Acknowledge** - Mirror their exact concern in their words
+2. **Associate** - Normalize it ("our best customers ask this") or tie it to smart buyer behavior
+3. **Ask** - A strategic question that reframes + moves you forward
+4. **Bridge** - "If we can solve that cleanly, does it make sense to move forward today?"
+5. **Re-close** - "Want me to send the payment link now?"
+
+**Context: TURBO Product**
+- AI-powered video asset search for production teams
+- $5k for 12 months (Founders Circle early adopter pricing)
+- Zero-Touch setup, grandfathered pricing, direct access to founders
+- Double-Win Guarantee: 50 hours saved in 90 days or full refund + $500
+- Target: 3+ editors, 10TB+ archive, weekly publishing, 1+ hour/week/editor searching
+
+Generate a 3A response that:
+- Acknowledges their concern authentically
+- Associates it with smart buyer behavior or normalizes it
+- Asks a strategic question that isolates the objection or moves toward close
+- Provides a bridge statement
+- Ends with a direct re-close
+
+Return ONLY valid JSON with these exact keys: acknowledge, associate, ask, bridge, reclose`
+            },
+            {
+              role: "user",
+              content: `Generate a 3A Loop response for this objection: "${input.objection}"`
+            }
+          ],
+          response_format: {
+            type: "json_schema",
+            json_schema: {
+              name: "objection_response",
+              strict: true,
+              schema: {
+                type: "object",
+                properties: {
+                  acknowledge: { type: "string", description: "Mirror their concern" },
+                  associate: { type: "string", description: "Normalize or tie to smart buyer behavior" },
+                  ask: { type: "string", description: "Strategic question that reframes" },
+                  bridge: { type: "string", description: "Bridge statement" },
+                  reclose: { type: "string", description: "Direct re-close" }
+                },
+                required: ["acknowledge", "associate", "ask", "bridge", "reclose"],
+                additionalProperties: false
+              }
+            }
+          }
+        });
+
+        const content = response.choices[0]?.message?.content;
+        if (!content || typeof content !== 'string') {
+          throw new Error("No response from LLM");
+        }
+
+        const parsed = JSON.parse(content);
+        return {
+          acknowledge: parsed.acknowledge,
+          associate: parsed.associate,
+          ask: parsed.ask,
+          bridge: parsed.bridge,
+          reclose: parsed.reclose,
+        };
+      } catch (error) {
+        console.error("Failed to generate objection response:", error);
+        // Return a generic 3A response as fallback
+        return {
+          acknowledge: "I hear you.",
+          associate: "That's exactly what our best customers ask before they see the value.",
+          ask: "What would need to be true for this to make sense for you?",
+          bridge: "If we can solve that cleanly, does it make sense to move forward today?",
+          reclose: "Want me to send the payment link now?",
+        };
+      }
+    }),
 });

@@ -1,6 +1,10 @@
 import { Card } from '@/components/ui/card';
-import { AlertCircle, CheckCircle2, MessageSquare, ArrowRight } from 'lucide-react';
+import { AlertCircle, CheckCircle2, MessageSquare, ArrowRight, Search, Sparkles } from 'lucide-react';
 import { useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { trpc } from '@/lib/trpc';
 
 interface Objection {
   id: string;
@@ -221,7 +225,40 @@ const objections: Objection[] = [
 
 export default function ObjectionGuide() {
   const [selectedObjection, setSelectedObjection] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [customObjection, setCustomObjection] = useState('');
+  const [generatedResponse, setGeneratedResponse] = useState<{
+    acknowledge: string;
+    associate: string;
+    ask: string;
+    bridge: string;
+    reclose: string;
+  } | null>(null);
+  
+  const generateResponseMutation = trpc.salesCoach.generateObjectionResponse.useMutation();
+  
   const selected = objections.find(o => o.id === selectedObjection);
+  
+  // Filter objections based on search query
+  const filteredObjections = objections.filter(obj =>
+    obj.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    obj.acknowledge.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    obj.associate.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    obj.ask.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  
+  const handleGenerateResponse = async () => {
+    if (!customObjection.trim()) return;
+    
+    try {
+      const response = await generateResponseMutation.mutateAsync({
+        objection: customObjection
+      });
+      setGeneratedResponse(response);
+    } catch (error) {
+      console.error('Failed to generate response:', error);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -283,6 +320,70 @@ export default function ObjectionGuide() {
         </div>
       </Card>
 
+      {/* Custom Objection Handler */}
+      <Card className="p-6 bg-gradient-to-br from-primary/5 to-accent/5 border-primary/30">
+        <h3 className="text-lg font-semibold text-foreground mb-2 flex items-center gap-2">
+          <Sparkles className="w-5 h-5 text-primary" />
+          Handle Custom Objection
+        </h3>
+        <p className="text-sm text-muted-foreground mb-4">
+          Type any objection not in the list below, and get an AI-generated 3A response:
+        </p>
+        
+        <div className="space-y-3">
+          <Textarea
+            placeholder='e.g., "We need to see a demo first before committing"'
+            value={customObjection}
+            onChange={(e) => setCustomObjection(e.target.value)}
+            className="min-h-[80px]"
+          />
+          <Button
+            onClick={handleGenerateResponse}
+            disabled={!customObjection.trim() || generateResponseMutation.isPending}
+            className="w-full gap-2"
+          >
+            {generateResponseMutation.isPending ? (
+              <>
+                <Sparkles className="w-4 h-4 animate-spin" />
+                Generating 3A Response...
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-4 h-4" />
+                Generate 3A Response
+              </>
+            )}
+          </Button>
+        </div>
+        
+        {/* Generated Response */}
+        {generatedResponse && (
+          <div className="mt-4 p-4 bg-background/80 rounded-lg border border-primary/20 space-y-3">
+            <p className="text-sm font-semibold text-primary mb-2">Generated 3A Response:</p>
+            <div>
+              <p className="text-xs font-semibold text-accent mb-1">1. Acknowledge:</p>
+              <p className="text-sm text-foreground italic">"{generatedResponse.acknowledge}"</p>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-accent mb-1">2. Associate:</p>
+              <p className="text-sm text-foreground italic">"{generatedResponse.associate}"</p>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-accent mb-1">3. Ask:</p>
+              <p className="text-sm text-foreground italic">"{generatedResponse.ask}"</p>
+            </div>
+            <div className="pt-2 border-t border-primary/10">
+              <p className="text-xs font-semibold text-primary mb-1">Bridge:</p>
+              <p className="text-sm text-foreground italic">"{generatedResponse.bridge}"</p>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-primary mb-1">Re-close:</p>
+              <p className="text-sm text-foreground italic">"{generatedResponse.reclose}"</p>
+            </div>
+          </div>
+        )}
+      </Card>
+      
       {/* Objection List */}
       <Card className="p-6">
         <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
@@ -290,57 +391,74 @@ export default function ObjectionGuide() {
           Common Objections ({objections.length})
         </h3>
         <p className="text-sm text-muted-foreground mb-4">
-          Click any objection to see the 3A script:
+          Search or browse common objections:
         </p>
-        <div className="grid gap-2">
-          {objections.map((objection) => (
-            <button
-              key={objection.id}
-              onClick={() => setSelectedObjection(objection.id === selectedObjection ? null : objection.id)}
-              className={`text-left p-3 rounded-lg border transition-colors ${
-                selectedObjection === objection.id
-                  ? 'bg-accent/20 border-accent text-accent'
-                  : 'bg-background/50 border-border hover:bg-background/70 text-foreground'
-              }`}
-            >
-              {objection.title}
-            </button>
+        
+        {/* Search Bar */}
+        <div className="relative mb-4">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input
+            type="text"
+            placeholder="Search objections (e.g., 'price', 'timing', 'ROI')..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        
+        {filteredObjections.length === 0 && (
+          <p className="text-sm text-muted-foreground text-center py-4">
+            No objections found matching "{searchQuery}"
+          </p>
+        )}
+        
+        <div className="grid gap-2 max-h-[400px] overflow-y-auto">
+          {filteredObjections.map((objection) => (
+            <div key={objection.id} className="border border-border rounded-lg">
+              <button
+                onClick={() => setSelectedObjection(objection.id === selectedObjection ? null : objection.id)}
+                className={`w-full text-left p-3 rounded-lg transition-colors ${
+                  selectedObjection === objection.id
+                    ? 'bg-accent/20 text-accent font-medium'
+                    : 'bg-background/50 hover:bg-background/70 text-foreground'
+                }`}
+              >
+                {objection.title}
+              </button>
+              
+              {/* Expanded 3A Script */}
+              {selectedObjection === objection.id && (
+                <div className="p-4 bg-primary/5 border-t border-primary/20 space-y-3">
+                  <div>
+                    <p className="text-xs font-semibold text-accent mb-1">1. Acknowledge:</p>
+                    <p className="text-sm text-foreground italic">"{objection.acknowledge}"</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-accent mb-1">2. Associate:</p>
+                    <p className="text-sm text-foreground italic">"{objection.associate}"</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-accent mb-1">3. Ask:</p>
+                    <p className="text-sm text-foreground italic">"{objection.ask}"</p>
+                  </div>
+                  {objection.bridge && (
+                    <div className="pt-2 border-t border-primary/10">
+                      <p className="text-xs font-semibold text-primary mb-1">Bridge:</p>
+                      <p className="text-sm text-foreground italic">"{objection.bridge}"</p>
+                    </div>
+                  )}
+                  <div className={objection.bridge ? '' : 'pt-2 border-t border-primary/10'}>
+                    <p className="text-xs font-semibold text-primary mb-1">Re-close:</p>
+                    <p className="text-sm text-foreground italic">"{objection.reclose}"</p>
+                  </div>
+                </div>
+              )}
+            </div>
           ))}
         </div>
       </Card>
 
-      {/* Selected Objection Script */}
-      {selected && (
-        <Card className="p-6 bg-primary/5 border-primary/30">
-          <h3 className="text-lg font-semibold text-primary mb-4">
-            {selected.title}
-          </h3>
-          <div className="space-y-4">
-            <div>
-              <p className="text-sm font-semibold text-accent mb-1">1. Acknowledge:</p>
-              <p className="text-foreground italic">"{selected.acknowledge}"</p>
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-accent mb-1">2. Associate:</p>
-              <p className="text-foreground italic">"{selected.associate}"</p>
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-accent mb-1">3. Ask:</p>
-              <p className="text-foreground italic">"{selected.ask}"</p>
-            </div>
-            {selected.bridge && (
-              <div className="pt-3 border-t border-primary/20">
-                <p className="text-sm font-semibold text-primary mb-1">Bridge:</p>
-                <p className="text-foreground italic">"{selected.bridge}"</p>
-              </div>
-            )}
-            <div className={selected.bridge ? '' : 'pt-3 border-t border-primary/20'}>
-              <p className="text-sm font-semibold text-primary mb-1">Re-close:</p>
-              <p className="text-foreground italic">"{selected.reclose}"</p>
-            </div>
-          </div>
-        </Card>
-      )}
+
     </div>
   );
 }
