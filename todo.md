@@ -193,3 +193,10 @@
 - [x] Make "Yes - confirmed" and "They clarified/added more" buttons actually work
 - [x] Store confirmation response in answers state
 - [x] Show visual feedback when button is clicked
+
+## Question Wording Updates & Objection Guide
+- [x] Update "magic wand" question to be more open-ended: "What would the perfect solution look like?"
+- [x] Clarify price anchor question: "At what price would this be so expensive, there's no way you'd buy it even if it was the perfect solution?"
+- [x] Add TURBO Objection Guide section (accessible from offer section)
+- [x] Add 3A Loop framework (Acknowledge → Associate → Ask → Bridge → Re-close)
+- [x] Add 25 objection examples with AAA scripts

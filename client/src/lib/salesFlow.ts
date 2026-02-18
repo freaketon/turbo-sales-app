@@ -253,7 +253,7 @@ export const salesFlow: Step[] = [
       'Summarize their ideal state back to them.'
     ],
     scriptLines: [
-      '"If you could wave a magic wand, what would the perfect search tool be?"',
+      '"If you could wave a magic wand, what would the perfect solution look like?"',
       '',
       '[Let them answer]',
       '',
@@ -282,7 +282,7 @@ export const salesFlow: Step[] = [
     questions: [
       {
         id: 'magic-wand',
-        text: 'If you could wave a magic wand, what would the perfect search tool be?',
+        text: 'If you could wave a magic wand, what would the perfect solution look like?',
         type: 'text',
         placeholder: 'Capture their ideal solution...'
       },
@@ -347,7 +347,7 @@ export const salesFlow: Step[] = [
       },
       {
         id: 'unreasonable-price',
-        text: 'At what price would it feel unreasonable, even if it solved it perfectly?',
+        text: 'At what price would this be so expensive, there\'s no way you\'d buy it even if it was the perfect solution?',
         type: 'text',
         placeholder: 'e.g., "$50k+ would be too much"'
       }

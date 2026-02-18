@@ -30,6 +30,7 @@ import CuriosityTonalityCoach from '@/components/CuriosityTonalityCoach';
 import HelpfulReinforcementNudge from '@/components/HelpfulReinforcementNudge';
 import DemoPermissionGate from '@/components/DemoPermissionGate';
 import RecapSummary from '@/components/RecapSummary';
+import ObjectionGuide from '@/components/ObjectionGuide';
 import { 
   MessageSquare, 
   AlertTriangle, 
@@ -569,6 +570,13 @@ export default function Home() {
               {currentStep.id === 'recap' && (
                 <div className="mb-6">
                   <RecapSummary answers={answers} />
+                </div>
+              )}
+              
+              {/* Objection Guide for the-offer step - shows BEFORE questions */}
+              {currentStep.id === 'the-offer' && (
+                <div className="mb-6">
+                  <ObjectionGuide />
                 </div>
               )}
               
