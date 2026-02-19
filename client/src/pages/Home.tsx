@@ -6,6 +6,7 @@ Design: Kinetic Energy Interface
 */
 
 import { useState, useEffect } from 'react';
+import { useTheme } from '@/contexts/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Link } from 'wouter';
@@ -53,12 +54,15 @@ import {
   Clock,
   ArrowRight,
   BarChart3,
-  FileDown
+  FileDown,
+  Moon,
+  Sun
 } from 'lucide-react';
 
 const STORAGE_KEY = 'outlier-sales-call-data';
 
 export default function Home() {
+  const { theme, toggleTheme } = useTheme();
   // Load from localStorage on mount
   const loadFromStorage = () => {
     try {
@@ -258,7 +262,7 @@ export default function Home() {
               <img 
                 src="/logowordmark.png" 
                 alt="OUTLIER" 
-                className="h-16 md:h-20 w-auto mx-auto"
+                className="w-64 md:w-80 mx-auto"
               />
             </motion.div>
             
@@ -362,12 +366,12 @@ export default function Home() {
       <AnswersSidebar answers={answers} prospectInfo={prospectInfo} />
       <div className="container max-w-4xl lg:pr-[340px]">
         {/* Header with restart button */}
-        <div className="flex items-start justify-between mb-8 gap-4">
+        <div className="flex flex-col sm:flex-row items-start justify-between mb-8 gap-4">
           <div className="flex flex-col items-start gap-1">
             <img 
               src="/logowordmark.png" 
               alt="OUTLIER" 
-              className="h-8 md:h-10 w-auto"
+              className="w-32 md:w-40"
             />
             <h1 className="text-lg md:text-xl font-bold text-foreground">
               Sales Guide
@@ -379,7 +383,7 @@ export default function Home() {
               </p>
             )}
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2 w-full sm:w-auto">
             <Button
               variant="outline"
               size="sm"
@@ -389,6 +393,15 @@ export default function Home() {
               <Shield className="w-4 h-4" />
               <span className="hidden sm:inline">Objection Guide</span>
               <span className="sm:hidden">Objections</span>
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={toggleTheme}
+              className="gap-2"
+            >
+              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              <span className="sr-only">Toggle theme</span>
             </Button>
             <Link href="/dashboard">
               <Button

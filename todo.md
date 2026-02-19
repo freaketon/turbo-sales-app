@@ -232,3 +232,13 @@
 - [x] Update logo references in header and landing page
 - [x] Update qualification criteria (5+ Reels/week, 3+ competitors monitored)
 - [x] Update ROI calculator context (content research time vs video editing time)
+
+## Logo Fix, Responsive Layout & Light Theme
+- [x] Fix logo aspect ratio - remove height constraint that skews the logo
+- [x] Ensure logo displays at natural dimensions without distortion
+- [x] Make header responsive for mobile (stack elements vertically on small screens)
+- [x] Make sales flow cards responsive (adjust padding, font sizes for mobile)
+- [x] Create light theme with vibrant OUTLIER colors
+- [x] Use clean white/cream background like Tesoro reference
+- [x] Update color palette with bright cyan, green, yellow, orange accents
+- [x] Add theme toggle in header to switch between dark and light modes
