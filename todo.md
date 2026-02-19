@@ -242,3 +242,13 @@
 - [x] Use clean white/cream background like Tesoro reference
 - [x] Update color palette with bright cyan, green, yellow, orange accents
 - [x] Add theme toggle in header to switch between dark and light modes
+
+## Full Light Theme Conversion (Match OUTLIER App Design)
+- [x] Update background to warm cream/beige (#FAF8F5 or similar)
+- [x] Replace all dark glass cards with clean white cards
+- [x] Add subtle shadows to white cards (not heavy dark borders)
+- [x] Update all text to dark colors on light backgrounds
+- [x] Remove glassmorphic effects (backdrop-blur, transparency in light mode)
+- [x] Add colored accent badges (purple, cyan, green, yellow, orange, pink)
+- [x] Ensure all sections use white card backgrounds in light mode
+- [x] Dark theme still available via toggle button
