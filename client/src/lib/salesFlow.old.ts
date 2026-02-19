@@ -1,4 +1,4 @@
-// Sales call flow data structure based on TURBO sales materials
+// Sales call flow data structure based on OUTLIER sales materials
 
 export type StepType = 'opening' | 'problem' | 'qualification' | 'urgency' | 'reframe' | 'solution' | 'offer' | 'close' | 'objection' | 'disqualify' | 'success';
 
@@ -121,7 +121,7 @@ export const salesFlow: Step[] = [
           { value: '2-3', label: '2-3 editors' },
           { value: '4+', label: '4+ editors' }
         ],
-        guidance: 'Editor leverage: More editors = more value from TURBO'
+        guidance: 'Editor leverage: More editors = more value from OUTLIER'
       },
       {
         id: 'qual-q2',
@@ -215,7 +215,7 @@ export const salesFlow: Step[] = [
       'Keep this section brief. Show, don\'t tell.'
     ],
     scriptLines: [
-      '"That\'s exactly what TURBO removes."',
+      '"That\'s exactly what OUTLIER removes."',
       '"Instead of filenames and folders, editors search meaning."',
       '',
       'Examples (say one, not all):',
@@ -371,7 +371,7 @@ export const salesFlow: Step[] = [
     content: [
       'They said yes. Now make it easy.',
       'Send the link and set clear expectations.',
-      'Payment Link: https://pay.turbobroll.com/b/dRmaEZehHahQ4aFh268IU00'
+      'Payment Link: https://pay.outlierbroll.com/b/dRmaEZehHahQ4aFh268IU00'
     ],
     scriptLines: [
       '"Perfect. I\'m sending you the payment link now."',

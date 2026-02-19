@@ -1,4 +1,4 @@
-// TURBO Discovery Call Script - 12 Sections (20 Minutes)
+// OUTLIER Discovery Call Script - 12 Sections (20 Minutes)
 // Updated to match new script structure
 
 export type StepType = 
@@ -62,7 +62,7 @@ export const salesFlow: Step[] = [
       'This sets the tone for a consultative conversation, not a pitch.'
     ],
     scriptLines: [
-      '"Hey [Name], appreciate you making time. We\'re super early on this, still beta. I\'m not here to sell you on anything today. I\'m trying to learn how you run video and where the friction is so we build the right thing. I\'m going to ask a bunch of questions, and if we have time I can show a rough prototype to get your feedback. Cool?"',
+      '"Hey [Name], appreciate you making time. We\'re early on this — still in beta. I\'m not here to pitch you anything today. I want to understand how you currently find content ideas and where the frustration is, so we build the right thing. I\'ll ask some questions, and if there\'s time I can show you a rough prototype. Cool?"',
       '',
       '[Wait for their agreement before proceeding]'
     ],
@@ -79,94 +79,86 @@ export const salesFlow: Step[] = [
     id: 'problem-exposure',
     type: 'problem-exposure',
     title: 'Section 2: Problem Exposure',
-    subtitle: 'Discovery Questions - Do NOT mention TURBO (8-10 minutes)',
+    subtitle: 'Discovery Questions - Do NOT mention OUTLIER (8-10 minutes)',
     duration: '8-10 min',
     content: [
       'Ask open-ended questions to understand their pain.',
-      'Do NOT mention TURBO or any solution yet.',
+      'Do NOT mention OUTLIER or any solution yet.',
       'Let them talk. Take notes in the chat.',
       'After all questions, mirror back what you heard.'
     ],
     scriptLines: [
       'Ask these questions:',
       '',
-      '1. "What slows down your video editing today?"',
-      '2. "How do your editors currently find footage?"',
-      '3. "What percentage of their week is hunting vs editing?"',
-      '4. "When someone needs a specific moment from months ago, what happens?"',
-      '5. "How long does that usually take?"',
-      '6. "What\'s the hardest part about managing your archive?"',
-      '7. "What slows production down?"',
-      '8. "Do you ever re-shoot because something couldn\'t be found?"',
+      '1. "How do you currently figure out what content to post next week?"',
+      '2. "How much time do you spend scrolling competitors or discovery pages each week?"',
+      '3. "What percentage of that time actually leads to a usable idea?"',
+      '4. "When you spot a trend and post on it — how often does it feel too late?"',
+      '5. "What does it feel like when a competitor posts something that blows up and you missed it?"',
+      '6. "What\'s the hardest part about knowing what to post consistently?"',
+      '7. "Have you ever posted something you were confident in that completely flopped? What happened?"',
+      '8. "What tools are you using now to figure out what\'s working in your niche?"',
       '',
       '[Let them talk. Capture their answers in the chat.]',
       '',
       'Then mirror back:',
-      '"So what I\'m hearing is:"',
-      '[REPEAT WHAT THEY SAID]',
-      '• Footage lives across X locations',
-      '• Editors spend roughly Y hours searching',
-      '• Sometimes things get re-shot or delayed',
+      '"So what I\'m hearing is: you\'re spending roughly [X hours] a week manually scrolling, you feel like you\'re always one step behind, and by the time you spot something it\'s already saturated. Did I get that right?"',
       '',
-      '"Did I get that right?"',
       '[Pause]'
     ],
     questions: [
       {
         id: 'problem-1',
-        text: 'What slows down your video editing today?',
+        text: 'How do you currently figure out what content to post next week?',
         type: 'text',
         placeholder: 'Type their answer here...',
         guidance: 'Capture their exact words in the chat'
       },
       {
         id: 'problem-2',
-        text: 'How do your editors currently find footage?',
+        text: 'How much time do you spend scrolling competitors or discovery pages each week?',
         type: 'text',
-        placeholder: 'Type their answer here...'
+        placeholder: 'e.g., "5-10 hours per week"'
       },
       {
         id: 'problem-3',
-        text: 'What percentage of their week is hunting vs editing?',
+        text: 'What percentage of that time actually leads to a usable idea?',
         type: 'text',
-        placeholder: 'e.g., "20-30% hunting"'
+        placeholder: 'e.g., "Maybe 20%"'
       },
       {
         id: 'problem-4',
-        text: 'When someone needs a specific moment from months ago, what happens?',
+        text: 'When you spot a trend and post on it — how often does it feel too late?',
         type: 'text',
         placeholder: 'Type their answer here...'
       },
       {
         id: 'problem-5',
-        text: 'How long does that usually take?',
+        text: 'What does it feel like when a competitor posts something that blows up and you missed it?',
         type: 'text',
-        placeholder: 'e.g., "20-40 minutes per search"'
+        placeholder: 'Type their answer here...'
       },
       {
         id: 'problem-6',
-        text: 'What\'s the hardest part about managing your archive?',
+        text: 'What\'s the hardest part about knowing what to post consistently?',
         type: 'text',
         placeholder: 'Type their answer here...'
       },
       {
         id: 'problem-7',
-        text: 'What slows production down?',
+        text: 'Have you ever posted something you were confident in that completely flopped? What happened?',
         type: 'text',
         placeholder: 'Type their answer here...'
       },
       {
         id: 'problem-8',
-        text: 'Do you ever re-shoot because something couldn\'t be found?',
-        type: 'binary',
-        options: [
-          { value: 'yes', label: 'Yes' },
-          { value: 'no', label: 'No' }
-        ]
+        text: 'What tools are you using now to figure out what\'s working in your niche?',
+        type: 'text',
+        placeholder: 'e.g., "Later, Sprout, Social Blade"'
       }
     ],
     tips: [
-      'Do NOT mention TURBO yet',
+      'Do NOT mention OUTLIER yet',
       'Let them talk - resist the urge to jump in',
       'Use the chat to capture their exact phrases',
       'The mirror is critical - repeat their words, not yours'
@@ -186,11 +178,11 @@ export const salesFlow: Step[] = [
       'Mirror back their attempts and why they failed.'
     ],
     scriptLines: [
-      '"What have you tried to fix this?"',
+      '"What have you tried to solve this?"',
       '',
       '[Let them answer]',
       '',
-      '"Anything else you\'ve tried?"',
+      '"Tools like Later, Sprout, Social Blade — have any of those helped?"',
       '',
       '[Let them answer]',
       '',
@@ -198,27 +190,25 @@ export const salesFlow: Step[] = [
       '',
       '[Let them answer]',
       '',
-      '"How much time or money has gone into trying to fix it?"',
+      '"How much time or money have you put into trying to crack this?"',
       '',
       '[Let them answer]',
       '',
-      'Mirror again:',
-      '"So you tried A, B, C."',
-      '"But [REPEAT BACK WHAT THEY SAID]."',
-      '"Fair?"'
+      'Mirror:',
+      '"So you\'ve tried [A, B, C], but you\'re still spending [X hours/week] guessing. Fair?"'
     ],
     questions: [
       {
         id: 'tried-1',
-        text: 'What have you tried to fix this?',
+        text: 'What have you tried to solve this?',
         type: 'text',
-        placeholder: 'e.g., "Tried Frame.io, hired a DAM consultant, built Airtable system"'
+        placeholder: 'e.g., "Later, Sprout Social, Social Blade, manual scrolling"'
       },
       {
         id: 'tried-2',
-        text: 'Anything else you\'ve tried?',
+        text: 'Tools like Later, Sprout, Social Blade — have any of those helped?',
         type: 'text',
-        placeholder: 'Type additional attempts...'
+        placeholder: 'Type their answer...'
       },
       {
         id: 'why-failed',
@@ -253,31 +243,24 @@ export const salesFlow: Step[] = [
       'Summarize their ideal state back to them.'
     ],
     scriptLines: [
-      '"If you could wave a magic wand, what would the perfect solution look like?"',
+      '"If you could wave a magic wand — what would the perfect content intelligence tool look like?"',
       '',
       '[Let them answer]',
       '',
-      '"What would it solve?"',
+      '"What would it tell you, and when?"',
       '',
       '[Let them answer]',
       '',
-      '"What would that unlock for your team?"',
+      '"What would that unlock for your posting schedule or your results?"',
       '',
       '[Let them answer]',
       '',
-      '"What would that mean financially?"',
+      '"What would that mean for your business or your clients?"',
       '',
       '[Let them answer]',
       '',
       'Summarize:',
-      '"So ideally:"',
-      '[NOT SCRIPTED - REPEAT BACK]',
-      '• Someone types what they\'re thinking',
-      '• Finds the exact moment instantly',
-      '• Stops re-shooting',
-      '• Recovers X hours per week',
-      '',
-      '"Accurate?"'
+      '"So ideally you\'d wake up, know exactly what\'s breaking out in your niche right now, and have a clear idea ready to film. Accurate?"'
     ],
     questions: [
       {
@@ -288,21 +271,21 @@ export const salesFlow: Step[] = [
       },
       {
         id: 'what-solve',
-        text: 'What would it solve?',
+        text: 'What would it tell you, and when?',
         type: 'text',
         placeholder: 'Type their answer...'
       },
       {
         id: 'what-unlock',
-        text: 'What would that unlock for your team?',
+        text: 'What would that unlock for your posting schedule or your results?',
         type: 'text',
         placeholder: 'Type their answer...'
       },
       {
         id: 'financial-impact',
-        text: 'What would that mean financially?',
+        text: 'What would that mean for your business or your clients?',
         type: 'text',
-        placeholder: 'e.g., "Save $50k/year, ship 2x faster"'
+        placeholder: 'e.g., "More followers, more leads, faster growth"'
       }
     ],
     tips: [
@@ -325,14 +308,12 @@ export const salesFlow: Step[] = [
       'Two questions: reasonable price and unreasonable price.'
     ],
     scriptLines: [
-      '"One of the things we\'re trying to figure out before launch is the right price point for something like this."',
-      '',
-      '"Hypothetically, if something eliminated that friction completely, what would that be worth per year?"',
+      '"Hypothetically — if something eliminated the guesswork and the manual scrolling completely, what would that be worth to you per month?"',
       '',
       '[Let them answer]',
       '',
       'Then:',
-      '"And at what price would it feel unreasonable, even if it solved it perfectly?"',
+      '"And at what price would it feel unreasonable, even if it worked perfectly?"',
       '',
       '[Let them answer]',
       '',
@@ -341,9 +322,9 @@ export const salesFlow: Step[] = [
     questions: [
       {
         id: 'reasonable-price',
-        text: 'If something eliminated that friction completely, what would that be worth per year?',
+        text: 'If something eliminated the guesswork and the manual scrolling completely, what would that be worth to you per month?',
         type: 'text',
-        placeholder: 'e.g., "$15k-$20k per year"'
+        placeholder: 'e.g., "$200-$500 per month"'
       },
       {
         id: 'unreasonable-price',
@@ -372,13 +353,7 @@ export const salesFlow: Step[] = [
       'Ask permission to show it.'
     ],
     scriptLines: [
-      '"If you have a few more minutes, I can show you an early prototype we\'re building."',
-      '',
-      '"It\'s rough."',
-      '"Still early."',
-      '"But I\'d love your feedback."',
-      '',
-      '"Up for it?"',
+      '"If you have a few more minutes, I can show you an early prototype of OUTLIER. It\'s rough — still beta. But I\'d love your reaction. Up for it?"',
       '',
       '[Wait for yes]'
     ],
@@ -412,64 +387,51 @@ export const salesFlow: Step[] = [
       'Use the Acknowledge → Agree → Reframe pattern for objections.'
     ],
     scriptLines: [
-      'Feature 1 — Intent Search',
-      '"You mentioned it takes 20–40 minutes to find a specific moment."',
-      '"Here\'s how we\'re thinking about that."',
-      '',
-      'Show: Search: "Find the clip where pricing was mentioned in Q3."',
-      'Results appear instantly.',
+      'Feature 1 — Outlier Feed',
+      '"You mentioned you feel like you\'re always a step behind."',
+      '"OUTLIER flags Reels outperforming their account baseline by 5–50x within the first 6 hours — before they hit the discovery page."',
       '',
       'Validation:',
       '"Would this work for you?"',
       '"Could you see yourself using this?"',
-      '"Would this solve your problem?"',
-      '"Would your team actually use this?"',
       '',
       'Objection surfacing:',
       '"What wouldn\'t work about this?"',
-      '"Anything that would stop adoption?"',
       '',
-      'Handle objection:',
-      '• Acknowledge',
-      '• Agree',
-      '• Reframe',
-      '',
-      'Then circle back:',
-      '"This is awesome feedback."',
-      '"So if I understand correctly, if it did X, Y and Z and could connect to Z - then this would be perfect for you."',
-      '"Did I get that right?"',
+      'Handle objection with ACR pattern',
       '',
       '---',
       '',
-      'Feature 2 — No Tagging / No Reorganization',
-      '"You also said tagging never sticks."',
-      '',
-      'Explain:',
-      '"This requires no tagging."',
-      '"No reorganization."',
-      '"We index what already exists."',
+      'Feature 2 — Why It\'s Working Breakdown',
+      '"You said you don\'t just want to see what went viral — you want to know why."',
+      '"OUTLIER breaks down the hook, audio, format, and topic angle of every flagged Reel."',
       '',
       'Validation:',
-      '"Would that remove friction for your editors?"',
+      '"Would that help you understand what to replicate?"',
       '',
       '---',
       '',
-      'Feature 3 — Zero-Touch Setup',
-      '"You mentioned no one has time to overhaul storage."',
-      '',
-      'Explain:',
-      '"We connect to your storage."',
-      '"Index your archive."',
-      '"Calibrate."',
-      '"You search."',
+      'Feature 3 — Content Brief Generator',
+      '"You mentioned the hardest part is knowing what to post."',
+      '"Based on what\'s breaking out in your niche right now, OUTLIER generates 3 ready-to-shoot briefs."',
+      '"You go from zero ideas to 3 evidence-backed ones in under 60 seconds."',
       '',
       'Validation:',
-      '"Does that remove implementation drag?"'
+      '"Would this save you research time?"',
+      '',
+      '---',
+      '',
+      'Feature 4 — Trend Lifecycle Score',
+      '"You said by the time you spot something it\'s already dead."',
+      '"OUTLIER scores every trend — emerging, peaking, or saturated — so you know if you\'re early or too late."',
+      '',
+      'Validation:',
+      '"Would this help you time your posts better?"'
     ],
     questions: [
       {
         id: 'feature-1-validation',
-        text: 'Feature 1 (Intent Search) - Would this work for them?',
+        text: 'Feature 1 (Outlier Feed) - Would this work for them?',
         type: 'binary',
         options: [
           { value: 'yes', label: 'Yes - they see value' },
@@ -480,7 +442,7 @@ export const salesFlow: Step[] = [
         id: 'feature-1-objection',
         text: 'If objection: What was their concern?',
         type: 'text',
-        placeholder: 'e.g., "Worried about accuracy", "Need multi-language support"',
+        placeholder: 'e.g., "Worried about niche coverage", "Too many false positives"',
         optional: true
       },
       {
@@ -495,7 +457,7 @@ export const salesFlow: Step[] = [
       },
       {
         id: 'feature-2-validation',
-        text: 'Feature 2 (No Tagging) - Would this remove friction?',
+        text: 'Feature 2 (Why It\'s Working Breakdown) - Would this help them understand what to replicate?',
         type: 'binary',
         options: [
           { value: 'yes', label: 'Yes - they see value' },
@@ -504,7 +466,16 @@ export const salesFlow: Step[] = [
       },
       {
         id: 'feature-3-validation',
-        text: 'Feature 3 (Zero-Touch Setup) - Does this remove implementation drag?',
+        text: 'Feature 3 (Content Brief Generator) - Would this save them research time?',
+        type: 'binary',
+        options: [
+          { value: 'yes', label: 'Yes - they see value' },
+          { value: 'no', label: 'Not convinced' }
+        ]
+      },
+      {
+        id: 'feature-4-validation',
+        text: 'Feature 4 (Trend Lifecycle Score) - Would this help them time posts better?',
         type: 'binary',
         options: [
           { value: 'yes', label: 'Yes - they see value' },
@@ -540,35 +511,36 @@ export const salesFlow: Step[] = [
       'This anchors the value before you mention price.'
     ],
     scriptLines: [
-      '"If this worked exactly as described, how many hours per week would it realistically save?"',
+      '"If OUTLIER worked as described, how many hours a week would it realistically save you on research and ideation?"',
       '',
       '[Let them answer]',
       '',
       'Calculate live:',
-      '"How many editors?"',
-      '"Multiply by X hours."',
-      '"Roughly $____ per year recovered."',
+      '"Hours saved/week × Hourly rate × 52 = Annual time value recovered"',
+      'Example: 10 hrs/week × $75/hr × 52 = $39,000/year in recovered time',
       '',
-      '[Pause and let it sink in]'
+      '"What\'s one viral Reel worth to your business in leads or followers?"',
+      '',
+      '[Let it sink in]'
     ],
     questions: [
       {
         id: 'hours-saved',
-        text: 'How many hours per week would this realistically save?',
+        text: 'How many hours per week would this realistically save on research and ideation?',
         type: 'number',
         placeholder: 'e.g., 10'
       },
       {
-        id: 'num-editors',
-        text: 'How many editors?',
-        type: 'number',
-        placeholder: 'e.g., 3'
-      },
-      {
         id: 'hourly-rate',
-        text: 'What\'s a reasonable hourly rate for your editors?',
+        text: 'What\'s a reasonable hourly rate for your time (or your team\'s time)?',
         type: 'number',
         placeholder: 'e.g., 75'
+      },
+      {
+        id: 'viral-reel-value',
+        text: 'What\'s one viral Reel worth to your business in leads or followers?',
+        type: 'text',
+        placeholder: 'e.g., "500 new followers, 10-20 leads"'
       }
     ],
     tips: [
@@ -614,12 +586,12 @@ export const salesFlow: Step[] = [
       'If they say yes, move to the offer.'
     ],
     scriptLines: [
-      '"If this were available today, would you want to implement it?"',
+      '"If OUTLIER were available today, would you want to use it?"',
       '',
       '[Wait for answer]',
       '',
       'If yes → move forward to the offer.',
-      'If hesitation → isolate objection before price.'
+      'If hesitation → isolate and handle the objection before any price mention.'
     ],
     questions: [
       {
@@ -660,7 +632,7 @@ export const salesFlow: Step[] = [
     id: 'the-offer',
     type: 'the-offer',
     title: 'Section 11: The Offer',
-    subtitle: 'Early Adopter Founders Circle',
+    subtitle: 'The Outliers Founding Partners Program',
     content: [
       'This is a 3-part structure: Bridge → Permission → Offer',
       'Lower your tone - this is intimate and exclusive.',
@@ -669,34 +641,40 @@ export const salesFlow: Step[] = [
     scriptLines: [
       '━━━ PART 1: BRIDGE ━━━',
       '',
-      '"[Name], this has been super helpful. I learned a ton. You clearly know this space and you\'re exactly the kind of person we want feedback from while we build."',
+      '"[Name], this has been incredibly helpful. You clearly understand the content game, and you\'re exactly the kind of person we want shaping OUTLIER while we build it."',
       '',
       '━━━ PART 2: PERMISSION ━━━',
       '',
-      '"Before you go, if you\'ve got a couple more minutes... would you be open to hearing about an early adopter thing we\'re doing?"',
+      '"Before you go — if you\'ve got two more minutes, would you be open to hearing about something exclusive we\'re doing for a very small group of founders?"',
       '',
       '[Wait for their YES]',
       '',
-      '━━━ PART 3: THE OFFER (Read these bullets verbatim) ━━━',
+      '━━━ PART 3: THE OFFER (Read these bullets verbatim, lower your tone) ━━━',
       '',
-      '• "We\'re launching in about 3 months."',
+      '"We\'re launching something called The Outliers. Ten founding partners. That\'s it. Here\'s what it means if you\'re in:"',
       '',
-      '• "We\'re bringing in a small group of about 10 founders to use it early and shape it around their workflow."',
+      '• "We do a full white-glove setup — configure your niches, tune your thresholds, deliver your first Outlier Feed within 48 hours. Zero work on your end."',
       '',
-      '• "All we ask is one call per month where you give us feedback and try early prototypes."',
+      '• "You get the full OUTLIER platform — real-time Outlier Feed, pattern breakdowns, and 3 shoot-ready content briefs every week, tailored to your niche."',
       '',
-      '• "In return, you get $5,000 for 12 months — that\'s less than $420 a month."',
+      '• "Direct access to me and the engineering team in a private Slack. Your feature requests go to the top of the list."',
       '',
-      '• "You get grandfathered pricing forever, so when we raise prices, you stay at this rate."',
+      '• "A private community of 10 teams — sharing what\'s working, swapping playbooks, collaborating on formats."',
       '',
-      '• "You get direct access to me and the engineering team."',
+      '• "Your pricing is locked forever. Future customers pay more. Yours never changes as long as you stay active."',
       '',
-      '• "Zero-Touch setup — we connect it and get you live without your team doing any work."'
+      '• "Early access to every new OUTLIER feature before general release."',
+      '',
+      '• "And we back it with a 90-day guarantee — if we don\'t deliver at least 20 niche outliers per week and 3 shoot-ready briefs per week within 90 days, you get a full refund plus $500."',
+      '',
+      '"The investment is $5,000 for 12 months. Ten spots. When they\'re gone, they\'re gone."',
+      '',
+      '[Full stop. Do not speak.]'
     ],
     questions: [
       {
         id: 'interested-fc',
-        text: 'Are they interested in the Founders Circle?',
+        text: 'Are they interested in The Outliers program?',
         type: 'binary',
         options: [
           { value: 'yes', label: 'Yes - interested' },
@@ -742,18 +720,16 @@ export const salesFlow: Step[] = [
     ],
     scriptLines: [
       'If yes:',
-      '"Great."',
-      '"Do you want to activate now here in the call?"',
-      '"Or schedule activation and initial onboarding later on?"',
+      '',
+      '"Great. To get you in I just need four things — your niche, your Instagram handle, how many Reels you post per week, and five competitor accounts you\'re watching. Want to do that now or should I send you a quick form?"',
       '',
       '[Wait for answer]',
       '',
       'If price objection:',
-      'Return to math:',
-      '"You\'re already losing more than $5k."',
-      '"This just redirects the bleed."',
       '',
-      '[Stop talking. Wait.]'
+      '"You\'re already losing more than $5K in wasted research time and missed trends. This redirects that bleed — and you\'re guaranteed results or your money back plus $500."',
+      '',
+      '[Stop. Wait.]'
     ],
     questions: [
       {
@@ -814,7 +790,7 @@ export const salesFlow: Step[] = [
     title: 'Deal Closed! 🎉',
     subtitle: 'Capture prospect details for your records',
     content: [
-      'Congratulations! You closed a Founders Circle member.',
+      'Congratulations! You closed an Outliers founding partner.',
       'Before exporting, capture their contact details for your CRM.'
     ],
     questions: [

@@ -217,3 +217,18 @@
 - [x] Add chat input field for custom objections not in the list
 - [x] Generate AI-powered 3A response for custom objections using the framework
 - [x] Search filters objections in real-time across title and content
+
+## Complete Rebrand: TURBO → OUTLIER
+- [x] Extract logo colors (cyan, purple, pink, orange, yellow) and update CSS color palette
+- [x] Replace all "TURBO" references with "OUTLIER" throughout the app
+- [x] Update product description from "video asset search" to "content intelligence platform"
+- [x] Replace sales flow script with new OUTLIER discovery call script
+- [x] Update Section 2 questions (content ideas vs video search)
+- [x] Update Section 7 demo features (Outlier Feed, Why It's Working, Content Brief Generator, Trend Lifecycle Score)
+- [x] Update Section 8 impact measurement (hours saved on research/ideation)
+- [x] Update Section 11 offer (The Outliers founding partners program)
+- [x] Replace objection handling examples with OUTLIER-specific objections
+- [x] Upload new logo files (iconsymbol.png, logowordmark.png) to project
+- [x] Update logo references in header and landing page
+- [x] Update qualification criteria (5+ Reels/week, 3+ competitors monitored)
+- [x] Update ROI calculator context (content research time vs video editing time)

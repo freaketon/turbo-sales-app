@@ -4,9 +4,10 @@
 @custom-variant dark (&:is(.dark *));
 
 /* 
-Design Philosophy: TURBO Brand
-- Clean, professional interface with cyan/teal accent colors
-- Dark background with bright cyan highlights matching logo
+Design Philosophy: OUTLIER Brand
+- Vibrant, energetic interface with gradient colors from logo
+- Cyan, purple, pink, orange, yellow color palette
+- Dark background with colorful gradient accents
 - Inter font family for modern, readable typography
 - Smooth animations and transitions
 */
@@ -51,12 +52,12 @@ Design Philosophy: TURBO Brand
 }
 
 :root {
-  /* TURBO Brand color palette */
-  --primary: oklch(0.70 0.15 200); /* Cyan/teal from logo */
+  /* OUTLIER Brand color palette - vibrant gradients */
+  --primary: oklch(0.65 0.18 260); /* Purple from logo */
   --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.60 0.12 200); /* Darker cyan */
+  --secondary: oklch(0.70 0.15 200); /* Cyan from logo */
   --secondary-foreground: oklch(0.98 0 0);
-  --accent: oklch(0.65 0.18 160); /* Green for qualified */
+  --accent: oklch(0.75 0.20 330); /* Pink from logo */
   --accent-foreground: oklch(0.98 0 0);
   --destructive: oklch(0.65 0.25 25); /* Red for disqualify */
   --destructive-foreground: oklch(0.98 0 0);

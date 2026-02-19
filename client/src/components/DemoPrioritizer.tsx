@@ -74,7 +74,7 @@ const FEATURE_DETAILS: Record<string, {
     script: (pain) => [
       `"You said: ${pain}"`,
       '',
-      '"TURBO creates a single search layer."',
+      '"OUTLIER creates a single search layer."',
       '"Across all your storage."',
       '"No migration needed."',
     ],
@@ -86,7 +86,7 @@ const FEATURE_DETAILS: Record<string, {
     script: (pain) => [
       `"You mentioned: ${pain}"`,
       '',
-      '"TURBO turns 20 minutes into 20 seconds."',
+      '"OUTLIER turns 20 minutes into 20 seconds."',
       '"Natural language search."',
       '"Instant results."',
     ],

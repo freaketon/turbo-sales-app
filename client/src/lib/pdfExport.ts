@@ -34,7 +34,7 @@ export function exportCallToPDF(data: ExportData): void {
   // Header
   doc.setFontSize(24);
   doc.setFont('helvetica', 'bold');
-  doc.text('TURBO SALES CALL SUMMARY', margin, yPosition);
+  doc.text('OUTLIER SALES CALL SUMMARY', margin, yPosition);
   yPosition += 12;
 
   doc.setFontSize(10);
@@ -229,7 +229,7 @@ export function exportCallToPDF(data: ExportData): void {
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(150, 150, 150);
     doc.text(
-      `Page ${i} of ${totalPages} | TURBO Sales Call Guide`,
+      `Page ${i} of ${totalPages} | OUTLIER Sales Call Guide`,
       pageWidth / 2,
       pageHeight - 10,
       { align: 'center' }
@@ -237,6 +237,6 @@ export function exportCallToPDF(data: ExportData): void {
   }
 
   // Download
-  const fileName = `turbo-sales-${data.prospectInfo.company.replace(/[^a-z0-9]/gi, '-').toLowerCase()}-${new Date().toISOString().slice(0, 10)}.pdf`;
+  const fileName = `outlier-sales-${data.prospectInfo.company.replace(/[^a-z0-9]/gi, '-').toLowerCase()}-${new Date().toISOString().slice(0, 10)}.pdf`;
   doc.save(fileName);
 }

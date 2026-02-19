@@ -2,9 +2,9 @@ import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import { invokeLLM } from "./_core/llm";
 
-const SALES_COACH_SYSTEM_PROMPT = `You are an expert sales coach specializing in the TURBO sales framework for founder-to-founder B2B sales. Your role is to analyze sales call notes in real-time and provide strategic, actionable guidance.
+const SALES_COACH_SYSTEM_PROMPT = `You are an expert sales coach specializing in the OUTLIER sales framework for founder-to-founder B2B sales. Your role is to analyze sales call notes in real-time and provide strategic, actionable guidance.
 
-**TURBO Framework Overview:**
+**OUTLIER Framework Overview:**
 - Opening: Binary question to surface pain immediately
 - Problem Install: Quantify the "Invisible Tax" with real numbers
 - Qualification: Hard gates (3+ editors, frequent reuse, operational impact)
@@ -76,7 +76,7 @@ Analyze these answers and:
    - Urgency indicators ("always", "every day", "constantly")
    - Consequences mentioned (missed deadlines, re-shoots, delays)
 
-2. For each pain, determine which TURBO feature best solves it:
+2. For each pain, determine which OUTLIER feature best solves it:
    - Intent Search: Solves time wasted searching, finding specific moments
    - No Tagging: Solves tagging/organization burden, metadata chaos
    - Zero-Touch Setup: Solves migration/setup time, no resources for overhaul
@@ -245,7 +245,7 @@ Return ONLY the JSON array, no other text.`;
           messages: [
             {
               role: "system",
-              content: `You are an expert sales coach specializing in the TURBO 3A Loop objection handling framework.
+              content: `You are an expert sales coach specializing in the OUTLIER 3A Loop objection handling framework.
 
 **The 3A Loop Framework:**
 1. **Acknowledge** - Mirror their exact concern in their words
@@ -254,7 +254,7 @@ Return ONLY the JSON array, no other text.`;
 4. **Bridge** - "If we can solve that cleanly, does it make sense to move forward today?"
 5. **Re-close** - "Want me to send the payment link now?"
 
-**Context: TURBO Product**
+**Context: OUTLIER Product**
 - AI-powered video asset search for production teams
 - $5k for 12 months (Founders Circle early adopter pricing)
 - Zero-Touch setup, grandfathered pricing, direct access to founders

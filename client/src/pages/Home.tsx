@@ -56,7 +56,7 @@ import {
   FileDown
 } from 'lucide-react';
 
-const STORAGE_KEY = 'turbo-sales-call-data';
+const STORAGE_KEY = 'outlier-sales-call-data';
 
 export default function Home() {
   // Load from localStorage on mount
@@ -256,8 +256,8 @@ export default function Home() {
               }}
             >
               <img 
-                src="/turbo-logo.png" 
-                alt="TURBO" 
+                src="/logowordmark.png" 
+                alt="OUTLIER" 
                 className="h-16 md:h-20 w-auto mx-auto"
               />
             </motion.div>
@@ -365,8 +365,8 @@ export default function Home() {
         <div className="flex items-start justify-between mb-8 gap-4">
           <div className="flex flex-col items-start gap-1">
             <img 
-              src="/turbo-logo.png" 
-              alt="TURBO" 
+              src="/logowordmark.png" 
+              alt="OUTLIER" 
               className="h-8 md:h-10 w-auto"
             />
             <h1 className="text-lg md:text-xl font-bold text-foreground">
@@ -565,7 +565,7 @@ export default function Home() {
               
               {/* Payment link for success step */}
               {currentStep.id === 'success' && (
-                <PaymentLink url="https://pay.turbobroll.com/b/dRmaEZehHahQ4aFh268IU00" />
+                <PaymentLink url="https://pay.outlierbroll.com/b/dRmaEZehHahQ4aFh268IU00" />
               )}
               
               {/* Objection handler for objection step */}
@@ -684,7 +684,7 @@ export default function Home() {
       <Dialog open={objectionGuideOpen} onOpenChange={setObjectionGuideOpen}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-2xl">TURBO Objection Guide</DialogTitle>
+            <DialogTitle className="text-2xl">OUTLIER Objection Guide</DialogTitle>
           </DialogHeader>
           <ObjectionGuide />
         </DialogContent>

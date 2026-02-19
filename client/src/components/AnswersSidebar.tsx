@@ -24,7 +24,7 @@ export default function AnswersSidebar({ answers, prospectInfo }: AnswersSidebar
 
   const generateSummary = () => {
     const timestamp = new Date().toLocaleString();
-    let summary = `TURBO SALES CALL SUMMARY\n`;
+    let summary = `OUTLIER SALES CALL SUMMARY\n`;
     summary += `Generated: ${timestamp}\n`;
     summary += `${'='.repeat(60)}\n\n`;
     
@@ -101,7 +101,7 @@ export default function AnswersSidebar({ answers, prospectInfo }: AnswersSidebar
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `turbo-sales-call-${new Date().toISOString().slice(0, 10)}.txt`;
+    a.download = `outlier-sales-call-${new Date().toISOString().slice(0, 10)}.txt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

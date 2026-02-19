@@ -20,7 +20,7 @@ export interface CallRecord {
   };
 }
 
-const HISTORY_KEY = 'turbo-sales-call-history';
+const HISTORY_KEY = 'outlier-sales-call-history';
 
 export function saveCallToHistory(record: CallRecord): void {
   try {

@@ -35,7 +35,7 @@ export const improvedObjectionResponses: ObjectionResponse[] = [
       '[Wait for answer]',
       '"And if you saw that in the first 30 days, would that remove the concern?"'
     ],
-    reframe: '"That\'s what the 90-day guarantee is for. You get to see it work on your actual archive, with your actual team. If it doesn\'t deliver, you get your money back plus $500. You\'re essentially getting a paid trial with downside protection."',
+    reframe: '"That\'s what the 90-day guarantee is for. You get to see it work on your actual research, with your actual team. If it doesn\'t deliver, you get your money back plus $500. You\'re essentially getting a paid trial with downside protection."',
     reclose: '"So do you want to secure a Founders Circle seat and test it with zero risk, or pass and keep the current system?"'
   },
   {
@@ -61,7 +61,7 @@ export const improvedObjectionResponses: ObjectionResponse[] = [
       '[Wait for answer]',
       '"If it\'s a later problem, I respect that. But if it\'s a now problem that you\'re just too busy to fix, that\'s the problem compounding."'
     ],
-    reframe: '"Here\'s the thing: The setup is zero-touch. We do all the work. You don\'t lift a finger. Your team starts searching on day one. The question isn\'t whether you have time to implement it - the question is whether you can afford to keep burning $X per month while you\'re too busy."',
+    reframe: '"Here\'s the thing: The setup is zero-touch. We do all the work. You don\'t lift a finger. Your team starts scrolling on day one. The question isn\'t whether you have time to implement it - the question is whether you can afford to keep burning $X per month while you\'re too busy."',
     reclose: '"So: Is this a real \'later problem\', or is it a now problem you\'re delaying because you think it requires effort? Because if it\'s the latter, we remove that barrier entirely."'
   },
   {
@@ -71,9 +71,9 @@ export const improvedObjectionResponses: ObjectionResponse[] = [
     clarify: [
       '"What\'s the priority that\'s more important than recovering [X hours/month]?"',
       '[Wait for answer]',
-      '"And does that priority require your editors to be more efficient, or less?"'
+      '"And does that priority require your creators to be more efficient, or less?"'
     ],
-    reframe: '"This doesn\'t compete with your priorities - it enables them. Your editors get faster, your team reuses more, your output improves. The setup is zero-touch. This is the thing that makes your other priorities easier to hit."',
+    reframe: '"This doesn\'t compete with your priorities - it enables them. Your creators get faster, your team reuses more, your output improves. The setup is zero-touch. This is the thing that makes your other priorities easier to hit."',
     reclose: '"So the question is: Do you want your team operating at current speed while you chase those priorities, or do you want them moving faster starting next week?"'
   },
   {
@@ -99,7 +99,7 @@ export const improvedObjectionResponses: ObjectionResponse[] = [
       '[Wait for answer]',
       '"Because we agreed the problem costs you $[annual waste] per year. So this is [calculate %] of what you\'re already spending on the problem."'
     ],
-    reframe: '"You\'re not spending $5K. You\'re redirecting money you\'re already burning. The current system costs you $[monthly waste] per month. TURBO costs $417/month. You\'re spending [X times] more to keep the problem than to fix it. And if it doesn\'t work, you get your money back plus $500."',
+    reframe: '"You\'re not spending $5K. You\'re redirecting money you\'re already burning. The current system costs you $[monthly waste] per month. OUTLIER costs $417/month. You\'re spending [X times] more to keep the problem than to fix it. And if it doesn\'t work, you get your money back plus $500."',
     reclose: '"So the question is: Do you want to keep spending $[monthly waste]/month on the problem, or redirect $417/month to the solution with zero risk?"'
   },
   {
@@ -109,7 +109,7 @@ export const improvedObjectionResponses: ObjectionResponse[] = [
     clarify: [
       '"What ROI would make this a no-brainer for you?"',
       '[Wait for answer]',
-      '"And we agreed you\'re burning $[annual waste] per year. If TURBO saves even 25% of that, is that enough ROI?"'
+      '"And we agreed you\'re burning $[annual waste] per year. If OUTLIER saves even 25% of that, is that enough ROI?"'
     ],
     reframe: '"The guarantee is the ROI proof. You get 90 days to measure it. If you don\'t recover at least 50 hours - which at your rate is $[calculate] - you get a full refund plus $500. You\'re getting a paid trial with downside protection. The ROI is guaranteed or you pay nothing."',
     reclose: '"So: Do you want to test the ROI with zero risk, or keep the system that definitely has negative ROI?"'
@@ -123,7 +123,7 @@ export const improvedObjectionResponses: ObjectionResponse[] = [
       '[Wait for answer]',
       '"And if you saw that result, would you move forward?"'
     ],
-    reframe: '"The Founders Circle is the trial. You get 90 days to test it on your real archive with your real team. If it doesn\'t deliver, you get your money back plus $500. The difference is: You get white-glove setup, council seat access, and 12 months of service. A free trial gives you none of that and puts you at the back of the line."',
+    reframe: '"The Founders Circle is the trial. You get 90 days to test it on your real research with your real team. If it doesn\'t deliver, you get your money back plus $500. The difference is: You get white-glove setup, council seat access, and 12 months of service. A free trial gives you none of that and puts you at the back of the line."',
     reclose: '"So: Do you want the full experience with zero risk and council access, or a limited trial that delays your results and loses you the founder benefits?"'
   },
 
@@ -135,9 +135,9 @@ export const improvedObjectionResponses: ObjectionResponse[] = [
     clarify: [
       '"Let me ask: When you need a specific moment inside a long-form file, how long does it take to find it?"',
       '[Wait for answer]',
-      '"And when a topic spikes and you need every clip on that topic across your archive, how long does that take?"'
+      '"And when a topic spikes and you need every clip on that topic across your research, how long does that take?"'
     ],
-    reframe: '"Organization and intelligence are different problems. You\'ve solved organization - files are findable. But TURBO solves intelligence - moments are findable. Your system tells you which file. TURBO tells you which second inside which file. That\'s the difference."',
+    reframe: '"Organization and intelligence are different problems. You\'ve solved organization - files are findable. But OUTLIER solves intelligence - moments are findable. Your system tells you which file. OUTLIER tells you which second inside which file. That\'s the difference."',
     reclose: '"So the question is: Do you want to keep your file organization and add moment-finding intelligence, or stay with file-level search only?"'
   },
   {
@@ -145,11 +145,11 @@ export const improvedObjectionResponses: ObjectionResponse[] = [
     category: 'competition',
     acknowledge: '"Makes sense. You\'ve invested in infrastructure."',
     clarify: [
-      '"How long does it take your team to tag and organize new footage in the DAM?"',
+      '"How long does it take your team to tag and organize new ideas in the DAM?"',
       '[Wait for answer]',
       '"And when you search for something, do you get file-level results or moment-level results?"'
     ],
-    reframe: '"DAMs are great for asset management. But they require tagging, which means the hunt happens during ingest instead of search. TURBO requires zero tagging - you upload and search immediately. And you get moment-level results, not file-level. You can keep your DAM for asset management and use TURBO for intelligent search."',
+    reframe: '"DAMs are great for asset management. But they require tagging, which means the hunt happens during ingest instead of search. OUTLIER requires zero tagging - you upload and search immediately. And you get moment-level results, not file-level. You can keep your DAM for asset management and use OUTLIER for intelligent search."',
     reclose: '"So: Do you want to add zero-tag moment-finding on top of your DAM, or keep the current tag-dependent system?"'
   },
   {
@@ -163,8 +163,8 @@ export const improvedObjectionResponses: ObjectionResponse[] = [
       '[Wait for answer]',
       '"What happens if your internal solution doesn\'t work or takes longer than expected?"'
     ],
-    reframe: '"Here\'s the math: If your internal solution takes 6 months, that\'s $[calculate 6 months of waste] burned while you build. TURBO costs $5K for 12 months and goes live in days. Even if your solution works perfectly, you\'re spending more to wait than to fix it now. And if it doesn\'t work, you\'ve burned time and money with no fallback."',
-    reclose: '"So: Do you want to stop the bleeding now with TURBO while you build your internal solution, or keep burning money while you hope your build works?"'
+    reframe: '"Here\'s the math: If your internal solution takes 6 months, that\'s $[calculate 6 months of waste] burned while you build. OUTLIER costs $5K for 12 months and goes live in days. Even if your solution works perfectly, you\'re spending more to wait than to fix it now. And if it doesn\'t work, you\'ve burned time and money with no fallback."',
+    reclose: '"So: Do you want to stop the bleeding now with OUTLIER while you build your internal solution, or keep burning money while you hope your build works?"'
   }
 ];
 

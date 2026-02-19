@@ -31,7 +31,7 @@ const objections: Objection[] = [
     title: '"I need to see ROI first."',
     acknowledge: 'Yep, you want proof it pays for itself.',
     associate: 'That\'s how our best customers buy—by tying it to hours saved.',
-    ask: 'If Turbo saves 50 hours in 90 days, what\'s that worth to you in editor time alone?',
+    ask: 'If Outlier saves 50 hours in 90 days, what\'s that worth to you in editor time alone?',
     reclose: 'If it\'s worth more than $5k, want the payment link now?'
   },
   {
@@ -63,7 +63,7 @@ const objections: Objection[] = [
     id: 'messy-footage',
     title: '"Our footage is messy / unlabeled / chaotic."',
     acknowledge: 'Totally—most archives are messy.',
-    associate: 'That\'s actually who benefits most, because Turbo isn\'t based on perfect folder hygiene.',
+    associate: 'That\'s actually who benefits most, because Outlier isn\'t based on perfect folder hygiene.',
     ask: 'When it\'s messy today, what happens—editors give up, reshoot, or spend hours hunting?',
     reclose: 'If we remove that hunt time, payment link now?'
   },
@@ -87,9 +87,9 @@ const objections: Objection[] = [
     id: 'have-dam',
     title: '"We already have a DAM / Frame.io / a library."',
     acknowledge: 'Makes sense—you\'re not starting from zero.',
-    associate: 'Our best customers already have systems—Turbo sits on top as intent-based archive search.',
+    associate: 'Our best customers already have systems—Outlier sits on top as intent-based archive search.',
     ask: 'Even with that tool, do editors still ask "do we have a clip of X?" and then dig for an hour?',
-    reclose: 'If Turbo removes that digging, payment link now?'
+    reclose: 'If Outlier removes that digging, payment link now?'
   },
   {
     id: 'drive-search',
@@ -97,7 +97,7 @@ const objections: Objection[] = [
     acknowledge: 'Sure—Drive search helps when filenames are perfect.',
     associate: 'High-output teams hit the wall when they need the moment inside a file, not the filename.',
     ask: 'When you need "the exact quote" or "the shot where…", does Drive get you there—or do editors scrub timelines?',
-    reclose: 'If Turbo gets you there instantly, want the payment link now?'
+    reclose: 'If Outlier gets you there instantly, want the payment link now?'
   },
   {
     id: 'security-concerns',
@@ -167,7 +167,7 @@ const objections: Objection[] = [
   },
   {
     id: 'is-it-storage',
-    title: '"Is Turbo basically a storage solution?"',
+    title: '"Is Outlier basically a storage solution?"',
     acknowledge: 'I see why it sounds like that.',
     associate: 'The real product is archive intelligence—finding the exact footage you already have.',
     ask: 'Where do you lose time today: storing files—or searching for the right moment?',
@@ -175,9 +175,9 @@ const objections: Objection[] = [
   },
   {
     id: 'replace-editors',
-    title: '"Is Turbo going to edit for us / replace editors?"',
+    title: '"Is Outlier going to edit for us / replace editors?"',
     acknowledge: 'No one wants a tool that threatens the team.',
-    associate: 'Turbo doesn\'t replace editors—it removes the hunting so they can stay in creative flow.',
+    associate: 'Outlier doesn\'t replace editors—it removes the hunting so they can stay in creative flow.',
     ask: 'If we gave your editors "God-mode search", would that increase output without adding headcount?',
     reclose: 'Payment link now?'
   },
@@ -200,16 +200,16 @@ const objections: Objection[] = [
   {
     id: 'too-small',
     title: '"We\'re too small / not sure we fit."',
-    acknowledge: 'Good self-awareness—Turbo isn\'t for everyone.',
+    acknowledge: 'Good self-awareness—Outlier isn\'t for everyone.',
     associate: 'We only take teams where the archive tax is already real.',
     ask: 'Quick check: do you have 2+ editors, 10TB+ archive, publish weekly, and lose 1+ hour/week/editor searching?',
-    reclose: 'If any "no": "Then I don\'t want to take your $5k—Turbo won\'t be worth it yet."'
+    reclose: 'If any "no": "Then I don\'t want to take your $5k—Outlier won\'t be worth it yet."'
   },
   {
     id: 'publish-occasionally',
     title: '"We only publish occasionally."',
     acknowledge: 'Makes sense.',
-    associate: 'Turbo\'s value shows up when publishing is frequent and the archive is used constantly.',
+    associate: 'Outlier\'s value shows up when publishing is frequent and the archive is used constantly.',
     ask: 'When you\'re not publishing weekly, does search still cost you hours every week?',
     reclose: 'If not: disqualify cleanly.'
   },
@@ -217,7 +217,7 @@ const objections: Objection[] = [
     id: 'solo-creator',
     title: '"We have 1 editor / solo creator."',
     acknowledge: 'Got it.',
-    associate: 'Turbo is built for teams where search waste multiplies across editors.',
+    associate: 'Outlier is built for teams where search waste multiplies across editors.',
     ask: 'Do you expect to have 2+ editors and weekly output soon—or is it staying solo?',
     reclose: 'If staying solo: disqualify.'
   }
@@ -266,7 +266,7 @@ export default function ObjectionGuide() {
       <Card className="p-6 bg-accent/10 border-accent/30">
         <h3 className="text-xl font-bold text-accent mb-4 flex items-center gap-2">
           <MessageSquare className="w-6 h-6" />
-          The TURBO 3A Loop
+          The OUTLIER 3A Loop
         </h3>
         <p className="text-sm text-muted-foreground mb-4">
           Use this framework for EVERY objection:
