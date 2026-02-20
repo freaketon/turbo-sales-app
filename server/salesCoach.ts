@@ -321,4 +321,101 @@ Return ONLY valid JSON with these exact keys: acknowledge, associate, ask, bridg
         };
       }
     }),
+
+  extractAnswersFromTranscript: publicProcedure
+    .input(
+      z.object({
+        transcript: z.string(),
+        questions: z.array(z.object({
+          id: z.string(),
+          text: z.string(),
+          type: z.enum(['binary', 'multiple', 'text', 'number']),
+          options: z.array(z.object({
+            value: z.string(),
+            label: z.string(),
+          })).optional(),
+        })),
+        existingAnswers: z.record(z.string(), z.string()).optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { transcript, questions, existingAnswers = {} } = input;
+
+      if (!transcript.trim() || questions.length === 0) {
+        return { suggestions: [] };
+      }
+
+      // Only extract for questions that don't already have answers
+      const unansweredQuestions = questions.filter(q => !existingAnswers[q.id]);
+      if (unansweredQuestions.length === 0) {
+        return { suggestions: [] };
+      }
+
+      const questionsDescription = unansweredQuestions.map((q, i) => {
+        let desc = `${i + 1}. Question ID: "${q.id}"\n   Question: "${q.text}"\n   Type: ${q.type}`;
+        if (q.options && q.options.length > 0) {
+          desc += `\n   Options: ${q.options.map(o => `"${o.value}" (${o.label})`).join(', ')}`;
+        }
+        return desc;
+      }).join('\n\n');
+
+      const extractionPrompt = `You are analyzing a live sales call transcript to extract answers the prospect gave to specific questions.
+
+TRANSCRIPT:
+"""
+${transcript}
+"""
+
+QUESTIONS TO EXTRACT ANSWERS FOR:
+${questionsDescription}
+
+INSTRUCTIONS:
+- For each question, check if the prospect provided information that answers it.
+- For "text" type questions: extract the relevant answer in the prospect's own words. Keep it concise (1-2 sentences).
+- For "number" type questions: extract just the number.
+- For "binary" or "multiple" type questions: match to the closest option value from the provided options.
+- Only include questions where you found a clear answer in the transcript. Skip questions with no clear answer.
+- Be conservative — only extract answers you're confident about from what the prospect actually said.
+
+Return ONLY a JSON array of extracted answers:
+[
+  {
+    "questionId": "the-question-id",
+    "answer": "the extracted answer",
+    "confidence": "high" | "medium",
+    "evidence": "brief quote from transcript supporting this answer"
+  }
+]
+
+If no answers can be extracted, return an empty array: []
+Return ONLY the JSON array, no other text.`;
+
+      try {
+        const response = await invokeLLM({
+          messages: [
+            {
+              role: "system",
+              content: "You are an expert at analyzing sales call transcripts and extracting specific answers to questions. You are precise and only extract information that was clearly stated by the prospect."
+            },
+            { role: "user", content: extractionPrompt },
+          ],
+        });
+
+        const content = response.choices[0]?.message?.content || '[]';
+        const jsonMatch = typeof content === 'string' ? content.match(/\[[\s\S]*\]/) : null;
+        const suggestions = jsonMatch ? JSON.parse(jsonMatch[0]) : [];
+
+        return {
+          suggestions: suggestions.map((s: any) => ({
+            questionId: s.questionId,
+            answer: String(s.answer),
+            confidence: s.confidence || 'medium',
+            evidence: s.evidence || '',
+          })),
+        };
+      } catch (error) {
+        console.error("Failed to extract answers from transcript:", error);
+        return { suggestions: [] };
+      }
+    }),
 });
