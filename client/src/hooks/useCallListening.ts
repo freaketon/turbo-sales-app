@@ -7,14 +7,22 @@ export interface TranscriptSegment {
   isFinal: boolean;
 }
 
+export type AudioSource = 'mic' | 'system';
+
 interface UseCallListeningReturn {
   isListening: boolean;
   isSupported: boolean;
+  isSystemAudioSupported: boolean;
+  audioSource: AudioSource;
+  setAudioSource: (source: AudioSource) => void;
   transcript: TranscriptSegment[];
   interimText: string;
   startListening: () => void;
   stopListening: () => void;
   clearTranscript: () => void;
+  /** For system audio mode: returns pending audio blob for server transcription */
+  getAndClearAudioChunk: () => Promise<Blob | null>;
+  hasAudioChunk: boolean;
 }
 
 // Extend Window interface for SpeechRecognition
@@ -51,17 +59,30 @@ export function useCallListening(): UseCallListeningReturn {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState<TranscriptSegment[]>([]);
   const [interimText, setInterimText] = useState('');
+  const [audioSource, setAudioSource] = useState<AudioSource>('mic');
+  const [hasAudioChunk, setHasAudioChunk] = useState(false);
   const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
   const isListeningRef = useRef(false);
   const segmentCounterRef = useRef(0);
 
+  // System audio capture refs
+  const mediaStreamRef = useRef<MediaStream | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const chunkTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
   const isSupported = typeof window !== 'undefined' && getSpeechRecognition() !== null;
 
-  const startListening = useCallback(() => {
+  // getDisplayMedia with audio is supported in most modern browsers
+  const isSystemAudioSupported = typeof window !== 'undefined' &&
+    !!navigator.mediaDevices?.getDisplayMedia;
+
+  // ─── Mic mode: Web Speech API ─────────────────────────────
+
+  const startMicListening = useCallback(() => {
     const SpeechRecognition = getSpeechRecognition();
     if (!SpeechRecognition) return;
 
-    // Stop any existing instance
     if (recognitionRef.current) {
       recognitionRef.current.onend = null;
       recognitionRef.current.abort();
@@ -106,7 +127,6 @@ export function useCallListening(): UseCallListeningReturn {
 
     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
       console.error('Speech recognition error:', event.error);
-      // Don't stop on 'no-speech' or 'aborted' errors - just restart
       if (event.error === 'no-speech' || event.error === 'aborted') {
         return;
       }
@@ -115,13 +135,10 @@ export function useCallListening(): UseCallListeningReturn {
     };
 
     recognition.onend = () => {
-      // Auto-restart if we're still supposed to be listening
-      // (browser stops recognition after silence or max duration)
       if (isListeningRef.current) {
         try {
           recognition.start();
         } catch {
-          // If restart fails, mark as stopped
           setIsListening(false);
           isListeningRef.current = false;
         }
@@ -139,13 +156,106 @@ export function useCallListening(): UseCallListeningReturn {
     }
   }, []);
 
+  // ─── System audio mode: getDisplayMedia + MediaRecorder ───
+
+  const startSystemAudioListening = useCallback(async () => {
+    try {
+      // Request screen/window share WITH audio
+      // The user will select their Zoom window or the entire screen
+      const stream = await navigator.mediaDevices.getDisplayMedia({
+        video: true, // Required by the API, but we only use audio
+        audio: true, // This captures system/app audio
+      });
+
+      // Check if we got audio tracks
+      const audioTracks = stream.getAudioTracks();
+      if (audioTracks.length === 0) {
+        console.error('No audio track captured. Make sure to check "Share audio" in the dialog.');
+        stream.getTracks().forEach(t => t.stop());
+        return;
+      }
+
+      // Stop video tracks immediately - we only need audio
+      stream.getVideoTracks().forEach(t => t.stop());
+
+      // Create audio-only stream
+      const audioStream = new MediaStream(audioTracks);
+      mediaStreamRef.current = audioStream;
+
+      // Set up MediaRecorder to capture audio chunks
+      const recorder = new MediaRecorder(audioStream, {
+        mimeType: MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+          ? 'audio/webm;codecs=opus'
+          : 'audio/webm',
+      });
+
+      audioChunksRef.current = [];
+
+      recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+          setHasAudioChunk(true);
+        }
+      };
+
+      // When the user stops sharing (clicks "Stop sharing" in browser)
+      audioTracks[0].onended = () => {
+        stopListening();
+      };
+
+      recorder.start();
+      mediaRecorderRef.current = recorder;
+
+      // Collect a chunk every 10 seconds for periodic transcription
+      chunkTimerRef.current = setInterval(() => {
+        if (recorder.state === 'recording') {
+          recorder.requestData();
+        }
+      }, 10000);
+
+      setIsListening(true);
+      isListeningRef.current = true;
+      setInterimText('Capturing Zoom audio...');
+    } catch (err) {
+      console.error('Failed to capture system audio:', err);
+    }
+  }, []);
+
+  // ─── Public API ───────────────────────────────────────────
+
+  const startListening = useCallback(() => {
+    if (audioSource === 'system') {
+      startSystemAudioListening();
+    } else {
+      startMicListening();
+    }
+  }, [audioSource, startMicListening, startSystemAudioListening]);
+
   const stopListening = useCallback(() => {
     isListeningRef.current = false;
+
+    // Stop mic mode
     if (recognitionRef.current) {
       recognitionRef.current.onend = null;
       recognitionRef.current.stop();
       recognitionRef.current = null;
     }
+
+    // Stop system audio mode
+    if (chunkTimerRef.current) {
+      clearInterval(chunkTimerRef.current);
+      chunkTimerRef.current = null;
+    }
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      mediaRecorderRef.current.requestData(); // Get final chunk
+      mediaRecorderRef.current.stop();
+      mediaRecorderRef.current = null;
+    }
+    if (mediaStreamRef.current) {
+      mediaStreamRef.current.getTracks().forEach(t => t.stop());
+      mediaStreamRef.current = null;
+    }
+
     setIsListening(false);
     setInterimText('');
   }, []);
@@ -154,15 +264,36 @@ export function useCallListening(): UseCallListeningReturn {
     setTranscript([]);
     setInterimText('');
     segmentCounterRef.current = 0;
+    audioChunksRef.current = [];
+    setHasAudioChunk(false);
+  }, []);
+
+  /** Collect accumulated audio chunks as a single blob for server-side transcription */
+  const getAndClearAudioChunk = useCallback(async (): Promise<Blob | null> => {
+    if (audioChunksRef.current.length === 0) return null;
+
+    const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+    audioChunksRef.current = [];
+    setHasAudioChunk(false);
+    return blob;
   }, []);
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
+      isListeningRef.current = false;
       if (recognitionRef.current) {
-        isListeningRef.current = false;
         recognitionRef.current.onend = null;
         recognitionRef.current.abort();
+      }
+      if (chunkTimerRef.current) {
+        clearInterval(chunkTimerRef.current);
+      }
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+        mediaRecorderRef.current.stop();
+      }
+      if (mediaStreamRef.current) {
+        mediaStreamRef.current.getTracks().forEach(t => t.stop());
       }
     };
   }, []);
@@ -170,10 +301,15 @@ export function useCallListening(): UseCallListeningReturn {
   return {
     isListening,
     isSupported,
+    isSystemAudioSupported,
+    audioSource,
+    setAudioSource,
     transcript,
     interimText,
     startListening,
     stopListening,
     clearTranscript,
+    getAndClearAudioChunk,
+    hasAudioChunk,
   };
 }
