@@ -32,6 +32,7 @@ import HelpfulReinforcementNudge from '@/components/HelpfulReinforcementNudge';
 import DemoPermissionGate from '@/components/DemoPermissionGate';
 import RecapSummary from '@/components/RecapSummary';
 import ObjectionGuide from '@/components/ObjectionGuide';
+import CallListeningPanel from '@/components/CallListeningPanel';
 import {
   Dialog,
   DialogContent,
@@ -355,10 +356,20 @@ export default function Home() {
     <div className="min-h-screen bg-background py-8 md:py-12">
       {/* Floating objection quick access button */}
       <ObjectionQuickAccess />
-      
+
       {/* Live notes with AI guidance */}
       <SalesCoach currentStep={currentStepId} answers={answers} />
-      
+
+      {/* Call listening & auto-fill panel */}
+      {currentStep?.questions && currentStep.questions.length > 0 && (
+        <CallListeningPanel
+          questions={currentStep.questions}
+          currentStepId={currentStepId}
+          answers={answers}
+          onAcceptSuggestion={handleAnswer}
+        />
+      )}
+
       {/* Customer answers tracker - always visible */}
       <CustomerAnswersTracker answers={answers} currentStepId={currentStepId} />
       
