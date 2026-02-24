@@ -9,7 +9,7 @@ import { motion } from 'framer-motion';
 import { Question } from '@/lib/salesFlow';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface QuestionCardProps {
   question: Question;
@@ -19,6 +19,22 @@ interface QuestionCardProps {
 
 export default function QuestionCard({ question, onAnswer, currentAnswer }: QuestionCardProps) {
   const [selectedValue, setSelectedValue] = useState<string>(currentAnswer || '');
+  const [justAutoFilled, setJustAutoFilled] = useState(false);
+  const prevAnswerRef = useRef(currentAnswer);
+
+  // Sync with externally-changed answers (e.g. auto-fill from call listening)
+  useEffect(() => {
+    if (currentAnswer !== undefined && currentAnswer !== prevAnswerRef.current) {
+      setSelectedValue(currentAnswer);
+      // Flash highlight on auto-fill
+      if (currentAnswer && prevAnswerRef.current !== currentAnswer) {
+        setJustAutoFilled(true);
+        const timer = setTimeout(() => setJustAutoFilled(false), 2000);
+        return () => clearTimeout(timer);
+      }
+    }
+    prevAnswerRef.current = currentAnswer;
+  }, [currentAnswer]);
   
   const handleSelect = (value: string) => {
     setSelectedValue(value);
@@ -49,13 +65,29 @@ export default function QuestionCard({ question, onAnswer, currentAnswer }: Ques
       
       {/* Text or Number Input */}
       {(question.type === 'text' || question.type === 'number') && (
-        <Input
-          type={question.type}
-          placeholder={question.placeholder}
-          value={selectedValue}
-          onChange={(e) => handleSelect(e.target.value)}
-          className="text-lg py-6"
-        />
+        <div className="relative">
+          <Input
+            type={question.type}
+            placeholder={question.placeholder}
+            value={selectedValue}
+            onChange={(e) => handleSelect(e.target.value)}
+            className={`text-lg py-6 transition-all duration-500 ${
+              justAutoFilled
+                ? 'ring-2 ring-primary/60 bg-primary/5 border-primary/40'
+                : ''
+            }`}
+          />
+          {justAutoFilled && (
+            <motion.span
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-full"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              auto-filled
+            </motion.span>
+          )}
+        </div>
       )}
       
       {/* Multiple choice options */}
