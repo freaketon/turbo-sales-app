@@ -1,5 +1,6 @@
 import { Card } from '@/components/ui/card';
-import { Zap, Clock, Search, FolderTree, Sparkles, Loader2, AlertCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Zap, Clock, Search, TrendingUp, Sparkles, Loader2, AlertCircle, ExternalLink, FileText } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { trpc } from '@/lib/trpc';
 
@@ -31,66 +32,60 @@ const FEATURE_DETAILS: Record<string, {
   script: (painPoint: string) => string[];
   validation: string;
 }> = {
-  'intent-search': {
-    title: 'Intent Search',
-    icon: <Search className="w-5 h-5" />,
-    script: (pain) => [
-      `"You mentioned: ${pain}"`,
-      '"Here\'s how we\'re thinking about that."',
-      '',
-      'Show: Search: "Find the clip where pricing was mentioned in Q3."',
-      'Results appear instantly.',
-    ],
-    validation: '"Would this work for you? Could you see yourself using this?"',
-  },
-  'no-tagging': {
-    title: 'No Tagging Required',
-    icon: <Sparkles className="w-5 h-5" />,
-    script: (pain) => [
-      `"You said: ${pain}"`,
-      '',
-      '"This requires no tagging."',
-      '"No reorganization."',
-      '"We index what already exists."',
-    ],
-    validation: '"Would that remove friction for your editors?"',
-  },
-  'zero-touch': {
-    title: 'Zero-Touch Setup',
+  'outlier-feed': {
+    title: 'Outlier Feed',
     icon: <Zap className="w-5 h-5" />,
     script: (pain) => [
       `"You mentioned: ${pain}"`,
+      '"OUTLIER flags Reels outperforming their account baseline by 5â50x within the first 6 hours â before they hit the discovery page."',
       '',
-      '"We connect to your storage."',
-      '"Index your archive."',
-      '"Calibrate."',
-      '"You search."',
+      'Show: The live Outlier Feed in the demo â real-time flagged content.',
     ],
-    validation: '"Would that work for your team?"',
+    validation: '"Would this work for you? Could you see yourself using this?"',
   },
-  'archive-org': {
-    title: 'Unified Archive View',
-    icon: <FolderTree className="w-5 h-5" />,
+  'why-working': {
+    title: 'Why It\'s Working Breakdown',
+    icon: <Search className="w-5 h-5" />,
     script: (pain) => [
       `"You said: ${pain}"`,
       '',
-      '"OUTLIER creates a single search layer."',
-      '"Across all your storage."',
-      '"No migration needed."',
+      '"OUTLIER breaks down the hook, audio, format, and topic angle of every flagged Reel."',
+      '"You don\'t just see what went viral â you understand WHY."',
     ],
-    validation: '"Would that simplify things for you?"',
+    validation: '"Would that help you understand what to replicate?"',
+  },
+  'content-briefs': {
+    title: 'Content Brief Generator',
+    icon: <FileText className="w-5 h-5" />,
+    script: (pain) => [
+      `"You mentioned: ${pain}"`,
+      '',
+      '"Based on what\'s breaking out in your niche right now, OUTLIER generates 3 ready-to-shoot briefs."',
+      '"You go from zero ideas to 3 evidence-backed ones in under 60 seconds."',
+    ],
+    validation: '"Would this save you research time?"',
+  },
+  'trend-lifecycle': {
+    title: 'Trend Lifecycle Score',
+    icon: <TrendingUp className="w-5 h-5" />,
+    script: (pain) => [
+      `"You said: ${pain}"`,
+      '',
+      '"OUTLIER scores every trend â emerging, peaking, or saturated."',
+      '"So you know if you\'re early or too late."',
+    ],
+    validation: '"Would this help you time your posts better?"',
   },
   'time-savings': {
-    title: 'Instant Retrieval',
+    title: 'Instant Trend Intelligence',
     icon: <Clock className="w-5 h-5" />,
     script: (pain) => [
       `"You mentioned: ${pain}"`,
       '',
-      '"OUTLIER turns 20 minutes into 20 seconds."',
-      '"Natural language search."',
-      '"Instant results."',
+      '"OUTLIER replaces hours of scrolling with a single dashboard."',
+      '"Everything you need to know about what\'s working â right now."',
     ],
-    validation: '"How much would that save your team per week?"',
+    validation: '"How much time would that save you each week?"',
   },
 };
 
@@ -103,7 +98,7 @@ export default function DemoPrioritizer({ answers }: DemoPrioritizerProps) {
 
   useEffect(() => {
     // Check if we have problem-exposure answers
-    const hasProblemAnswers = Object.keys(answers).some(key => 
+    const hasProblemAnswers = Object.keys(answers).some(key =>
       key.startsWith('problem-') && answers[key]
     );
 
@@ -120,7 +115,7 @@ export default function DemoPrioritizer({ answers }: DemoPrioritizerProps) {
       {
         onSuccess: (data) => {
           const { rankedPains } = data;
-          
+
           const demoFeatures: DemoFeature[] = rankedPains.map((pain: RankedPain) => {
             const featureDetail = FEATURE_DETAILS[pain.feature];
             if (!featureDetail) return null;
@@ -175,7 +170,7 @@ export default function DemoPrioritizer({ answers }: DemoPrioritizerProps) {
     return (
       <Card className="p-6 bg-muted/30 border-border">
         <p className="text-sm text-muted-foreground">
-          💡 Complete the Problem Exposure questions (Section 2) to generate a personalized demo script
+          Complete the Problem Exposure questions (Section 2) to generate a personalized demo script
         </p>
       </Card>
     );
@@ -193,9 +188,27 @@ export default function DemoPrioritizer({ answers }: DemoPrioritizerProps) {
         </p>
       </div>
 
+      {/* OUTLIER Demo MVP Link */}
+      <div className="mb-6 p-4 rounded-xl bg-primary/10 border border-primary/30">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-semibold text-primary">Open OUTLIER Demo</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Share your screen and walk through features live</p>
+          </div>
+          <Button
+            size="sm"
+            className="gap-1.5"
+            onClick={() => window.open('https://app.outliervid.io/setup', '_blank')}
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+            Launch Demo
+          </Button>
+        </div>
+      </div>
+
       <div className="space-y-6">
         {features.map((feature, index) => (
-          <div 
+          <div
             key={`${feature.id}-${index}`}
             className="p-4 rounded-lg bg-background/50 border border-accent/20"
           >
@@ -209,8 +222,8 @@ export default function DemoPrioritizer({ answers }: DemoPrioritizerProps) {
                     Feature {index + 1}: {feature.title}
                   </h4>
                   <span className={`text-xs px-2 py-0.5 rounded-full ${
-                    feature.severity === 'high' 
-                      ? 'bg-destructive/20 text-destructive' 
+                    feature.severity === 'high'
+                      ? 'bg-destructive/20 text-destructive'
                       : feature.severity === 'medium'
                       ? 'bg-yellow-500/20 text-yellow-500'
                       : 'bg-muted text-muted-foreground'
@@ -229,11 +242,11 @@ export default function DemoPrioritizer({ answers }: DemoPrioritizerProps) {
 
             <div className="space-y-2 mb-3">
               {feature.script.map((line, i) => (
-                <p 
-                  key={i} 
+                <p
+                  key={i}
                   className={`text-sm ${
-                    line.startsWith('"') 
-                      ? 'text-foreground font-medium' 
+                    line.startsWith('"')
+                      ? 'text-foreground font-medium'
                       : 'text-muted-foreground italic'
                   }`}
                 >
@@ -253,7 +266,7 @@ export default function DemoPrioritizer({ answers }: DemoPrioritizerProps) {
 
       <div className="mt-4 p-3 rounded-lg bg-muted/50">
         <p className="text-xs text-muted-foreground">
-          💡 <strong>After each feature:</strong> Validate → Surface objections → Handle with Acknowledge/Agree/Reframe → Circle back
+          <strong>After each feature:</strong> Validate â Surface objections â Handle with Acknowledge/Agree/Reframe â Circle back
         </p>
       </div>
     </Card>
