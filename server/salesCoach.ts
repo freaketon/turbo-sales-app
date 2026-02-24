@@ -376,7 +376,7 @@ INSTRUCTIONS:
 - For "number" type questions: extract just the number.
 - For "binary" or "multiple" type questions: match to the closest option value from the provided options.
 - Only include questions where you found a clear answer in the transcript. Skip questions with no clear answer.
-- Be conservative — only extract answers you're confident about from what the prospect actually said.
+- Be conservative â only extract answers you're confident about from what the prospect actually said.
 
 Return ONLY a JSON array of extracted answers:
 [
@@ -506,7 +506,7 @@ INSTRUCTIONS:
 - For "number" type questions: extract just the number.
 - For "binary" or "multiple" type questions: match to the closest option value.
 - Only include questions where you found a clear answer. Skip unclear ones.
-- Be conservative — only extract answers you're confident about.
+- Be conservative â only extract answers you're confident about.
 
 Return ONLY valid JSON in this format:
 {
@@ -550,6 +550,120 @@ Return ONLY the JSON, no other text.`;
       } catch (error) {
         console.error("Failed to transcribe and extract:", error);
         return { transcript: '', suggestions: [] };
+      }
+    }),
+
+  // ─── Grade the seller's performance on the call ───
+  gradeCall: publicProcedure
+    .input(
+      z.object({
+        fullTranscript: z.string(),
+        answers: z.record(z.string(), z.string()),
+        outcome: z.enum(['qualified', 'disqualified', 'in-progress']),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { fullTranscript, answers, outcome } = input;
+
+      if (!fullTranscript.trim()) {
+        return {
+          overallGrade: 'N/A',
+          overallScore: 0,
+          categories: [],
+          strengths: [],
+          improvements: [],
+          summary: 'No transcript available for grading.',
+        };
+      }
+
+      const gradingPrompt = `You are grading a sales call based on the OUTLIER 12-section discovery call framework.
+
+FULL CALL TRANSCRIPT:
+"""
+${fullTranscript}
+"""
+
+ANSWERS CAPTURED:
+${Object.entries(answers).map(([k, v]) => `- ${k}: ${v}`).join('\n')}
+
+CALL OUTCOME: ${outcome}
+
+Grade the seller's performance on these categories (0-10 each):
+
+1. **Call Structure** - Did they follow the 12-section flow? (Frame > Problem Exposure > Alternatives > Dream Outcome > Price Anchor > Transition > Demo > Impact > Recap > Availability > Offer > Close)
+2. **Discovery Quality** - Did they ask open-ended questions? Let the prospect talk? Capture exact words? Ask ALL the key questions from Section 2?
+3. **Mirror Technique** - Did they mirror back the prospect's words? Use "So what I'm hearing is..." statements? Get confirmation?
+4. **Objection Handling** - When objections came up, did they use ACR (Acknowledge > Clarify > Reframe)? Did they re-close after handling?
+5. **Value Building** - Did they anchor price BEFORE the demo (Section 5)? Calculate ROI live (Section 8)? Let the impact numbers sink in?
+6. **Close Execution** - Did they do the soft close (Section 10)? Present the offer deliberately with lower tone (Section 11)? Stay SILENT after presenting? Handle the close properly (Section 12)?
+7. **Coaching Principles** - Did they talk less and listen more? Anchor cost of inaction before price? Control scope? Disqualify fast if not a fit?
+
+Return ONLY valid JSON:
+{
+  "categories": [
+    { "name": "Call Structure", "score": 8, "notes": "brief explanation" },
+    { "name": "Discovery Quality", "score": 7, "notes": "brief explanation" },
+    { "name": "Mirror Technique", "score": 6, "notes": "brief explanation" },
+    { "name": "Objection Handling", "score": 7, "notes": "brief explanation" },
+    { "name": "Value Building", "score": 5, "notes": "brief explanation" },
+    { "name": "Close Execution", "score": 8, "notes": "brief explanation" },
+    { "name": "Coaching Principles", "score": 7, "notes": "brief explanation" }
+  ],
+  "strengths": ["strength 1", "strength 2", "strength 3"],
+  "improvements": ["improvement 1", "improvement 2", "improvement 3"],
+  "summary": "2-3 sentence overall assessment"
+}`;
+
+      try {
+        const response = await invokeLLM({
+          messages: [
+            {
+              role: "system",
+              content: "You are an expert sales coach who grades sales calls based on the OUTLIER 12-section discovery framework. You provide honest, actionable scoring and feedback. Grade fairly but push for excellence.",
+            },
+            { role: "user", content: gradingPrompt },
+          ],
+        });
+
+        const content = response.choices[0]?.message?.content || '{}';
+        const contentStr = typeof content === 'string' ? content : '';
+        const jsonMatch = contentStr.match(/\{[\s\S]*\}/);
+        const parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : { categories: [], strengths: [], improvements: [], summary: 'Grading failed.' };
+
+        const categories = parsed.categories || [];
+        const totalScore = categories.reduce((sum, c) => sum + (c.score || 0), 0);
+        const avgScore = categories.length > 0 ? totalScore / categories.length : 0;
+
+        let overallGrade = 'F';
+        if (avgScore >= 9) overallGrade = 'A';
+        else if (avgScore >= 8) overallGrade = 'B+';
+        else if (avgScore >= 7) overallGrade = 'B';
+        else if (avgScore >= 6) overallGrade = 'C+';
+        else if (avgScore >= 5) overallGrade = 'C';
+        else if (avgScore >= 4) overallGrade = 'D';
+
+        return {
+          overallGrade,
+          overallScore: Math.round(avgScore * 10) / 10,
+          categories: categories.map((c) => ({
+            name: c.name || '',
+            score: c.score || 0,
+            notes: c.notes || '',
+          })),
+          strengths: parsed.strengths || [],
+          improvements: parsed.improvements || [],
+          summary: parsed.summary || '',
+        };
+      } catch (error) {
+        console.error("Failed to grade call:", error);
+        return {
+          overallGrade: 'N/A',
+          overallScore: 0,
+          categories: [],
+          strengths: [],
+          improvements: [],
+          summary: 'Grading failed due to an error.',
+        };
       }
     }),
 });
