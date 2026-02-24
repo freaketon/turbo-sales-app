@@ -109,161 +109,184 @@ export type ResponseFormat =
   | { type: "text" }
   | { type: "json_object" }
   | { type: "json_schema"; json_schema: JsonSchema };
-
-const ensureArray = (
-  value: MessageContent | MessageContent[]
-): MessageContent[] => (Array.isArray(value) ? value : [value]);
-
-const normalizeContentPart = (
-  part: MessageContent
-): TextContent | ImageContent | FileContent => {
-  if (typeof part === "string") {
-    return { type: "text", text: part };
-  }
-
-  if (part.type === "text") {
-    return part;
-  }
-
-  if (part.type === "image_url") {
-    return part;
-  }
-
-  if (part.type === "file_url") {
-    return part;
-  }
-
-  throw new Error("Unsupported message content part");
-};
-
-const normalizeMessage = (message: Message) => {
-  const { role, name, tool_call_id } = message;
-
-  if (role === "tool" || role === "function") {
-    const content = ensureArray(message.content)
-      .map(part => (typeof part === "string" ? part : JSON.stringify(part)))
-      .join("\n");
-
-    return {
-      role,
-      name,
-      tool_call_id,
-      content,
-    };
-  }
-
-  const contentParts = ensureArray(message.content).map(normalizeContentPart);
-
-  // If there's only text content, collapse to a single string for compatibility
-  if (contentParts.length === 1 && contentParts[0].type === "text") {
-    return {
-      role,
-      name,
-      content: contentParts[0].text,
-    };
-  }
-
-  return {
-    role,
-    name,
-    content: contentParts,
-  };
-};
-
-const normalizeToolChoice = (
-  toolChoice: ToolChoice | undefined,
-  tools: Tool[] | undefined
-): "none" | "auto" | ToolChoiceExplicit | undefined => {
-  if (!toolChoice) return undefined;
-
-  if (toolChoice === "none" || toolChoice === "auto") {
-    return toolChoice;
-  }
-
-  if (toolChoice === "required") {
-    if (!tools || tools.length === 0) {
-      throw new Error(
-        "tool_choice 'required' was provided but no tools were configured"
-      );
-    }
-
-    if (tools.length > 1) {
-      throw new Error(
-        "tool_choice 'required' needs a single tool or specify the tool name explicitly"
-      );
-    }
-
-    return {
-      type: "function",
-      function: { name: tools[0].function.name },
-    };
-  }
-
-  if ("name" in toolChoice) {
-    return {
-      type: "function",
-      function: { name: toolChoice.name },
-    };
-  }
-
-  return toolChoice;
-};
-
-const resolveApiUrl = () =>
-  ENV.forgeApiUrl && ENV.forgeApiUrl.trim().length > 0
-    ? `${ENV.forgeApiUrl.replace(/\/$/, "")}/v1/chat/completions`
-    : "https://forge.manus.im/v1/chat/completions";
-
 const assertApiKey = () => {
   if (!ENV.forgeApiKey) {
-    throw new Error("OPENAI_API_KEY is not configured");
+    throw new Error("ANTHROPIC_API_KEY is not configured (set BUILT_IN_FORGE_API_KEY)");
   }
 };
 
-const normalizeResponseFormat = ({
-  responseFormat,
-  response_format,
-  outputSchema,
-  output_schema,
-}: {
-  responseFormat?: ResponseFormat;
-  response_format?: ResponseFormat;
-  outputSchema?: OutputSchema;
-  output_schema?: OutputSchema;
-}):
-  | { type: "json_schema"; json_schema: JsonSchema }
-  | { type: "text" }
-  | { type: "json_object" }
-  | undefined => {
-  const explicitFormat = responseFormat || response_format;
-  if (explicitFormat) {
-    if (
-      explicitFormat.type === "json_schema" &&
-      !explicitFormat.json_schema?.schema
-    ) {
-      throw new Error(
-        "responseFormat json_schema requires a defined schema object"
-      );
+// Convert OpenAI-style messages to Anthropic format
+function convertToAnthropicMessages(messages: Message[]): {
+  system: string;
+  anthropicMessages: Array<{ role: string; content: any }>;
+} {
+  let system = "";
+  const anthropicMessages: Array<{ role: string; content: any }> = [];
+
+  for (const msg of messages) {
+    if (msg.role === "system") {
+      const content = Array.isArray(msg.content)
+        ? msg.content
+            .map((c) => (typeof c === "string" ? c : "text" in c ? c.text : ""))
+            .join("\n")
+        : typeof msg.content === "string"
+        ? msg.content
+        : "";
+      system += (system ? "\n\n" : "") + content;
+      continue;
     }
-    return explicitFormat;
+
+    if (msg.role === "user" || msg.role === "assistant") {
+      const contentParts = Array.isArray(msg.content)
+        ? msg.content
+        : [msg.content];
+
+      const anthropicContent: any[] = [];
+
+      for (const part of contentParts) {
+        if (typeof part === "string") {
+          anthropicContent.push({ type: "text", text: part });
+        } else if (part.type === "text") {
+          anthropicContent.push({ type: "text", text: part.text });
+        } else if (part.type === "image_url") {
+          // Convert image_url to Anthropic image format
+          const url = part.image_url.url;
+          if (url.startsWith("data:")) {
+            const match = url.match(/^data:([^;]+);base64,(.+)$/);
+            if (match) {
+              anthropicContent.push({
+                type: "image",
+                source: {
+                  type: "base64",
+                  media_type: match[1],
+                  data: match[2],
+                },
+              });
+            }
+          } else {
+            anthropicContent.push({
+              type: "image",
+              source: { type: "url", url },
+            });
+          }
+        } else if (part.type === "file_url") {
+          // Convert file_url to Anthropic document/base64 format
+          const url = part.file_url.url;
+          const mimeType = part.file_url.mime_type || "application/octet-stream";
+
+          if (url.startsWith("data:")) {
+            const match = url.match(/^data:([^;]+);base64,(.+)$/);
+            if (match) {
+              const detectedMime = match[1];
+              // For PDFs, use document type
+              if (detectedMime === "application/pdf") {
+                anthropicContent.push({
+                  type: "document",
+                  source: {
+                    type: "base64",
+                    media_type: "application/pdf",
+                    data: match[2],
+                  },
+                });
+              } else {
+                // For audio and other files, include as base64 in text
+                // (Anthropic doesn't natively support audio input in Messages API)
+                anthropicContent.push({
+                  type: "text",
+                  text: `[Audio file attached: ${detectedMime}, ${Math.round(match[2].length * 0.75 / 1024)}KB. Please note: audio transcription from raw audio is not supported in this mode. The transcript will need to come from the browser's speech recognition.]`,
+                });
+              }
+            }
+          } else {
+            anthropicContent.push({
+              type: "text",
+              text: `[File reference: ${url}]`,
+            });
+          }
+        }
+      }
+
+      // If only one text part, simplify
+      if (
+        anthropicContent.length === 1 &&
+        anthropicContent[0].type === "text"
+      ) {
+        anthropicMessages.push({
+          role: msg.role,
+          content: anthropicContent[0].text,
+        });
+      } else if (anthropicContent.length > 0) {
+        anthropicMessages.push({
+          role: msg.role,
+          content: anthropicContent,
+        });
+      }
+    }
   }
 
-  const schema = outputSchema || output_schema;
-  if (!schema) return undefined;
+  return { system, anthropicMessages };
+}
 
-  if (!schema.name || !schema.schema) {
-    throw new Error("outputSchema requires both name and schema");
+// Convert Anthropic tools format
+function convertToolsToAnthropic(tools: Tool[]): any[] {
+  return tools.map((tool) => ({
+    name: tool.function.name,
+    description: tool.function.description || "",
+    input_schema: tool.function.parameters || { type: "object", properties: {} },
+  }));
+}
+
+// Convert Anthropic response to OpenAI-compatible InvokeResult
+function convertAnthropicResponse(response: any): InvokeResult {
+  let textContent = "";
+  const toolCalls: ToolCall[] = [];
+
+  for (const block of response.content || []) {
+    if (block.type === "text") {
+      textContent += block.text;
+    } else if (block.type === "tool_use") {
+      toolCalls.push({
+        id: block.id,
+        type: "function",
+        function: {
+          name: block.name,
+          arguments: JSON.stringify(block.input),
+        },
+      });
+    }
   }
 
   return {
-    type: "json_schema",
-    json_schema: {
-      name: schema.name,
-      schema: schema.schema,
-      ...(typeof schema.strict === "boolean" ? { strict: schema.strict } : {}),
-    },
+    id: response.id || "msg_" + Date.now(),
+    created: Math.floor(Date.now() / 1000),
+    model: response.model || "claude-sonnet-4-5-20250929",
+    choices: [
+      {
+        index: 0,
+        message: {
+          role: "assistant",
+          content: textContent,
+          ...(toolCalls.length > 0 ? { tool_calls: toolCalls } : {}),
+        },
+        finish_reason:
+          response.stop_reason === "end_turn"
+            ? "stop"
+            : response.stop_reason === "tool_use"
+            ? "tool_calls"
+            : response.stop_reason || "stop",
+      },
+    ],
+    usage: response.usage
+      ? {
+          prompt_tokens: response.usage.input_tokens || 0,
+          completion_tokens: response.usage.output_tokens || 0,
+          total_tokens:
+            (response.usage.input_tokens || 0) +
+            (response.usage.output_tokens || 0),
+        }
+      : undefined,
   };
-};
+}
 
 export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
   assertApiKey();
@@ -271,52 +294,45 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
   const {
     messages,
     tools,
-    toolChoice,
-    tool_choice,
-    outputSchema,
-    output_schema,
     responseFormat,
     response_format,
   } = params;
 
+  const { system, anthropicMessages } = convertToAnthropicMessages(messages);
+
+  // If response format requests JSON, add instruction to system prompt
+  const effectiveFormat = responseFormat || response_format;
+  let systemPrompt = system;
+  if (effectiveFormat) {
+    if (effectiveFormat.type === "json_object" || effectiveFormat.type === "json_schema") {
+      systemPrompt += "\n\nIMPORTANT: You MUST respond with valid JSON only. No other text, no markdown code fences, just the raw JSON.";
+    }
+  }
+
+  const apiUrl = ENV.forgeApiUrl && ENV.forgeApiUrl.trim().length > 0
+    ? `${ENV.forgeApiUrl.replace(/\/$/, "")}/v1/messages`
+    : "https://api.anthropic.com/v1/messages";
+
   const payload: Record<string, unknown> = {
-    model: "gemini-2.5-flash",
-    messages: messages.map(normalizeMessage),
+    model: "claude-sonnet-4-5-20250929",
+    max_tokens: 8192,
+    messages: anthropicMessages,
   };
 
+  if (systemPrompt) {
+    payload.system = systemPrompt;
+  }
+
   if (tools && tools.length > 0) {
-    payload.tools = tools;
+    payload.tools = convertToolsToAnthropic(tools);
   }
 
-  const normalizedToolChoice = normalizeToolChoice(
-    toolChoice || tool_choice,
-    tools
-  );
-  if (normalizedToolChoice) {
-    payload.tool_choice = normalizedToolChoice;
-  }
-
-  payload.max_tokens = 32768
-  payload.thinking = {
-    "budget_tokens": 128
-  }
-
-  const normalizedResponseFormat = normalizeResponseFormat({
-    responseFormat,
-    response_format,
-    outputSchema,
-    output_schema,
-  });
-
-  if (normalizedResponseFormat) {
-    payload.response_format = normalizedResponseFormat;
-  }
-
-  const response = await fetch(resolveApiUrl(), {
+  const response = await fetch(apiUrl, {
     method: "POST",
     headers: {
       "content-type": "application/json",
-      authorization: `Bearer ${ENV.forgeApiKey}`,
+      "x-api-key": ENV.forgeApiKey,
+      "anthropic-version": "2023-06-01",
     },
     body: JSON.stringify(payload),
   });
@@ -324,9 +340,10 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
   if (!response.ok) {
     const errorText = await response.text();
     throw new Error(
-      `LLM invoke failed: ${response.status} ${response.statusText} – ${errorText}`
+      `Anthropic API invoke failed: ${response.status} ${response.statusText} – ${errorText}`
     );
   }
 
-  return (await response.json()) as InvokeResult;
+  const anthropicResult = await response.json();
+  return convertAnthropicResponse(anthropicResult);
 }
