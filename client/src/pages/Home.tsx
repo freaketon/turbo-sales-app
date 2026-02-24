@@ -1,11 +1,9 @@
-/*
-Design: Kinetic Energy Interface
-- Hero section with animated gradient background
-- Step-by-step flow with glassmorphic cards
-- Spring physics animations throughout
+/* Design: Kinetic Energy Interface
+  - Hero section with animated gradient background
+  - Step-by-step flow with glassmorphic cards
+  - Spring physics animations throughout
 */
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -22,7 +20,7 @@ import MirrorBox from '@/components/MirrorBox';
 import CustomerAnswersTracker from '@/components/CustomerAnswersTracker';
 import DemoPrioritizer from '@/components/DemoPrioritizer';
 import ImprovedObjectionHandler from '@/components/ImprovedObjectionHandler';
-import ObjectionQuickAccess from '@/components/ObjectionQuickAccess';
+import ObjectionQuickAccess from 'A/components/ObjectionQuickAccess';
 import CostCalculator from '@/components/CostCalculator';
 import AnswersSidebar from '@/components/AnswersSidebar';
 import { SalesCoach } from '@/components/SalesCoach';
@@ -33,22 +31,23 @@ import DemoPermissionGate from '@/components/DemoPermissionGate';
 import RecapSummary from '@/components/RecapSummary';
 import ObjectionGuide from '@/components/ObjectionGuide';
 import CallListeningPanel from '@/components/CallListeningPanel';
+import { trpc } from '@/lib/trpc';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { 
-  MessageSquare, 
-  AlertTriangle, 
-  CheckCircle2, 
-  Zap, 
-  Lightbulb, 
-  Gift, 
-  Target, 
-  Shield, 
-  XCircle, 
+import {
+  MessageSquare,
+  AlertTriangle,
+  CheckCircle2,
+  Zap,
+  Lightbulb,
+  Gift,
+  Target,
+  Shield,
+  XCircle,
   PartyPopper,
   RotateCcw,
   DollarSign,
@@ -57,13 +56,15 @@ import {
   BarChart3,
   FileDown,
   Moon,
-  Sun
+  Sun,
+  Loader2
 } from 'lucide-react';
 
 const STORAGE_KEY = 'outlier-sales-call-data';
 
 export default function Home() {
   const { theme, toggleTheme } = useTheme();
+
   // Load from localStorage on mount
   const loadFromStorage = () => {
     try {
@@ -76,20 +77,30 @@ export default function Home() {
     }
     return null;
   };
-
   const savedData = loadFromStorage();
-  
+
   // Validate saved step ID exists in new flow, otherwise reset to frame-call
-  const validatedStepId = savedData?.currentStepId && getStepById(savedData.currentStepId) 
-    ? savedData.currentStepId 
+  const validatedStepId = savedData?.currentStepId && getStepById(savedData.currentStepId)
+    ? savedData.currentStepId
     : 'frame-call';
-  
+
   const [currentStepId, setCurrentStepId] = useState<string>(validatedStepId);
   const [answers, setAnswers] = useState<Record<string, string>>(savedData?.answers || {});
   const [qualified, setQualified] = useState<boolean | null>(null);
-  
+
+  // âââ Full transcript accumulation for grading âââ
+  const [fullTranscript, setFullTranscript] = useState<string>('');
+  const [isGrading, setIsGrading] = useState(false);
+
+  const handleTranscriptChunk = useCallback((text: string) => {
+    setFullTranscript(prev => prev + text);
+  }, []);
+
+  // tRPC gradeCall mutation
+  const gradeCallMutation = trpc.salesCoach.gradeCall.useMutation();
+
   const currentStep = getStepById(currentStepId);
-  
+
   const stepIcons: Record<StepType, React.ReactNode> = {
     'frame-call': <MessageSquare className="w-6 h-6" />,
     'problem-exposure': <AlertTriangle className="w-6 h-6" />,
@@ -106,17 +117,14 @@ export default function Home() {
     disqualify: <XCircle className="w-6 h-6" />,
     success: <PartyPopper className="w-6 h-6" />
   };
-  
+
   const [callStarted, setCallStarted] = useState(savedData?.callStarted || false);
   const [objectionGuideOpen, setObjectionGuideOpen] = useState(false);
-  const [prospectInfo, setProspectInfo] = useState(savedData?.prospectInfo || {
-    name: '',
-    company: '',
-    email: ''
-  });
+  const [prospectInfo, setProspectInfo] = useState(savedData?.prospectInfo || { name: '', company: '', email: '' });
+
   const currentStepIndex = salesFlow.findIndex(s => s.id === currentStepId);
   const totalSteps = salesFlow.length;
-  
+
   // Save to localStorage whenever state changes
   useEffect(() => {
     const dataToSave = {
@@ -132,20 +140,20 @@ export default function Home() {
       console.error('Failed to save to localStorage:', error);
     }
   }, [currentStepId, answers, callStarted, prospectInfo]);
-  
+
   useEffect(() => {
     // Scroll to top when step changes
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [currentStepId]);
-  
+
   const handleAnswer = (questionId: string, answer: string) => {
     const newAnswers = { ...answers, [questionId]: answer };
     setAnswers(newAnswers);
-    
+
     // Find the question and check for next step override or disqualifying answer
     const question = currentStep?.questions?.find(q => q.id === questionId);
     const selectedOption = question?.options?.find(o => o.value === answer);
-    
+
     if (selectedOption?.nextStep) {
       // Explicit next step override
       setTimeout(() => {
@@ -158,13 +166,13 @@ export default function Home() {
       }, 500); // Slightly longer delay to show the selection
     }
   };
-  
+
   const handleNext = () => {
     if (currentStep?.nextStep) {
       setCurrentStepId(currentStep.nextStep);
     }
   };
-  
+
   const handleBack = () => {
     // Find the previous step in the flow
     const currentIndex = salesFlow.findIndex(s => s.id === currentStepId);
@@ -172,40 +180,68 @@ export default function Home() {
       setCurrentStepId(salesFlow[currentIndex - 1].id);
     }
   };
-  
+
   const canGoBack = () => {
     const currentIndex = salesFlow.findIndex(s => s.id === currentStepId);
     // Can't go back from first step, disqualify, or success
     return currentIndex > 0 && currentStepId !== 'disqualify' && currentStepId !== 'success';
   };
-  
+
+  // âââ Grade + Export flow âââ
+  const handleGradeAndExport = async (outcome: 'qualified' | 'disqualified' | 'in-progress') => {
+    setIsGrading(true);
+    try {
+      const grading = await gradeCallMutation.mutateAsync({
+        fullTranscript,
+        answers,
+        outcome,
+      });
+
+      exportCallToPDF({
+        prospectInfo,
+        answers,
+        outcome,
+        grading,
+        fullTranscript: fullTranscript.trim() || undefined,
+      });
+    } catch (error) {
+      console.error('Grading failed, exporting without grade:', error);
+      // Fallback: export without grading
+      exportCallToPDF({
+        prospectInfo,
+        answers,
+        outcome,
+        fullTranscript: fullTranscript.trim() || undefined,
+      });
+    } finally {
+      setIsGrading(false);
+    }
+  };
+
   const handleRestart = () => {
     // Save to history before restarting if call was started
     if (callStarted && (prospectInfo.name || prospectInfo.company)) {
-      const outcome = currentStepId === 'success' ? 'qualified' as const : 
-                      currentStepId === 'disqualify' ? 'disqualified' as const : 
-                      'in-progress' as const;
-      
+      const outcome = currentStepId === 'success'
+        ? 'qualified' as const
+        : currentStepId === 'disqualify'
+          ? 'disqualified' as const
+          : 'in-progress' as const;
+
       // Calculate cost analysis if available
       let costAnalysis;
       const editors = answers['cost-editors'] ? parseInt(answers['cost-editors']) : null;
-      const hoursPerWeek = answers['cost-hours'] === '3-5' ? 4 : 
-                           answers['cost-hours'] === '6-10' ? 8 : 
-                           answers['cost-hours'] === '10+' ? 12 : null;
+      const hoursPerWeek = answers['cost-hours'] === '3-5' ? 4
+        : answers['cost-hours'] === '6-10' ? 8
+        : answers['cost-hours'] === '10+' ? 12
+        : null;
       const ratePerHour = answers['cost-rate'] ? parseInt(answers['cost-rate']) : null;
-      
+
       if (editors && hoursPerWeek && ratePerHour) {
         const annualCost = editors * hoursPerWeek * ratePerHour * 48;
         const monthlyCost = annualCost / 12;
-        costAnalysis = {
-          editors,
-          hoursPerWeek,
-          ratePerHour,
-          annualCost,
-          monthlyCost
-        };
+        costAnalysis = { editors, hoursPerWeek, ratePerHour, annualCost, monthlyCost };
       }
-      
+
       const callRecord: CallRecord = {
         id: nanoid(),
         timestamp: new Date().toISOString(),
@@ -219,14 +255,14 @@ export default function Home() {
         answers,
         costAnalysis
       };
-      
       saveCallToHistory(callRecord);
     }
-    
+
     setCurrentStepId('frame-call');
     setAnswers({});
     setCallStarted(false);
     setProspectInfo({ name: '', company: '', email: '' });
+    setFullTranscript('');
     // Clear localStorage
     try {
       localStorage.removeItem(STORAGE_KEY);
@@ -234,7 +270,7 @@ export default function Home() {
       console.error('Failed to clear localStorage:', error);
     }
   };
-  
+
   if (!callStarted) {
     return (
       <div className="min-h-screen relative overflow-hidden bg-background">
@@ -243,39 +279,27 @@ export default function Home() {
             className="max-w-3xl w-full text-center"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{
-              type: 'spring',
-              stiffness: 300,
-              damping: 20
-            }}
+            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
           >
             <motion.div
               className="inline-block mb-8"
               animate={{
                 scale: [1, 1.02, 1],
               }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: 'easeInOut'
-              }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
             >
-              <img 
-                src="/logowordmark.png" 
-                alt="OUTLIER" 
-                className="w-64 md:w-80 mx-auto"
-              />
+              <img src="/logowordmark.png" alt="OUTLIER" className="w-64 md:w-80 mx-auto" />
             </motion.div>
-            
+
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
               <span className="text-foreground">Sales Call Guide</span>
             </h1>
-            
+
             <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-              Your step-by-step companion for founder-to-founder sales calls.
-              Navigate discovery, qualification, and objection handling with confidence.
+              Your step-by-step companion for founder-to-founder sales calls. Navigate
+              discovery, qualification, and objection handling with confidence.
             </p>
-            
+
             <div className="glass-card rounded-2xl p-8 mb-8 text-left">
               <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
                 <CheckCircle2 className="w-5 h-5 text-accent" />
@@ -283,32 +307,32 @@ export default function Home() {
               </h3>
               <ul className="space-y-3 text-foreground/80">
                 <li className="flex items-start gap-3">
-                  <span className="text-primary mt-1">•</span>
+                  <span className="text-primary mt-1">â¢</span>
                   <span><strong>Opening:</strong> Binary question to surface pain immediately</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="text-primary mt-1">•</span>
+                  <span className="text-primary mt-1">â¢</span>
                   <span><strong>Problem Install:</strong> Quantify the "Invisible Tax" with real numbers</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="text-primary mt-1">•</span>
+                  <span className="text-primary mt-1">â¢</span>
                   <span><strong>Qualification:</strong> Hard gates to identify true fit</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="text-primary mt-1">•</span>
+                  <span className="text-primary mt-1">â¢</span>
                   <span><strong>Urgency Check:</strong> Separate real buyers from curious browsers</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="text-primary mt-1">•</span>
+                  <span className="text-primary mt-1">â¢</span>
                   <span><strong>The Offer:</strong> Founders Circle with Double-Win Guarantee</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="text-primary mt-1">•</span>
+                  <span className="text-primary mt-1">â¢</span>
                   <span><strong>Objection Handling:</strong> Diagnose and respond to trust, timing, or money concerns</span>
                 </li>
               </ul>
             </div>
-            
+
             {/* Simple Start Button */}
             <Button
               size="lg"
@@ -321,20 +345,12 @@ export default function Home() {
               </span>
               <motion.div
                 className="absolute inset-0 bg-gradient-to-r from-primary via-secondary to-primary"
-                animate={{
-                  backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: 'linear'
-                }}
-                style={{
-                  backgroundSize: '200% 200%'
-                }}
+                animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+                style={{ backgroundSize: '200% 200%' }}
               />
             </Button>
-            
+
             <p className="text-sm text-muted-foreground mt-4">
               Jump straight into the call. You'll capture prospect details at the end.
             </p>
@@ -343,7 +359,7 @@ export default function Home() {
       </div>
     );
   }
-  
+
   if (!currentStep) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -351,7 +367,7 @@ export default function Home() {
       </div>
     );
   }
-  
+
   return (
     <div className="min-h-screen bg-background py-8 md:py-12">
       {/* Floating objection quick access button */}
@@ -367,23 +383,21 @@ export default function Home() {
           currentStepId={currentStepId}
           answers={answers}
           onAcceptSuggestion={handleAnswer}
+          onTranscriptChunk={handleTranscriptChunk}
         />
       )}
 
       {/* Customer answers tracker - always visible */}
       <CustomerAnswersTracker answers={answers} currentStepId={currentStepId} />
-      
+
       {/* Answers sidebar */}
       <AnswersSidebar answers={answers} prospectInfo={prospectInfo} />
+
       <div className="container max-w-4xl lg:pr-[340px]">
         {/* Header with restart button */}
         <div className="flex flex-col sm:flex-row items-start justify-between mb-8 gap-4">
           <div className="flex flex-col items-start gap-1">
-            <img 
-              src="/logowordmark.png" 
-              alt="OUTLIER" 
-              className="w-32 md:w-40"
-            />
+            <img src="/logowordmark.png" alt="OUTLIER" className="w-32 md:w-40" />
             <h1 className="text-lg md:text-xl font-bold text-foreground">
               Sales Guide
             </h1>
@@ -427,27 +441,30 @@ export default function Home() {
             <Button
               variant="default"
               size="sm"
-              onClick={() => {
+              disabled={isGrading}
+              onClick={async () => {
                 // Determine outcome based on current step
-                const outcome = currentStepId === 'success' ? 'qualified' as const : 
-                                currentStepId === 'disqualify' ? 'disqualified' as const : 
-                                'in-progress' as const;
-                
-                // Export PDF
-                exportCallToPDF({
-                  prospectInfo,
-                  answers,
-                  outcome
-                });
-                
+                const outcome = currentStepId === 'success'
+                  ? 'qualified' as const
+                  : currentStepId === 'disqualify'
+                    ? 'disqualified' as const
+                    : 'in-progress' as const;
+
+                // Grade + Export PDF
+                await handleGradeAndExport(outcome);
+
                 // Then restart
                 setTimeout(() => handleRestart(), 500);
               }}
               className="gap-2"
             >
-              <FileDown className="w-4 h-4" />
-              <span className="hidden sm:inline">Close Call & Export</span>
-              <span className="sm:hidden">Close</span>
+              {isGrading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <FileDown className="w-4 h-4" />
+              )}
+              <span className="hidden sm:inline">{isGrading ? 'Grading...' : 'Close Call & Export'}</span>
+              <span className="sm:hidden">{isGrading ? 'Grading...' : 'Close'}</span>
             </Button>
             <Button
               variant="outline"
@@ -462,14 +479,14 @@ export default function Home() {
             </Button>
           </div>
         </div>
-        
+
         {/* Progress indicator */}
         <ProgressIndicator
           currentStep={currentStepIndex + 1}
           totalSteps={totalSteps}
           stepTitle={currentStep.title}
         />
-        
+
         {/* Main step card - with special layout for impact-measurement */}
         <AnimatePresence mode="wait">
           {currentStep.id === 'impact-measurement' ? (
@@ -482,13 +499,12 @@ export default function Home() {
                   subtitle={currentStep.subtitle}
                   icon={stepIcons[currentStep.type]}
                 />
-                
                 <StepContent content={currentStep.content} />
-            
+
                 {currentStep.scriptLines && currentStep.scriptLines.length > 0 && (
                   <ScriptBox lines={currentStep.scriptLines} />
                 )}
-                
+
                 {currentStep.questions && currentStep.questions.length > 0 && (
                   <div className="mb-6">
                     {currentStep.questions.map((question) => (
@@ -501,11 +517,11 @@ export default function Home() {
                     ))}
                   </div>
                 )}
-            
+
                 {currentStep.tips && currentStep.tips.length > 0 && (
                   <TipsBox tips={currentStep.tips} />
                 )}
-                
+
                 {/* Navigation buttons */}
                 {currentStep.nextStep && (!currentStep.questions || (currentStep.questions && currentStep.questions.every(q => answers[q.id]))) && (
                   <motion.div
@@ -515,27 +531,18 @@ export default function Home() {
                     transition={{ delay: 0.5 }}
                   >
                     {canGoBack() && (
-                      <Button
-                        size="lg"
-                        variant="outline"
-                        onClick={handleBack}
-                        className="gap-2"
-                      >
+                      <Button size="lg" variant="outline" onClick={handleBack} className="gap-2">
                         Back
                       </Button>
                     )}
-                    <Button
-                      size="lg"
-                      onClick={handleNext}
-                      className="gap-2 group ml-auto"
-                    >
+                    <Button size="lg" onClick={handleNext} className="gap-2 group ml-auto">
                       Continue
                       <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </motion.div>
                 )}
               </StepCard>
-              
+
               {/* Right: Sticky Calculator */}
               <div className="lg:sticky lg:top-6 lg:self-start">
                 <CostCalculator
@@ -553,9 +560,8 @@ export default function Home() {
                 subtitle={currentStep.subtitle}
                 icon={stepIcons[currentStep.type]}
               />
-              
               <StepContent content={currentStep.content} />
-              
+
               {/* Call Frame Opener for frame-call step */}
               {currentStep.id === 'frame-call' && (
                 <div className="mb-6">
@@ -565,58 +571,59 @@ export default function Home() {
                   />
                 </div>
               )}
-              
+
               {/* Curiosity Tonality Coach for discovery steps */}
               {['problem-exposure', 'alternative-solutions', 'dream-outcome'].includes(currentStep.id) && (
                 <div className="mb-6">
                   <CuriosityTonalityCoach />
                 </div>
               )}
-              
+
               {/* Helpful Reinforcement Nudge for discovery steps */}
               {['problem-exposure', 'alternative-solutions', 'dream-outcome'].includes(currentStep.id) && (
                 <div className="mb-6">
                   <HelpfulReinforcementNudge />
                 </div>
               )}
-              
+
               {/* Demo Permission Gate before demo */}
               {currentStep.id === 'transition-demo' && (
                 <div className="mb-6">
                   <DemoPermissionGate onPermissionGranted={() => {}} />
                 </div>
               )}
-              
+
               {/* Payment link for success step */}
               {currentStep.id === 'success' && (
                 <PaymentLink url="https://pay.outlierbroll.com/b/dRmaEZehHahQ4aFh268IU00" />
               )}
-              
+
               {/* Objection handler for objection step */}
               {currentStep.id === 'objection' && (
                 <ImprovedObjectionHandler />
               )}
-              
+
               {/* Demo prioritizer for demo-ask-loop step */}
               {currentStep.id === 'demo-ask-loop' && (
                 <DemoPrioritizer answers={answers} />
               )}
-              
+
               {/* Recap Summary for recap step - auto-populates from all mirrors */}
               {currentStep.id === 'recap' && (
                 <div className="mb-6">
                   <RecapSummary answers={answers} />
                 </div>
               )}
-              
 
               {/* Only show script lines if there are NO questions (questions ARE the script) */}
               {/* Also exclude frame-call since it has CallFrameOpener component */}
               {/* EXCEPT for the-offer which needs to show verbatim bullets */}
-              {currentStep.scriptLines && currentStep.scriptLines.length > 0 && (!currentStep.questions || currentStep.id === 'the-offer') && currentStep.id !== 'frame-call' && (
+              {currentStep.scriptLines && currentStep.scriptLines.length > 0 &&
+                (!currentStep.questions || currentStep.id === 'the-offer') &&
+                currentStep.id !== 'frame-call' && (
                 <ScriptBox lines={currentStep.scriptLines} />
               )}
-              
+
               {currentStep.questions && currentStep.questions.length > 0 && (
                 <div className="mb-6 space-y-6">
                   <div>
@@ -629,7 +636,7 @@ export default function Home() {
                       />
                     ))}
                   </div>
-                  
+
                   {/* Auto-generate mirror for steps that need it (NOT recap - that has its own component) */}
                   {['problem-exposure', 'alternative-solutions', 'dream-outcome'].includes(currentStep.id) && (
                     <MirrorBox
@@ -641,11 +648,11 @@ export default function Home() {
                   )}
                 </div>
               )}
-              
+
               {currentStep.tips && currentStep.tips.length > 0 && (
                 <TipsBox tips={currentStep.tips} />
               )}
-              
+
               {/* Export PDF button for success/disqualify steps */}
               {(currentStep.id === 'success' || currentStep.id === 'disqualify') && (
                 <motion.div
@@ -657,19 +664,22 @@ export default function Home() {
                   <Button
                     size="lg"
                     variant="outline"
-                    onClick={() => exportCallToPDF({
-                      prospectInfo,
-                      answers,
-                      outcome: currentStep.id === 'success' ? 'qualified' : 'disqualified'
-                    })}
+                    disabled={isGrading}
+                    onClick={() => handleGradeAndExport(
+                      currentStep.id === 'success' ? 'qualified' : 'disqualified'
+                    )}
                     className="gap-2 group"
                   >
-                    <FileDown className="w-5 h-5 group-hover:translate-y-0.5 transition-transform" />
-                    Export Call Summary (PDF)
+                    {isGrading ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <FileDown className="w-5 h-5 group-hover:translate-y-0.5 transition-transform" />
+                    )}
+                    {isGrading ? 'Grading & Exporting...' : 'Export Call Summary (PDF)'}
                   </Button>
                 </motion.div>
               )}
-              
+
               {/* Navigation buttons - Always show Continue button if nextStep exists */}
               {currentStep.nextStep && (
                 <motion.div
@@ -679,31 +689,21 @@ export default function Home() {
                   transition={{ delay: 0.5 }}
                 >
                   {canGoBack() && (
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      onClick={handleBack}
-                      className="gap-2"
-                    >
+                    <Button size="lg" variant="outline" onClick={handleBack} className="gap-2">
                       Back
                     </Button>
                   )}
-                  <Button
-                    size="lg"
-                    onClick={handleNext}
-                    className="gap-2 group ml-auto"
-                  >
+                  <Button size="lg" onClick={handleNext} className="gap-2 group ml-auto">
                     Continue
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </motion.div>
               )}
-
             </StepCard>
           )}
         </AnimatePresence>
       </div>
-      
+
       {/* Objection Guide Dialog - accessible from anywhere */}
       <Dialog open={objectionGuideOpen} onOpenChange={setObjectionGuideOpen}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
