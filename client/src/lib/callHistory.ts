@@ -11,7 +11,19 @@ export interface CallRecord {
   outcome: 'qualified' | 'disqualified' | 'in-progress';
   finalStep: string;
   answers: Record<string, string>;
+  fullTranscript?: string;
+  mirrorTexts?: Record<string, string>; // stepId -> mirror text generated
   costAnalysis?: {
+    hoursSearching: number;
+    missedShotsPerMonth: number;
+    costPerVideo: number;
+    monthlyFollowerGoal: number;
+    researchWaste: number;
+    productionWaste: number;
+    totalAnnualWaste: number;
+  };
+  /** @deprecated old cost model — kept for backward compat with saved history */
+  legacyCostAnalysis?: {
     editors: number;
     hoursPerWeek: number;
     ratePerHour: number;
@@ -73,8 +85,12 @@ export function calculateStats(history: CallRecord[]): CallStats {
   
   const qualificationRate = totalCalls > 0 ? (qualified / totalCalls) * 100 : 0;
   
-  const callsWithCosts = history.filter(c => c.costAnalysis);
-  const totalAnnualCost = callsWithCosts.reduce((sum, c) => sum + (c.costAnalysis?.annualCost || 0), 0);
+  const callsWithCosts = history.filter(c => c.costAnalysis || c.legacyCostAnalysis);
+  const totalAnnualCost = callsWithCosts.reduce((sum, c) => {
+    if (c.costAnalysis) return sum + c.costAnalysis.totalAnnualWaste;
+    if (c.legacyCostAnalysis) return sum + c.legacyCostAnalysis.annualCost;
+    return sum;
+  }, 0);
   const averageAnnualCost = callsWithCosts.length > 0 ? totalAnnualCost / callsWithCosts.length : 0;
   const averageMonthlyCost = averageAnnualCost / 12;
   

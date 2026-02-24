@@ -24,66 +24,88 @@ interface DemoFeature {
   script: string[];
   validation: string;
   severity: 'high' | 'medium' | 'low';
+  demoScreen: string;
+  demoAction: string;
 }
 
 const FEATURE_DETAILS: Record<string, {
   title: string;
   icon: React.ReactNode;
+  demoScreen: string; // specific screen/section on app.outliervid.io to show
+  demoAction: string; // what to do in the demo
   script: (painPoint: string) => string[];
   validation: string;
 }> = {
   'outlier-feed': {
     title: 'Outlier Feed',
     icon: <Zap className="w-5 h-5" />,
+    demoScreen: 'Dashboard → Outlier Feed tab',
+    demoAction: 'Show the live feed of flagged Reels. Click into one to show the 5-50x multiplier badge and timestamp.',
     script: (pain) => [
       `"You mentioned: ${pain}"`,
       '"OUTLIER flags Reels outperforming their account baseline by 5–50x within the first 6 hours — before they hit the discovery page."',
       '',
-      'Show: The live Outlier Feed in the demo — real-time flagged content.',
+      '👉 SHOW: Dashboard → Outlier Feed. Click a flagged Reel to show the multiplier.',
     ],
     validation: '"Would this work for you? Could you see yourself using this?"',
   },
   'why-working': {
     title: 'Why It\'s Working Breakdown',
     icon: <Search className="w-5 h-5" />,
+    demoScreen: 'Outlier Feed → Click any Reel → "Why It\'s Working" panel',
+    demoAction: 'Click into a flagged Reel and expand the breakdown: hook, audio, format, topic angle.',
     script: (pain) => [
       `"You said: ${pain}"`,
       '',
       '"OUTLIER breaks down the hook, audio, format, and topic angle of every flagged Reel."',
       '"You don\'t just see what went viral — you understand WHY."',
+      '',
+      '👉 SHOW: Click a Reel → expand "Why It\'s Working" breakdown panel.',
     ],
     validation: '"Would that help you understand what to replicate?"',
   },
   'content-briefs': {
     title: 'Content Brief Generator',
     icon: <FileText className="w-5 h-5" />,
+    demoScreen: 'Dashboard → Content Briefs section',
+    demoAction: 'Show the 3 auto-generated briefs. Click one to expand the full brief with hook, angle, and CTA.',
     script: (pain) => [
       `"You mentioned: ${pain}"`,
       '',
       '"Based on what\'s breaking out in your niche right now, OUTLIER generates 3 ready-to-shoot briefs."',
       '"You go from zero ideas to 3 evidence-backed ones in under 60 seconds."',
+      '',
+      '👉 SHOW: Content Briefs section. Click a brief to show full shoot-ready details.',
     ],
     validation: '"Would this save you research time?"',
   },
   'trend-lifecycle': {
     title: 'Trend Lifecycle Score',
     icon: <TrendingUp className="w-5 h-5" />,
+    demoScreen: 'Outlier Feed → Trend Score badge on each Reel',
+    demoAction: 'Point out the lifecycle badge (emerging/peaking/saturated) on a few Reels. Show one "emerging" vs one "saturated".',
     script: (pain) => [
       `"You said: ${pain}"`,
       '',
       '"OUTLIER scores every trend — emerging, peaking, or saturated."',
       '"So you know if you\'re early or too late."',
+      '',
+      '👉 SHOW: Compare an "Emerging" Reel vs a "Saturated" one in the feed.',
     ],
     validation: '"Would this help you time your posts better?"',
   },
   'time-savings': {
     title: 'Instant Trend Intelligence',
     icon: <Clock className="w-5 h-5" />,
+    demoScreen: 'Dashboard overview — full layout',
+    demoAction: 'Quick walkthrough of the full dashboard: feed, briefs, trends — everything in one place.',
     script: (pain) => [
       `"You mentioned: ${pain}"`,
       '',
       '"OUTLIER replaces hours of scrolling with a single dashboard."',
       '"Everything you need to know about what\'s working — right now."',
+      '',
+      '👉 SHOW: Full dashboard overview — feed + briefs + lifecycle in one view.',
     ],
     validation: '"How much time would that save you each week?"',
   },
@@ -129,6 +151,8 @@ export default function DemoPrioritizer({ answers }: DemoPrioritizerProps) {
               script: featureDetail.script(pain.painPoint),
               validation: featureDetail.validation,
               severity: pain.severity,
+              demoScreen: featureDetail.demoScreen,
+              demoAction: featureDetail.demoAction,
             };
           }).filter(Boolean) as DemoFeature[];
 
@@ -238,6 +262,15 @@ export default function DemoPrioritizer({ answers }: DemoPrioritizerProps) {
                   "{feature.evidence}"
                 </p>
               </div>
+            </div>
+
+            {/* Demo moment - what to show on app.outliervid.io */}
+            <div className="mb-3 p-3 rounded-lg bg-primary/10 border border-primary/20">
+              <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-1">
+                Demo Moment {index + 1} — Where to Navigate
+              </p>
+              <p className="text-sm font-medium text-foreground">{feature.demoScreen}</p>
+              <p className="text-xs text-muted-foreground mt-1">{feature.demoAction}</p>
             </div>
 
             <div className="space-y-2 mb-3">

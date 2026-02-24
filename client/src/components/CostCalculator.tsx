@@ -37,7 +37,7 @@ export default function CostCalculator({
     setWastedResearchCost(researchWaste);
     setWastedProductionCost(productionWaste);
     setTotalAnnualWaste(total);
-  }, [hoursSearching, missedShotsPerMonth, costPerVideo]);
+  }, [hoursSearching, missedShotsPerMonth, costPerVideo, monthlyFollowerGoal]);
 
   const hasResearch = !!hoursSearching;
   const hasProduction = missedShotsPerMonth && costPerVideo;

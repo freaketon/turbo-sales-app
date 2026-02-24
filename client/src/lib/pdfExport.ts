@@ -226,44 +226,50 @@ export function exportCallToPDF(data: ExportData): void {
     yPosition += 10;
   }
 
-  // COST ANALYSIS
-  const editors = data.answers['cost-editors'] ? parseInt(data.answers['cost-editors']) : null;
-  const hoursPerWeek = data.answers['cost-hours'] === '3-5' ? 4
-    : data.answers['cost-hours'] === '6-10' ? 8
-    : data.answers['cost-hours'] === '10+' ? 12
-    : null;
-  const ratePerHour = data.answers['cost-rate'] ? parseInt(data.answers['cost-rate']) : null;
+  // COST ANALYSIS (Content Waste Calculator)
+  const hoursSearching = data.answers['hours-searching'] ? parseInt(data.answers['hours-searching']) : null;
+  const missedShots = data.answers['missed-shots'] ? parseInt(data.answers['missed-shots']) : null;
+  const costPerVideo = data.answers['cost-per-video'] ? parseInt(data.answers['cost-per-video']) : null;
+  const monthlyFollowerGoal = data.answers['monthly-follower-goal'] ? parseInt(data.answers['monthly-follower-goal']) : null;
 
-  if (editors && hoursPerWeek && ratePerHour) {
-    checkPageBreak(40);
-    const annualCost = editors * hoursPerWeek * ratePerHour * 48;
-    const monthlyCost = annualCost / 12;
+  if (hoursSearching && missedShots && costPerVideo) {
+    checkPageBreak(50);
+    const researchWaste = hoursSearching * 75 * 48;
+    const productionWaste = missedShots * costPerVideo * 12;
+    const totalAnnualWaste = researchWaste + productionWaste;
 
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(0, 0, 0);
-    doc.text('COST ANALYSIS', margin, yPosition);
+    doc.text('CONTENT WASTE ANALYSIS', margin, yPosition);
     yPosition += 8;
 
     doc.setFontSize(11);
     doc.setFont('helvetica', 'normal');
-    doc.text(`Editors: ${editors}`, margin + 5, yPosition);
+    doc.text(`Hours/week searching for trends: ${hoursSearching}`, margin + 5, yPosition);
     yPosition += lineHeight;
-    doc.text(`Hours per week searching: ${hoursPerWeek}`, margin + 5, yPosition);
-    yPosition += lineHeight;
-    doc.text(`Hourly rate: $${ratePerHour}`, margin + 5, yPosition);
+    doc.text(`Research waste: ${hoursSearching} hrs × $75/hr × 48 weeks = $${researchWaste.toLocaleString()}/yr`, margin + 5, yPosition);
     yPosition += lineHeight + 2;
+
+    doc.text(`Missed/flopped videos per month: ${missedShots}`, margin + 5, yPosition);
+    yPosition += lineHeight;
+    doc.text(`Cost per video: $${costPerVideo}`, margin + 5, yPosition);
+    yPosition += lineHeight;
+    doc.text(`Production waste: ${missedShots} × $${costPerVideo} × 12 = $${productionWaste.toLocaleString()}/yr`, margin + 5, yPosition);
+    yPosition += lineHeight + 2;
+
+    if (monthlyFollowerGoal) {
+      doc.text(`Monthly follower goal: ${monthlyFollowerGoal.toLocaleString()}`, margin + 5, yPosition);
+      yPosition += lineHeight + 2;
+    }
 
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(12);
-    doc.text(`Annual Cost of Inaction: $${annualCost.toLocaleString()}`, margin + 5, yPosition);
+    doc.setTextColor(200, 0, 0);
+    doc.text(`Total Annual Waste: $${totalAnnualWaste.toLocaleString()}`, margin + 5, yPosition);
     yPosition += lineHeight;
-    doc.text(`Monthly Cost: $${monthlyCost.toLocaleString()}`, margin + 5, yPosition);
-    yPosition += lineHeight + 2;
-
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(11);
-    doc.text(`Cost Agreement: ${data.answers['cost-agreement'] || 'Not answered'}`, margin + 5, yPosition);
+    doc.setTextColor(0, 0, 0);
+    doc.text(`Monthly Waste: $${Math.round(totalAnnualWaste / 12).toLocaleString()}`, margin + 5, yPosition);
     yPosition += 10;
 
     doc.setDrawColor(200, 200, 200);

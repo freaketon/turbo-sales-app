@@ -20,7 +20,7 @@ import MirrorBox from '@/components/MirrorBox';
 import CustomerAnswersTracker from '@/components/CustomerAnswersTracker';
 import DemoPrioritizer from '@/components/DemoPrioritizer';
 import ImprovedObjectionHandler from '@/components/ImprovedObjectionHandler';
-import ObjectionQuickAccess from 'A/components/ObjectionQuickAccess';
+import ObjectionQuickAccess from '@/components/ObjectionQuickAccess';
 import CostCalculator from '@/components/CostCalculator';
 import AnswersSidebar from '@/components/AnswersSidebar';
 import { SalesCoach } from '@/components/SalesCoach';
@@ -227,19 +227,36 @@ export default function Home() {
           ? 'disqualified' as const
           : 'in-progress' as const;
 
-      // Calculate cost analysis if available
+      // Calculate cost analysis from new calculator inputs
       let costAnalysis;
-      const editors = answers['cost-editors'] ? parseInt(answers['cost-editors']) : null;
-      const hoursPerWeek = answers['cost-hours'] === '3-5' ? 4
-        : answers['cost-hours'] === '6-10' ? 8
-        : answers['cost-hours'] === '10+' ? 12
-        : null;
-      const ratePerHour = answers['cost-rate'] ? parseInt(answers['cost-rate']) : null;
+      const hoursSearching = answers['hours-searching'] ? parseInt(answers['hours-searching']) : null;
+      const missedShotsPerMonth = answers['missed-shots'] ? parseInt(answers['missed-shots']) : null;
+      const costPerVideo = answers['cost-per-video'] ? parseInt(answers['cost-per-video']) : null;
+      const monthlyFollowerGoal = answers['monthly-follower-goal'] ? parseInt(answers['monthly-follower-goal']) : 0;
 
-      if (editors && hoursPerWeek && ratePerHour) {
-        const annualCost = editors * hoursPerWeek * ratePerHour * 48;
-        const monthlyCost = annualCost / 12;
-        costAnalysis = { editors, hoursPerWeek, ratePerHour, annualCost, monthlyCost };
+      if (hoursSearching && missedShotsPerMonth && costPerVideo) {
+        const researchWaste = hoursSearching * 75 * 48;
+        const productionWaste = missedShotsPerMonth * costPerVideo * 12;
+        const totalAnnualWaste = researchWaste + productionWaste;
+        costAnalysis = {
+          hoursSearching,
+          missedShotsPerMonth,
+          costPerVideo,
+          monthlyFollowerGoal,
+          researchWaste,
+          productionWaste,
+          totalAnnualWaste,
+        };
+      }
+
+      // Collect mirror texts from answers (keys like 'problem-exposure-mirror-confirmation' etc.)
+      const mirrorTexts: Record<string, string> = {};
+      const mirrorSteps = ['problem-exposure', 'alternative-solutions', 'dream-outcome'];
+      for (const stepId of mirrorSteps) {
+        const confirmKey = `${stepId}-mirror-confirmation`;
+        if (answers[confirmKey]) {
+          mirrorTexts[stepId] = answers[confirmKey];
+        }
       }
 
       const callRecord: CallRecord = {
@@ -253,7 +270,9 @@ export default function Home() {
         outcome,
         finalStep: currentStepId,
         answers,
-        costAnalysis
+        fullTranscript: fullTranscript.trim() || undefined,
+        mirrorTexts: Object.keys(mirrorTexts).length > 0 ? mirrorTexts : undefined,
+        costAnalysis,
       };
       saveCallToHistory(callRecord);
     }
