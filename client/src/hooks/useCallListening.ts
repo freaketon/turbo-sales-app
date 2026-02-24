@@ -77,7 +77,7 @@ export function useCallListening(): UseCallListeningReturn {
   const isSystemAudioSupported = typeof window !== 'undefined' &&
     !!navigator.mediaDevices?.getDisplayMedia;
 
-  // ─── Mic mode: Web Speech API ─────────────────────────────
+  // âââ Mic mode: Web Speech API âââââââââââââââââââââââââââââ
 
   const startMicListening = useCallback(() => {
     const SpeechRecognition = getSpeechRecognition();
@@ -156,7 +156,7 @@ export function useCallListening(): UseCallListeningReturn {
     }
   }, []);
 
-  // ─── System audio mode: getDisplayMedia + MediaRecorder ───
+  // âââ System audio mode: getDisplayMedia + MediaRecorder âââ
 
   const startSystemAudioListening = useCallback(async () => {
     try {
@@ -175,12 +175,15 @@ export function useCallListening(): UseCallListeningReturn {
         return;
       }
 
-      // Stop video tracks immediately - we only need audio
-      stream.getVideoTracks().forEach(t => t.stop());
+      // IMPORTANT: Do NOT stop video tracks â stopping them kills the entire
+      // getDisplayMedia session in most browsers, which also ends audio capture.
+      // Instead, just disable them so they don't consume resources.
+      stream.getVideoTracks().forEach(t => { t.enabled = false; });
 
-      // Create audio-only stream
+      // Create audio-only stream for the MediaRecorder
       const audioStream = new MediaStream(audioTracks);
-      mediaStreamRef.current = audioStream;
+      // Keep the FULL stream ref so we can stop all tracks on cleanup
+      mediaStreamRef.current = stream;
 
       // Set up MediaRecorder to capture audio chunks
       const recorder = new MediaRecorder(audioStream, {
@@ -221,7 +224,7 @@ export function useCallListening(): UseCallListeningReturn {
     }
   }, []);
 
-  // ─── Public API ───────────────────────────────────────────
+  // âââ Public API âââââââââââââââââââââââââââââââââââââââââââ
 
   const startListening = useCallback(() => {
     if (audioSource === 'system') {
