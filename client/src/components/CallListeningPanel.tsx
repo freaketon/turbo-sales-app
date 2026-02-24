@@ -30,6 +30,7 @@ interface CallListeningPanelProps {
   currentStepId: string;
   answers: Record<string, string>;
   onAcceptSuggestion: (questionId: string, answer: string) => void;
+  onTranscriptChunk?: (text: string) => void;
 }
 
 export default function CallListeningPanel({
@@ -37,6 +38,7 @@ export default function CallListeningPanel({
   currentStepId,
   answers,
   onAcceptSuggestion,
+  onTranscriptChunk,
 }: CallListeningPanelProps) {
   const {
     isListening,
@@ -60,6 +62,7 @@ export default function CallListeningPanel({
   const lastExtractedRef = useRef<string>('');
   const extractTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const audioTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const lastSentTranscriptLenRef = useRef<number>(0);
 
   const extractMutation = trpc.salesCoach.extractAnswersFromTranscript.useMutation();
   const transcribeAndExtractMutation = trpc.salesCoach.transcribeAndExtract.useMutation();
@@ -78,6 +81,17 @@ export default function CallListeningPanel({
     setSuggestions([]);
     lastExtractedRef.current = '';
   }, [currentStepId]);
+
+  // âââ Send transcript chunks up to parent (mic mode) âââ
+  useEffect(() => {
+    if (!onTranscriptChunk || transcript.length === 0) return;
+    const fullText = transcript.map(s => s.text).join('. ');
+    if (fullText.length > lastSentTranscriptLenRef.current) {
+      const newText = fullText.slice(lastSentTranscriptLenRef.current);
+      onTranscriptChunk(newText);
+      lastSentTranscriptLenRef.current = fullText.length;
+    }
+  }, [transcript.length]);
 
   // Helper to merge new suggestions into state
   const mergeSuggestions = useCallback((newSuggestions: Array<{ questionId: string; answer: string; confidence: string; evidence: string }>) => {
@@ -98,7 +112,7 @@ export default function CallListeningPanel({
     });
   }, []);
 
-  // ─── Mic mode: extract from text transcript (debounced) ───
+  // âââ Mic mode: extract from text transcript (debounced) âââ
   useEffect(() => {
     if (!isListening || audioSource !== 'mic' || transcript.length === 0) return;
 
@@ -114,7 +128,6 @@ export default function CallListeningPanel({
       if (unansweredQuestions.length === 0) return;
 
       lastExtractedRef.current = currentText;
-
       extractMutation.mutate(
         {
           transcript: currentText,
@@ -139,7 +152,7 @@ export default function CallListeningPanel({
     };
   }, [transcript.length, isListening, audioSource]);
 
-  // ─── System audio mode: send audio chunks for transcription ───
+  // âââ System audio mode: send audio chunks for transcription âââ
   useEffect(() => {
     if (!isListening || audioSource !== 'system') {
       if (audioTimerRef.current) {
@@ -179,9 +192,9 @@ export default function CallListeningPanel({
           },
           {
             onSuccess: (data) => {
-              // Add transcribed text to transcript display
-              if (data.transcript) {
-                // We don't have direct access to setTranscript, so we show it as interim
+              // Send transcribed text up to parent for full transcript accumulation
+              if (data.transcript && onTranscriptChunk) {
+                onTranscriptChunk(data.transcript);
               }
               mergeSuggestions(data.suggestions);
             },
@@ -213,12 +226,15 @@ export default function CallListeningPanel({
   const handleReject = (questionId: string) => {
     setSuggestions(prev =>
       prev.map(s =>
-        s.questionId === questionId ? { ...s, status: 'rejected' } : s
+        s.questionId === questionId
+          ? { ...s, status: 'rejected' }
+          : s
       )
     );
   };
 
   const pendingSuggestions = suggestions.filter(s => s.status === 'pending');
+
   const getQuestionText = (questionId: string) => {
     return questions.find(q => q.id === questionId)?.text || questionId;
   };
@@ -233,8 +249,7 @@ export default function CallListeningPanel({
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-    >
-      <div className="glass-card rounded-2xl shadow-2xl overflow-hidden border border-border/50">
+    >    <div className="glass-card rounded-2xl shadow-2xl overflow-hidden border border-border/50">
         {/* Header - always visible */}
         <div
           className="p-3 flex items-center justify-between cursor-pointer select-none"
@@ -242,9 +257,7 @@ export default function CallListeningPanel({
         >
           <div className="flex items-center gap-2">
             <div className={`relative flex items-center justify-center w-8 h-8 rounded-full ${
-              isListening
-                ? 'bg-red-500/20'
-                : 'bg-muted'
+              isListening ? 'bg-red-500/20' : 'bg-muted'
             }`}>
               {isListening ? (
                 <>
@@ -355,14 +368,12 @@ export default function CallListeningPanel({
                     Stop
                   </Button>
                 )}
+
                 {transcript.length > 0 && audioSource === 'mic' && (
                   <Button
                     size="sm"
                     variant="ghost"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setShowTranscript(!showTranscript);
-                    }}
+                    onClick={(e) => { e.stopPropagation(); setShowTranscript(!showTranscript); }}
                     className="text-xs"
                   >
                     {showTranscript ? 'Hide' : 'Show'} Transcript
@@ -411,7 +422,7 @@ export default function CallListeningPanel({
                       animate={{ opacity: [1, 0.3, 1] }}
                       transition={{ duration: 1.5, repeat: Infinity }}
                     />
-                    Recording Zoom audio — answers will appear automatically
+                    Recording Zoom audio â answers will appear automatically
                   </div>
                 </div>
               )}
