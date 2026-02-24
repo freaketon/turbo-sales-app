@@ -77,7 +77,7 @@ export function useCallListening(): UseCallListeningReturn {
   const isSystemAudioSupported = typeof window !== 'undefined' &&
     !!navigator.mediaDevices?.getDisplayMedia;
 
-  // âââ Mic mode: Web Speech API âââââââââââââââââââââââââââââ
+  // ─── Mic mode: Web Speech API ─────────────────────────────
 
   const startMicListening = useCallback(() => {
     const SpeechRecognition = getSpeechRecognition();
@@ -156,7 +156,7 @@ export function useCallListening(): UseCallListeningReturn {
     }
   }, []);
 
-  // âââ System audio mode: getDisplayMedia + MediaRecorder âââ
+  // ─── System audio mode: getDisplayMedia + MediaRecorder ───
 
   const startSystemAudioListening = useCallback(async () => {
     try {
@@ -175,7 +175,7 @@ export function useCallListening(): UseCallListeningReturn {
         return;
       }
 
-      // IMPORTANT: Do NOT stop video tracks â stopping them kills the entire
+      // IMPORTANT: Do NOT stop video tracks — stopping them kills the entire
       // getDisplayMedia session in most browsers, which also ends audio capture.
       // Instead, just disable them so they don't consume resources.
       stream.getVideoTracks().forEach(t => { t.enabled = false; });
@@ -224,7 +224,7 @@ export function useCallListening(): UseCallListeningReturn {
     }
   }, []);
 
-  // âââ Public API âââââââââââââââââââââââââââââââââââââââââââ
+  // ─── Public API ───────────────────────────────────────────
 
   const startListening = useCallback(() => {
     if (audioSource === 'system') {

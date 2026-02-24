@@ -387,6 +387,8 @@ export const salesFlow: Step[] = [
       'Use the Acknowledge → Agree → Reframe pattern for objections.'
     ],
     scriptLines: [
+      '🖥️ Open OUTLIER Demo → https://app.outliervid.io/setup',
+      '',
       'Feature 1 — Outlier Feed',
       '"You mentioned you feel like you\'re always a step behind."',
       '"OUTLIER flags Reels outperforming their account baseline by 5–50x within the first 6 hours — before they hit the discovery page."',
@@ -499,54 +501,74 @@ export const salesFlow: Step[] = [
     nextStep: 'impact-measurement'
   },
 
-  // SECTION 8 — IMPACT MEASUREMENT
+  // SECTION 8 — IMPACT MEASUREMENT (Product Agitation)
   {
     id: 'impact-measurement',
     type: 'impact-measurement',
     title: 'Section 8: Impact Measurement',
-    subtitle: 'Calculate live: hours saved × $ value',
+    subtitle: 'Calculate the real cost of guessing — product agitation',
     content: [
-      'Do the math with them in real-time.',
-      'Make the ROI concrete and undeniable.',
-      'This anchors the value before you mention price.'
+      'Do the math with them in real-time to show what guesswork is costing them.',
+      'Three buckets: time wasted on trend research, money burned on failed content, and the growth they\'re missing.',
+      'This is product agitation — make the cost of inaction painful.'
     ],
     scriptLines: [
-      '"If OUTLIER worked as described, how many hours a week would it realistically save you on research and ideation?"',
+      '"Let\'s put some numbers to this."',
+      '',
+      '"How many hours a week do you spend scrolling, searching for trends, figuring out what to post?"',
+      '',
+      '[Let them answer — capture the number]',
+      '',
+      '"And out of all the videos you produce in a month, how many would you say just… don\'t work? Missed shots, wrong timing, flopped content?"',
       '',
       '[Let them answer]',
       '',
-      'Calculate live:',
-      '"Hours saved/week × Hourly rate × 52 = Annual time value recovered"',
-      'Example: 10 hrs/week × $75/hr × 52 = $39,000/year in recovered time',
+      '"What does it cost you to produce one of those videos? Including your time, editing, maybe a videographer?"',
       '',
-      '"What\'s one viral Reel worth to your business in leads or followers?"',
+      '[Let them answer]',
       '',
-      '[Let it sink in]'
+      '"And what\'s your growth goal? Where do you want to be in terms of followers per month?"',
+      '',
+      '[Let them answer]',
+      '',
+      '[The calculator will show the total annual waste]',
+      '',
+      '"So you\'re spending roughly $[X]/year on research that leads nowhere and videos that flop. Does that math sound directionally right to you?"',
+      '',
+      '[WAIT for agreement. No agreement = no pitch.]'
     ],
     questions: [
       {
-        id: 'hours-saved',
-        text: 'How many hours per week would this realistically save on research and ideation?',
+        id: 'hours-searching',
+        text: 'How many hours per week do you spend searching for trends and figuring out what to post?',
         type: 'number',
-        placeholder: 'e.g., 10'
+        placeholder: 'e.g., 8'
       },
       {
-        id: 'hourly-rate',
-        text: 'What\'s a reasonable hourly rate for your time (or your team\'s time)?',
+        id: 'missed-shots',
+        text: 'Out of all the videos you produce each month, how many just don\'t work? (missed timing, flopped)',
         type: 'number',
-        placeholder: 'e.g., 75'
+        placeholder: 'e.g., 5'
       },
       {
-        id: 'viral-reel-value',
-        text: 'What\'s one viral Reel worth to your business in leads or followers?',
-        type: 'text',
-        placeholder: 'e.g., "500 new followers, 10-20 leads"'
+        id: 'cost-per-video',
+        text: 'What does it cost to produce one video? (your time, editing, production)',
+        type: 'number',
+        placeholder: 'e.g., 200'
+      },
+      {
+        id: 'monthly-follower-goal',
+        text: 'What\'s your monthly follower growth goal?',
+        type: 'number',
+        placeholder: 'e.g., 5000'
       }
     ],
     tips: [
-      'Do this calculation OUT LOUD with them',
-      'The bigger the number, the easier the close',
-      'If the annual savings is less than $20k, they might not be qualified'
+      'Do this calculation OUT LOUD with them — let them see the waste',
+      'The production waste (failed videos) is the most emotional number',
+      'Frame it as: "This is money you already spent that produced zero return"',
+      'The missed growth opportunity is the agitation kicker — their competitors ARE growing',
+      'If annual waste is under $15k, they might not be a fit for $5k/year'
     ],
     nextStep: 'recap'
   },

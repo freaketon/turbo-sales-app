@@ -546,9 +546,10 @@ export default function Home() {
               {/* Right: Sticky Calculator */}
               <div className="lg:sticky lg:top-6 lg:self-start">
                 <CostCalculator
-                  editors={answers['num-editors'] ? parseInt(answers['num-editors']) : undefined}
-                  hoursPerWeek={answers['hours-saved'] ? parseInt(answers['hours-saved']) : undefined}
-                  ratePerHour={answers['hourly-rate'] ? parseInt(answers['hourly-rate']) : undefined}
+                  hoursSearching={answers['hours-searching'] ? parseInt(answers['hours-searching']) : undefined}
+                  missedShotsPerMonth={answers['missed-shots'] ? parseInt(answers['missed-shots']) : undefined}
+                  costPerVideo={answers['cost-per-video'] ? parseInt(answers['cost-per-video']) : undefined}
+                  monthlyFollowerGoal={answers['monthly-follower-goal'] ? parseInt(answers['monthly-follower-goal']) : undefined}
                 />
               </div>
             </div>

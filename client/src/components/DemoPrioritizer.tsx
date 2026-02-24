@@ -37,9 +37,9 @@ const FEATURE_DETAILS: Record<string, {
     icon: <Zap className="w-5 h-5" />,
     script: (pain) => [
       `"You mentioned: ${pain}"`,
-      '"OUTLIER flags Reels outperforming their account baseline by 5â50x within the first 6 hours â before they hit the discovery page."',
+      '"OUTLIER flags Reels outperforming their account baseline by 5–50x within the first 6 hours — before they hit the discovery page."',
       '',
-      'Show: The live Outlier Feed in the demo â real-time flagged content.',
+      'Show: The live Outlier Feed in the demo — real-time flagged content.',
     ],
     validation: '"Would this work for you? Could you see yourself using this?"',
   },
@@ -50,7 +50,7 @@ const FEATURE_DETAILS: Record<string, {
       `"You said: ${pain}"`,
       '',
       '"OUTLIER breaks down the hook, audio, format, and topic angle of every flagged Reel."',
-      '"You don\'t just see what went viral â you understand WHY."',
+      '"You don\'t just see what went viral — you understand WHY."',
     ],
     validation: '"Would that help you understand what to replicate?"',
   },
@@ -71,7 +71,7 @@ const FEATURE_DETAILS: Record<string, {
     script: (pain) => [
       `"You said: ${pain}"`,
       '',
-      '"OUTLIER scores every trend â emerging, peaking, or saturated."',
+      '"OUTLIER scores every trend — emerging, peaking, or saturated."',
       '"So you know if you\'re early or too late."',
     ],
     validation: '"Would this help you time your posts better?"',
@@ -83,7 +83,7 @@ const FEATURE_DETAILS: Record<string, {
       `"You mentioned: ${pain}"`,
       '',
       '"OUTLIER replaces hours of scrolling with a single dashboard."',
-      '"Everything you need to know about what\'s working â right now."',
+      '"Everything you need to know about what\'s working — right now."',
     ],
     validation: '"How much time would that save you each week?"',
   },
@@ -266,7 +266,7 @@ export default function DemoPrioritizer({ answers }: DemoPrioritizerProps) {
 
       <div className="mt-4 p-3 rounded-lg bg-muted/50">
         <p className="text-xs text-muted-foreground">
-          <strong>After each feature:</strong> Validate â Surface objections â Handle with Acknowledge/Agree/Reframe â Circle back
+          <strong>After each feature:</strong> Validate → Surface objections → Handle with Acknowledge/Agree/Reframe → Circle back
         </p>
       </div>
     </Card>

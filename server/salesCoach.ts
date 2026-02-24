@@ -78,18 +78,18 @@ Analyze these answers and:
    - Consequences mentioned (missed deadlines, re-shoots, delays)
 
 2. For each pain, determine which OUTLIER feature best solves it:
-   - Intent Search: Solves time wasted searching, finding specific moments
-   - No Tagging: Solves tagging/organization burden, metadata chaos
-   - Zero-Touch Setup: Solves migration/setup time, no resources for overhaul
-   - Unified Archive: Solves scattered footage, multiple locations, chaos
-   - Instant Retrieval: Solves hours wasted, slow manual search
+   - outlier-feed: Flags Reels outperforming by 5-50x within 6 hours, before discovery page. Solves being late to trends, always a step behind.
+   - why-working: Breaks down hook, audio, format, topic angle of every flagged Reel. Solves not knowing WHY content works.
+   - content-briefs: Generates 3 ready-to-shoot briefs from what's breaking out in their niche. Solves not knowing what to post.
+   - trend-lifecycle: Scores trends as emerging/peaking/saturated. Solves posting too late on dead trends.
+   - time-savings: Replaces hours of scrolling competitors with a single dashboard. Solves wasted research time.
 
 Return ONLY a JSON array of the top 3 pains in order of severity (most painful first):
 [
   {
     "painPoint": "exact description of their pain in their words",
     "severity": "high"|"medium"|"low",
-    "feature": "intent-search"|"no-tagging"|"zero-touch"|"archive-org"|"time-savings",
+    "feature": "outlier-feed"|"why-working"|"content-briefs"|"trend-lifecycle"|"time-savings",
     "evidence": "quote from their answer showing this pain"
   }
 ]
