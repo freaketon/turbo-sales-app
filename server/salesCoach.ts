@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import { invokeLLM } from "./_core/llm";
+import { ENV } from "./_core/env";
 
 const SALES_COACH_SYSTEM_PROMPT = `You are an expert sales coach specializing in the OUTLIER sales framework for founder-to-founder B2B sales. Your role is to analyze sales call notes in real-time and provide strategic, actionable guidance.
 
@@ -457,14 +458,50 @@ Return ONLY the JSON array, no other text.`;
         return desc;
       }).join('\n\n');
 
-      const prompt = `Listen to this audio from a sales call and do two things:
+      try {
+        // Step 1: Transcribe audio via Deepgram REST API
+        if (!ENV.deepgramApiKey) {
+          console.error("DEEPGRAM_API_KEY is not configured");
+          return { transcript: '', suggestions: [] };
+        }
 
-1. TRANSCRIBE: Write out what was said in the audio.
-2. EXTRACT ANSWERS: From the transcription, extract answers to these questions:
+        const audioBuffer = Buffer.from(audioBase64, 'base64');
 
+        const dgResponse = await fetch('https://api.deepgram.com/v1/listen?model=nova-2&smart_format=true&language=en', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Token ${ENV.deepgramApiKey}`,
+            'Content-Type': mimeType || 'audio/webm',
+          },
+          body: audioBuffer,
+        });
+
+        if (!dgResponse.ok) {
+          const errText = await dgResponse.text();
+          console.error("Deepgram transcription failed:", dgResponse.status, errText);
+          return { transcript: '', suggestions: [] };
+        }
+
+        const dgResult = await dgResponse.json() as any;
+        const transcript = dgResult?.results?.channels?.[0]?.alternatives?.[0]?.transcript || '';
+
+        if (!transcript.trim()) {
+          return { transcript: '', suggestions: [] };
+        }
+
+        // Step 2: Extract answers from transcript via Claude LLM
+        const extractionPrompt = `You are analyzing a live sales call transcript to extract answers the prospect gave to specific questions.
+
+TRANSCRIPT:
+"""
+${transcript}
+"""
+
+QUESTIONS TO EXTRACT ANSWERS FOR:
 ${questionsDescription}
 
 INSTRUCTIONS:
+- For each question, check if the prospect provided information that answers it.
 - For "text" type questions: extract the relevant answer in the prospect's own words. Keep it concise.
 - For "number" type questions: extract just the number.
 - For "binary" or "multiple" type questions: match to the closest option value.
@@ -473,7 +510,6 @@ INSTRUCTIONS:
 
 Return ONLY valid JSON in this format:
 {
-  "transcript": "the full transcription of what was said",
   "suggestions": [
     {
       "questionId": "the-question-id",
@@ -484,44 +520,26 @@ Return ONLY valid JSON in this format:
   ]
 }
 
-If the audio is unclear or empty, return: {"transcript": "", "suggestions": []}
+If no answers can be extracted, return: {"suggestions": []}
 Return ONLY the JSON, no other text.`;
-
-      try {
-        const audioDataUrl = `data:${mimeType};base64,${audioBase64}`;
 
         const response = await invokeLLM({
           messages: [
             {
               role: "system",
-              content: "You are an expert at transcribing sales calls and extracting specific answers to questions. You are precise and only extract information that was clearly stated."
+              content: "You are an expert at analyzing sales call transcripts and extracting specific answers to questions. You are precise and only extract information that was clearly stated."
             },
-            {
-              role: "user",
-              content: [
-                {
-                  type: "file_url",
-                  file_url: {
-                    url: audioDataUrl,
-                    mime_type: mimeType as any,
-                  },
-                },
-                {
-                  type: "text",
-                  text: prompt,
-                },
-              ],
-            },
+            { role: "user", content: extractionPrompt },
           ],
         });
 
         const content = response.choices[0]?.message?.content || '{}';
         const contentStr = typeof content === 'string' ? content : '';
         const jsonMatch = contentStr.match(/\{[\s\S]*\}/);
-        const parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : { transcript: '', suggestions: [] };
+        const parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : { suggestions: [] };
 
         return {
-          transcript: parsed.transcript || '',
+          transcript,
           suggestions: (parsed.suggestions || []).map((s: any) => ({
             questionId: s.questionId,
             answer: String(s.answer),
