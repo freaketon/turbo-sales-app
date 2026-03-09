@@ -22,7 +22,7 @@ export default function QuestionCard({ question, onAnswer, currentAnswer }: Ques
   const [justAutoFilled, setJustAutoFilled] = useState(false);
   const prevAnswerRef = useRef(currentAnswer);
 
-  // Sync with externally-changed answers (e.g. auto-fill from call listening)
+  // Sync with externally-changed answers
   useEffect(() => {
     if (currentAnswer !== undefined && currentAnswer !== prevAnswerRef.current) {
       setSelectedValue(currentAnswer);
