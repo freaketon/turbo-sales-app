@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import { invokeLLM } from "./_core/llm";
-import { ENV } from "./_core/env";
 
 const SALES_COACH_SYSTEM_PROMPT = `You are an expert sales coach specializing in the OUTLIER sales framework for founder-to-founder B2B sales. Your role is to analyze sales call notes in real-time and provide strategic, actionable guidance.
 
@@ -172,7 +171,7 @@ Return ONLY the JSON array, no other text.`;
 
       // Build context about the call
       let contextInfo = `Current step: ${currentStep}\n`;
-      
+
       if (Object.keys(answers).length > 0) {
         contextInfo += `\nKey answers so far:\n`;
         Object.entries(answers).forEach(([key, value]) => {
@@ -201,7 +200,7 @@ Return ONLY the JSON array, no other text.`;
 
         // Determine guidance type based on content
         let guidanceType: 'positive' | 'warning' | 'neutral' | 'action' = 'neutral';
-        
+
         const guidanceText = typeof guidance === 'string' ? guidance : '';
         const lowerGuidance = guidanceText.toLowerCase();
         if (lowerGuidance.includes('strong') || lowerGuidance.includes('great') || lowerGuidance.includes('good sign') || lowerGuidance.includes('buying signal')) {
@@ -224,7 +223,7 @@ Return ONLY the JSON array, no other text.`;
         };
       }
     }),
-  
+
   generateObjectionResponse: publicProcedure
     .input(
       z.object({
@@ -323,268 +322,33 @@ Return ONLY valid JSON with these exact keys: acknowledge, associate, ask, bridg
       }
     }),
 
-  extractAnswersFromTranscript: publicProcedure
-    .input(
-      z.object({
-        transcript: z.string(),
-        questions: z.array(z.object({
-          id: z.string(),
-          text: z.string(),
-          type: z.enum(['binary', 'multiple', 'text', 'number']),
-          options: z.array(z.object({
-            value: z.string(),
-            label: z.string(),
-          })).optional(),
-        })),
-        existingAnswers: z.record(z.string(), z.string()).optional(),
-      })
-    )
-    .mutation(async ({ input }) => {
-      const { transcript, questions, existingAnswers = {} } = input;
-
-      if (!transcript.trim() || questions.length === 0) {
-        return { suggestions: [] };
-      }
-
-      // Only extract for questions that don't already have answers
-      const unansweredQuestions = questions.filter(q => !existingAnswers[q.id]);
-      if (unansweredQuestions.length === 0) {
-        return { suggestions: [] };
-      }
-
-      const questionsDescription = unansweredQuestions.map((q, i) => {
-        let desc = `${i + 1}. Question ID: "${q.id}"\n   Question: "${q.text}"\n   Type: ${q.type}`;
-        if (q.options && q.options.length > 0) {
-          desc += `\n   Options: ${q.options.map(o => `"${o.value}" (${o.label})`).join(', ')}`;
-        }
-        return desc;
-      }).join('\n\n');
-
-      const extractionPrompt = `You are analyzing a live sales call transcript to extract answers the prospect gave to specific questions.
-
-TRANSCRIPT:
-"""
-${transcript}
-"""
-
-QUESTIONS TO EXTRACT ANSWERS FOR:
-${questionsDescription}
-
-INSTRUCTIONS:
-- For each question, check if the prospect provided information that answers it.
-- For "text" type questions: extract the relevant answer in the prospect's own words. Keep it concise (1-2 sentences).
-- For "number" type questions: extract just the number.
-- For "binary" or "multiple" type questions: match to the closest option value from the provided options.
-- Only include questions where you found a clear answer in the transcript. Skip questions with no clear answer.
-- Be conservative â only extract answers you're confident about from what the prospect actually said.
-
-Return ONLY a JSON array of extracted answers:
-[
-  {
-    "questionId": "the-question-id",
-    "answer": "the extracted answer",
-    "confidence": "high" | "medium",
-    "evidence": "brief quote from transcript supporting this answer"
-  }
-]
-
-If no answers can be extracted, return an empty array: []
-Return ONLY the JSON array, no other text.`;
-
-      try {
-        const response = await invokeLLM({
-          messages: [
-            {
-              role: "system",
-              content: "You are an expert at analyzing sales call transcripts and extracting specific answers to questions. You are precise and only extract information that was clearly stated by the prospect."
-            },
-            { role: "user", content: extractionPrompt },
-          ],
-        });
-
-        const content = response.choices[0]?.message?.content || '[]';
-        const jsonMatch = typeof content === 'string' ? content.match(/\[[\s\S]*\]/) : null;
-        const suggestions = jsonMatch ? JSON.parse(jsonMatch[0]) : [];
-
-        return {
-          suggestions: suggestions.map((s: any) => ({
-            questionId: s.questionId,
-            answer: String(s.answer),
-            confidence: s.confidence || 'medium',
-            evidence: s.evidence || '',
-          })),
-        };
-      } catch (error) {
-        console.error("Failed to extract answers from transcript:", error);
-        return { suggestions: [] };
-      }
-    }),
-
-  transcribeAndExtract: publicProcedure
-    .input(
-      z.object({
-        // Base64-encoded audio data
-        audioBase64: z.string(),
-        mimeType: z.string().default('audio/webm'),
-        questions: z.array(z.object({
-          id: z.string(),
-          text: z.string(),
-          type: z.enum(['binary', 'multiple', 'text', 'number']),
-          options: z.array(z.object({
-            value: z.string(),
-            label: z.string(),
-          })).optional(),
-        })),
-        existingAnswers: z.record(z.string(), z.string()).optional(),
-      })
-    )
-    .mutation(async ({ input }) => {
-      const { audioBase64, mimeType, questions, existingAnswers = {} } = input;
-
-      if (!audioBase64 || questions.length === 0) {
-        return { transcript: '', suggestions: [] };
-      }
-
-      const unansweredQuestions = questions.filter(q => !existingAnswers[q.id]);
-      if (unansweredQuestions.length === 0) {
-        return { transcript: '', suggestions: [] };
-      }
-
-      const questionsDescription = unansweredQuestions.map((q, i) => {
-        let desc = `${i + 1}. Question ID: "${q.id}"\n   Question: "${q.text}"\n   Type: ${q.type}`;
-        if (q.options && q.options.length > 0) {
-          desc += `\n   Options: ${q.options.map(o => `"${o.value}" (${o.label})`).join(', ')}`;
-        }
-        return desc;
-      }).join('\n\n');
-
-      try {
-        // Step 1: Transcribe audio via Deepgram REST API
-        if (!ENV.deepgramApiKey) {
-          console.error("DEEPGRAM_API_KEY is not configured");
-          return { transcript: '', suggestions: [] };
-        }
-
-        const audioBuffer = Buffer.from(audioBase64, 'base64');
-
-        const dgResponse = await fetch('https://api.deepgram.com/v1/listen?model=nova-2&smart_format=true&language=en', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Token ${ENV.deepgramApiKey}`,
-            'Content-Type': mimeType || 'audio/webm',
-          },
-          body: audioBuffer,
-        });
-
-        if (!dgResponse.ok) {
-          const errText = await dgResponse.text();
-          console.error("Deepgram transcription failed:", dgResponse.status, errText);
-          return { transcript: '', suggestions: [] };
-        }
-
-        const dgResult = await dgResponse.json() as any;
-        const transcript = dgResult?.results?.channels?.[0]?.alternatives?.[0]?.transcript || '';
-
-        if (!transcript.trim()) {
-          return { transcript: '', suggestions: [] };
-        }
-
-        // Step 2: Extract answers from transcript via Claude LLM
-        const extractionPrompt = `You are analyzing a live sales call transcript to extract answers the prospect gave to specific questions.
-
-TRANSCRIPT:
-"""
-${transcript}
-"""
-
-QUESTIONS TO EXTRACT ANSWERS FOR:
-${questionsDescription}
-
-INSTRUCTIONS:
-- For each question, check if the prospect provided information that answers it.
-- For "text" type questions: extract the relevant answer in the prospect's own words. Keep it concise.
-- For "number" type questions: extract just the number.
-- For "binary" or "multiple" type questions: match to the closest option value.
-- Only include questions where you found a clear answer. Skip unclear ones.
-- Be conservative â only extract answers you're confident about.
-
-Return ONLY valid JSON in this format:
-{
-  "suggestions": [
-    {
-      "questionId": "the-question-id",
-      "answer": "the extracted answer",
-      "confidence": "high" | "medium",
-      "evidence": "brief quote supporting this answer"
-    }
-  ]
-}
-
-If no answers can be extracted, return: {"suggestions": []}
-Return ONLY the JSON, no other text.`;
-
-        const response = await invokeLLM({
-          messages: [
-            {
-              role: "system",
-              content: "You are an expert at analyzing sales call transcripts and extracting specific answers to questions. You are precise and only extract information that was clearly stated."
-            },
-            { role: "user", content: extractionPrompt },
-          ],
-        });
-
-        const content = response.choices[0]?.message?.content || '{}';
-        const contentStr = typeof content === 'string' ? content : '';
-        const jsonMatch = contentStr.match(/\{[\s\S]*\}/);
-        const parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : { suggestions: [] };
-
-        return {
-          transcript,
-          suggestions: (parsed.suggestions || []).map((s: any) => ({
-            questionId: s.questionId,
-            answer: String(s.answer),
-            confidence: s.confidence || 'medium',
-            evidence: s.evidence || '',
-          })),
-        };
-      } catch (error) {
-        console.error("Failed to transcribe and extract:", error);
-        return { transcript: '', suggestions: [] };
-      }
-    }),
-
-  // ─── Grade the seller's performance on the call ───
   gradeCall: publicProcedure
     .input(
       z.object({
-        fullTranscript: z.string(),
         answers: z.record(z.string(), z.string()),
         outcome: z.enum(['qualified', 'disqualified', 'in-progress']),
       })
     )
     .mutation(async ({ input }) => {
-      const { fullTranscript, answers, outcome } = input;
+      const { answers, outcome } = input;
 
-      if (!fullTranscript.trim()) {
+      const answersText = Object.entries(answers).map(([k, v]) => `- ${k}: ${v}`).join('\n');
+
+      if (!answersText.trim()) {
         return {
           overallGrade: 'N/A',
           overallScore: 0,
           categories: [],
           strengths: [],
           improvements: [],
-          summary: 'No transcript available for grading.',
+          summary: 'No call data available for grading.',
         };
       }
 
       const gradingPrompt = `You are grading a sales call based on the OUTLIER 12-section discovery call framework.
 
-FULL CALL TRANSCRIPT:
-"""
-${fullTranscript}
-"""
-
 ANSWERS CAPTURED:
-${Object.entries(answers).map(([k, v]) => `- ${k}: ${v}`).join('\n')}
+${answersText}
 
 CALL OUTCOME: ${outcome}
 
@@ -631,7 +395,7 @@ Return ONLY valid JSON:
         const parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : { categories: [], strengths: [], improvements: [], summary: 'Grading failed.' };
 
         const categories = parsed.categories || [];
-        const totalScore = categories.reduce((sum, c) => sum + (c.score || 0), 0);
+        const totalScore = categories.reduce((sum: number, c: any) => sum + (c.score || 0), 0);
         const avgScore = categories.length > 0 ? totalScore / categories.length : 0;
 
         let overallGrade = 'F';
@@ -645,7 +409,7 @@ Return ONLY valid JSON:
         return {
           overallGrade,
           overallScore: Math.round(avgScore * 10) / 10,
-          categories: categories.map((c) => ({
+          categories: categories.map((c: any) => ({
             name: c.name || '',
             score: c.score || 0,
             notes: c.notes || '',
