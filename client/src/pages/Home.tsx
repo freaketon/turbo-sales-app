@@ -3,7 +3,7 @@
   - Step-by-step flow with glassmorphic cards
   - Spring physics animations throughout
 */
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -30,7 +30,6 @@ import HelpfulReinforcementNudge from '@/components/HelpfulReinforcementNudge';
 import DemoPermissionGate from '@/components/DemoPermissionGate';
 import RecapSummary from '@/components/RecapSummary';
 import ObjectionGuide from '@/components/ObjectionGuide';
-import CallListeningPanel from '@/components/CallListeningPanel';
 import { trpc } from '@/lib/trpc';
 import {
   Dialog,
@@ -88,13 +87,7 @@ export default function Home() {
   const [answers, setAnswers] = useState<Record<string, string>>(savedData?.answers || {});
   const [qualified, setQualified] = useState<boolean | null>(null);
 
-  // âââ Full transcript accumulation for grading âââ
-  const [fullTranscript, setFullTranscript] = useState<string>('');
   const [isGrading, setIsGrading] = useState(false);
-
-  const handleTranscriptChunk = useCallback((text: string) => {
-    setFullTranscript(prev => prev + text);
-  }, []);
 
   // tRPC gradeCall mutation
   const gradeCallMutation = trpc.salesCoach.gradeCall.useMutation();
@@ -192,7 +185,6 @@ export default function Home() {
     setIsGrading(true);
     try {
       const grading = await gradeCallMutation.mutateAsync({
-        fullTranscript,
         answers,
         outcome,
       });
@@ -202,7 +194,6 @@ export default function Home() {
         answers,
         outcome,
         grading,
-        fullTranscript: fullTranscript.trim() || undefined,
       });
     } catch (error) {
       console.error('Grading failed, exporting without grade:', error);
@@ -211,7 +202,6 @@ export default function Home() {
         prospectInfo,
         answers,
         outcome,
-        fullTranscript: fullTranscript.trim() || undefined,
       });
     } finally {
       setIsGrading(false);
@@ -270,7 +260,6 @@ export default function Home() {
         outcome,
         finalStep: currentStepId,
         answers,
-        fullTranscript: fullTranscript.trim() || undefined,
         mirrorTexts: Object.keys(mirrorTexts).length > 0 ? mirrorTexts : undefined,
         costAnalysis,
       };
@@ -281,7 +270,6 @@ export default function Home() {
     setAnswers({});
     setCallStarted(false);
     setProspectInfo({ name: '', company: '', email: '' });
-    setFullTranscript('');
     // Clear localStorage
     try {
       localStorage.removeItem(STORAGE_KEY);
@@ -394,17 +382,6 @@ export default function Home() {
 
       {/* Live notes with AI guidance */}
       <SalesCoach currentStep={currentStepId} answers={answers} />
-
-      {/* Call listening & auto-fill panel */}
-      {currentStep?.questions && currentStep.questions.length > 0 && (
-        <CallListeningPanel
-          questions={currentStep.questions}
-          currentStepId={currentStepId}
-          answers={answers}
-          onAcceptSuggestion={handleAnswer}
-          onTranscriptChunk={handleTranscriptChunk}
-        />
-      )}
 
       {/* Customer answers tracker - always visible */}
       <CustomerAnswersTracker answers={answers} currentStepId={currentStepId} />
