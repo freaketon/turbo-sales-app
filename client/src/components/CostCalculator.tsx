@@ -1,27 +1,22 @@
 /*
 Design: OUTLIER Agitation Calculator
 - Time wasted searching for trends
-- Money burned on missed shots & failed videos
-- Production cost of content that doesn't work
-- Missed growth opportunity (the invisible cost)
+- Cost of videos that don't work
+- Total annual waste = your price anchor
 */
 
 import { motion } from 'framer-motion';
-import { DollarSign, TrendingDown, Clock, Video, Target, AlertCircle } from 'lucide-react';
+import { DollarSign, TrendingDown, Clock, Video } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface CostCalculatorProps {
   hoursSearching?: number;
-  missedShotsPerMonth?: number;
   costPerVideo?: number;
-  monthlyFollowerGoal?: number;
 }
 
 export default function CostCalculator({
   hoursSearching = 0,
-  missedShotsPerMonth = 0,
   costPerVideo = 0,
-  monthlyFollowerGoal = 0,
 }: CostCalculatorProps) {
   const [wastedResearchCost, setWastedResearchCost] = useState(0);
   const [wastedProductionCost, setWastedProductionCost] = useState(0);
@@ -30,19 +25,19 @@ export default function CostCalculator({
   useEffect(() => {
     // Time wasted searching for trends: hours/week × $75 avg rate × 48 weeks
     const researchWaste = (hoursSearching || 0) * 75 * 48;
-    // Production waste: missed shots/month × cost per video × 12
-    const productionWaste = (missedShotsPerMonth || 0) * (costPerVideo || 0) * 12;
+    // Production waste: cost per wasted video × ~4 wasted videos/month × 12
+    const productionWaste = (costPerVideo || 0) * 4 * 12;
     const total = researchWaste + productionWaste;
 
     setWastedResearchCost(researchWaste);
     setWastedProductionCost(productionWaste);
     setTotalAnnualWaste(total);
-  }, [hoursSearching, missedShotsPerMonth, costPerVideo, monthlyFollowerGoal]);
+  }, [hoursSearching, costPerVideo]);
 
   const hasResearch = !!hoursSearching;
-  const hasProduction = missedShotsPerMonth && costPerVideo;
+  const hasProduction = !!costPerVideo;
   const hasAll = hasResearch && hasProduction;
-  const hasAny = hasResearch || missedShotsPerMonth || costPerVideo;
+  const hasAny = hasResearch || hasProduction;
 
   return (
     <motion.div
@@ -57,7 +52,7 @@ export default function CostCalculator({
         </div>
         <div>
           <h4 className="text-sm font-semibold text-destructive uppercase tracking-wide">
-            Content Waste Calculator
+            The Invisible Tax
           </h4>
           <p className="text-xs text-muted-foreground">
             {hasAny ? 'Calculating as you answer...' : 'Answer the questions to reveal the real cost'}
@@ -80,14 +75,14 @@ export default function CostCalculator({
           </p>
         </div>
 
-        {/* Line 2: Failed content production */}
+        {/* Line 2: Wasted video production */}
         <div className="bg-background/50 rounded-lg p-4">
           <div className="flex items-center gap-2 mb-2">
             <Video className="w-4 h-4 text-muted-foreground" />
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Missed Shots & Failed Videos</p>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Videos That Don't Work</p>
           </div>
           <p className={`font-mono text-sm ${hasProduction ? "text-foreground" : "text-muted-foreground/60"}`}>
-            <span className={missedShotsPerMonth ? "text-accent font-semibold" : ""}>{missedShotsPerMonth || '?'}</span> videos/mo × $<span className={costPerVideo ? "text-accent font-semibold" : ""}>{costPerVideo || '?'}</span> each × 12 ={' '}
+            $<span className={costPerVideo ? "text-accent font-semibold" : ""}>{costPerVideo || '?'}</span>/video × ~4 wasted/mo × 12 ={' '}
             <span className={hasProduction ? "text-destructive font-bold" : ""}>
               {hasProduction ? `$${wastedProductionCost.toLocaleString()}` : '$???'}
             </span>
@@ -125,25 +120,6 @@ export default function CostCalculator({
             </div>
           )}
         </div>
-
-        {/* Missed growth opportunity (agitation) */}
-        {hasAll && monthlyFollowerGoal > 0 && (
-          <motion.div
-            className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-          >
-            <div className="flex items-center gap-2 mb-2">
-              <Target className="w-4 h-4 text-amber-500" />
-              <p className="text-xs font-semibold text-amber-600 uppercase tracking-wide">Missed Growth Opportunity</p>
-            </div>
-            <p className="text-sm text-foreground/90 leading-relaxed">
-              You want <strong className="text-amber-600">{monthlyFollowerGoal.toLocaleString()} followers/month</strong> but every video posted on a dead trend is a missed shot at growth.
-              If even <strong>1 in 3</strong> of those wasted videos hit the right trend at the right time, you'd be growing <strong className="text-amber-600">2-3x faster</strong>.
-            </p>
-          </motion.div>
-        )}
 
         {/* Context / Agitation */}
         {hasAll && (

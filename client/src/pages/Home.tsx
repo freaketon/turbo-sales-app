@@ -16,7 +16,6 @@ import ProgressIndicator from '@/components/ProgressIndicator';
 import StepCard, { StepHeader, StepContent, ScriptBox, TipsBox } from '@/components/StepCard';
 import QuestionCard from '@/components/QuestionCard';
 import PaymentLink from '@/components/PaymentLink';
-import MirrorBox from '@/components/MirrorBox';
 import CustomerAnswersTracker from '@/components/CustomerAnswersTracker';
 import DemoPrioritizer from '@/components/DemoPrioritizer';
 import ImprovedObjectionHandler from '@/components/ImprovedObjectionHandler';
@@ -27,7 +26,6 @@ import { SalesCoach } from '@/components/SalesCoach';
 import CallFrameOpener from '@/components/CallFrameOpener';
 import CuriosityTonalityCoach from '@/components/CuriosityTonalityCoach';
 import HelpfulReinforcementNudge from '@/components/HelpfulReinforcementNudge';
-import DemoPermissionGate from '@/components/DemoPermissionGate';
 import RecapSummary from '@/components/RecapSummary';
 import ObjectionGuide from '@/components/ObjectionGuide';
 import { trpc } from '@/lib/trpc';
@@ -41,16 +39,11 @@ import {
   MessageSquare,
   AlertTriangle,
   CheckCircle2,
-  Zap,
-  Lightbulb,
-  Gift,
   Target,
   Shield,
   XCircle,
   PartyPopper,
   RotateCcw,
-  DollarSign,
-  Clock,
   ArrowRight,
   BarChart3,
   FileDown,
@@ -96,17 +89,10 @@ export default function Home() {
 
   const stepIcons: Record<StepType, React.ReactNode> = {
     'frame-call': <MessageSquare className="w-6 h-6" />,
-    'problem-exposure': <AlertTriangle className="w-6 h-6" />,
-    'alternative-solutions': <Shield className="w-6 h-6" />,
-    'dream-outcome': <Lightbulb className="w-6 h-6" />,
-    'price-anchor': <DollarSign className="w-6 h-6" />,
-    'transition-demo': <ArrowRight className="w-6 h-6" />,
-    'demo-ask-loop': <CheckCircle2 className="w-6 h-6" />,
-    'impact-measurement': <BarChart3 className="w-6 h-6" />,
-    'recap': <MessageSquare className="w-6 h-6" />,
-    'availability-check': <Clock className="w-6 h-6" />,
-    'the-offer': <Gift className="w-6 h-6" />,
-    'close': <Target className="w-6 h-6" />,
+    'discovery': <AlertTriangle className="w-6 h-6" />,
+    'demo': <CheckCircle2 className="w-6 h-6" />,
+    'impact-calculator': <BarChart3 className="w-6 h-6" />,
+    'recap-and-close': <Target className="w-6 h-6" />,
     disqualify: <XCircle className="w-6 h-6" />,
     success: <PartyPopper className="w-6 h-6" />
   };
@@ -217,22 +203,18 @@ export default function Home() {
           ? 'disqualified' as const
           : 'in-progress' as const;
 
-      // Calculate cost analysis from new calculator inputs
+      // Calculate cost analysis from calculator inputs
       let costAnalysis;
       const hoursSearching = answers['hours-searching'] ? parseInt(answers['hours-searching']) : null;
-      const missedShotsPerMonth = answers['missed-shots'] ? parseInt(answers['missed-shots']) : null;
       const costPerVideo = answers['cost-per-video'] ? parseInt(answers['cost-per-video']) : null;
-      const monthlyFollowerGoal = answers['monthly-follower-goal'] ? parseInt(answers['monthly-follower-goal']) : 0;
 
-      if (hoursSearching && missedShotsPerMonth && costPerVideo) {
+      if (hoursSearching && costPerVideo) {
         const researchWaste = hoursSearching * 75 * 48;
-        const productionWaste = missedShotsPerMonth * costPerVideo * 12;
+        const productionWaste = costPerVideo * 12; // ~1 wasted video/month estimate
         const totalAnnualWaste = researchWaste + productionWaste;
         costAnalysis = {
           hoursSearching,
-          missedShotsPerMonth,
           costPerVideo,
-          monthlyFollowerGoal,
           researchWaste,
           productionWaste,
           totalAnnualWaste,
@@ -241,7 +223,7 @@ export default function Home() {
 
       // Collect mirror texts from answers (keys like 'problem-exposure-mirror-confirmation' etc.)
       const mirrorTexts: Record<string, string> = {};
-      const mirrorSteps = ['problem-exposure', 'alternative-solutions', 'dream-outcome'];
+      const mirrorSteps = ['discovery'];
       for (const stepId of mirrorSteps) {
         const confirmKey = `${stepId}-mirror-confirmation`;
         if (answers[confirmKey]) {
@@ -314,28 +296,20 @@ export default function Home() {
               </h3>
               <ul className="space-y-3 text-foreground/80">
                 <li className="flex items-start gap-3">
-                  <span className="text-primary mt-1">â¢</span>
-                  <span><strong>Opening:</strong> Binary question to surface pain immediately</span>
+                  <span className="text-primary mt-1">•</span>
+                  <span><strong>Discovery (4 min):</strong> 4 killer questions that each serve the close</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="text-primary mt-1">â¢</span>
-                  <span><strong>Problem Install:</strong> Quantify the "Invisible Tax" with real numbers</span>
+                  <span className="text-primary mt-1">•</span>
+                  <span><strong>Demo (4 min):</strong> Show value while energy is high</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="text-primary mt-1">â¢</span>
-                  <span><strong>Qualification:</strong> Hard gates to identify true fit</span>
+                  <span className="text-primary mt-1">•</span>
+                  <span><strong>The Invisible Tax (2 min):</strong> Calculator makes cost of inaction painful</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="text-primary mt-1">â¢</span>
-                  <span><strong>Urgency Check:</strong> Separate real buyers from curious browsers</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-primary mt-1">â¢</span>
-                  <span><strong>The Offer:</strong> Founders Circle with Double-Win Guarantee</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-primary mt-1">â¢</span>
-                  <span><strong>Objection Handling:</strong> Diagnose and respond to trust, timing, or money concerns</span>
+                  <span className="text-primary mt-1">•</span>
+                  <span><strong>Recap & Close (4 min):</strong> Mirror → Offer → Silence</span>
                 </li>
               </ul>
             </div>
@@ -483,10 +457,10 @@ export default function Home() {
           stepTitle={currentStep.title}
         />
 
-        {/* Main step card - with special layout for impact-measurement */}
+        {/* Main step card - with special layout for impact-calculator */}
         <AnimatePresence mode="wait">
-          {currentStep.id === 'impact-measurement' ? (
-            // Special two-column layout for impact-measurement step
+          {currentStep.id === 'impact-calculator' ? (
+            // Special two-column layout for impact-calculator step
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Left: Questions */}
               <StepCard key={currentStep.id}>
@@ -543,9 +517,7 @@ export default function Home() {
               <div className="lg:sticky lg:top-6 lg:self-start">
                 <CostCalculator
                   hoursSearching={answers['hours-searching'] ? parseInt(answers['hours-searching']) : undefined}
-                  missedShotsPerMonth={answers['missed-shots'] ? parseInt(answers['missed-shots']) : undefined}
                   costPerVideo={answers['cost-per-video'] ? parseInt(answers['cost-per-video']) : undefined}
-                  monthlyFollowerGoal={answers['monthly-follower-goal'] ? parseInt(answers['monthly-follower-goal']) : undefined}
                 />
               </div>
             </div>
@@ -569,24 +541,17 @@ export default function Home() {
                 </div>
               )}
 
-              {/* Curiosity Tonality Coach for discovery steps */}
-              {['problem-exposure', 'alternative-solutions', 'dream-outcome'].includes(currentStep.id) && (
+              {/* Curiosity Tonality Coach for discovery step */}
+              {currentStep.id === 'discovery' && (
                 <div className="mb-6">
                   <CuriosityTonalityCoach />
                 </div>
               )}
 
-              {/* Helpful Reinforcement Nudge for discovery steps */}
-              {['problem-exposure', 'alternative-solutions', 'dream-outcome'].includes(currentStep.id) && (
+              {/* Helpful Reinforcement Nudge for discovery step */}
+              {currentStep.id === 'discovery' && (
                 <div className="mb-6">
                   <HelpfulReinforcementNudge />
-                </div>
-              )}
-
-              {/* Demo Permission Gate before demo */}
-              {currentStep.id === 'transition-demo' && (
-                <div className="mb-6">
-                  <DemoPermissionGate onPermissionGranted={() => {}} />
                 </div>
               )}
 
@@ -600,13 +565,13 @@ export default function Home() {
                 <ImprovedObjectionHandler />
               )}
 
-              {/* Demo prioritizer for demo-ask-loop step */}
-              {currentStep.id === 'demo-ask-loop' && (
+              {/* Demo prioritizer for demo step */}
+              {currentStep.id === 'demo' && (
                 <DemoPrioritizer answers={answers} />
               )}
 
-              {/* Recap Summary for recap step - auto-populates from all mirrors */}
-              {currentStep.id === 'recap' && (
+              {/* Recap Summary for recap-and-close step */}
+              {currentStep.id === 'recap-and-close' && (
                 <div className="mb-6">
                   <RecapSummary answers={answers} />
                 </div>
@@ -616,7 +581,7 @@ export default function Home() {
               {/* Also exclude frame-call since it has CallFrameOpener component */}
               {/* EXCEPT for the-offer which needs to show verbatim bullets */}
               {currentStep.scriptLines && currentStep.scriptLines.length > 0 &&
-                (!currentStep.questions || currentStep.id === 'the-offer') &&
+                (!currentStep.questions || currentStep.id === 'recap-and-close') &&
                 currentStep.id !== 'frame-call' && (
                 <ScriptBox lines={currentStep.scriptLines} />
               )}
@@ -634,15 +599,7 @@ export default function Home() {
                     ))}
                   </div>
 
-                  {/* Auto-generate mirror for steps that need it (NOT recap - that has its own component) */}
-                  {['problem-exposure', 'alternative-solutions', 'dream-outcome'].includes(currentStep.id) && (
-                    <MirrorBox
-                      stepId={currentStep.id}
-                      answers={answers}
-                      questionIds={currentStep.questions.map(q => q.id)}
-                      onAnswer={handleAnswer}
-                    />
-                  )}
+                  {/* No per-section mirrors — single recap mirror handles everything */}
                 </div>
               )}
 

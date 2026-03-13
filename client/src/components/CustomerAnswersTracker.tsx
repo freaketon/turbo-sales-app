@@ -21,55 +21,42 @@ export default function CustomerAnswersTracker({ answers, currentStepId }: Custo
 
   // Group answers by section
   const mirroredSections: MirroredAnswer[] = [];
-  
-  // Problem Exposure (Section 2)
-  const problemAnswers = Object.keys(answers)
-    .filter(key => key.startsWith('problem-'))
+
+  // Discovery (Section 2) - problem + tried + magic wand
+  const discoveryAnswers = Object.keys(answers)
+    .filter(key => key.startsWith('problem-') || key === 'tried-and-failed' || key === 'magic-wand')
     .reduce((acc, key) => ({ ...acc, [key]: answers[key] }), {});
-  
-  if (Object.keys(problemAnswers).length > 0) {
+
+  if (Object.keys(discoveryAnswers).length > 0) {
     mirroredSections.push({
-      stepId: 'problem-exposure',
-      stepTitle: 'Problem Exposure',
-      answers: problemAnswers
+      stepId: 'discovery',
+      stepTitle: 'Discovery',
+      answers: discoveryAnswers
     });
   }
 
-  // Alternative Solutions (Section 3)
-  const altAnswers = Object.keys(answers)
-    .filter(key => key.startsWith('alt-') || key.startsWith('alternative-'))
+  // Demo (Section 3)
+  const demoAnswers = Object.keys(answers)
+    .filter(key => key.startsWith('demo-') || key === 'biggest-impact-feature')
     .reduce((acc, key) => ({ ...acc, [key]: answers[key] }), {});
-  
-  if (Object.keys(altAnswers).length > 0) {
+
+  if (Object.keys(demoAnswers).length > 0) {
     mirroredSections.push({
-      stepId: 'alternative-solutions',
-      stepTitle: 'Alternative Solutions',
-      answers: altAnswers
+      stepId: 'demo',
+      stepTitle: 'Demo',
+      answers: demoAnswers
     });
   }
 
-  // Dream Outcome (Section 4)
-  const dreamAnswers = Object.keys(answers)
-    .filter(key => key.startsWith('dream-'))
-    .reduce((acc, key) => ({ ...acc, [key]: answers[key] }), {});
-  
-  if (Object.keys(dreamAnswers).length > 0) {
-    mirroredSections.push({
-      stepId: 'dream-outcome',
-      stepTitle: 'Dream Outcome',
-      answers: dreamAnswers
-    });
-  }
-
-  // Impact Measurement (Section 8)
+  // Impact Calculator (Section 4)
   const impactAnswers = Object.keys(answers)
-    .filter(key => key.startsWith('num-editors') || key.startsWith('hours-saved') || key.startsWith('hourly-rate'))
+    .filter(key => key === 'hours-searching' || key === 'cost-per-video')
     .reduce((acc, key) => ({ ...acc, [key]: answers[key] }), {});
-  
+
   if (Object.keys(impactAnswers).length > 0) {
     mirroredSections.push({
-      stepId: 'impact-measurement',
-      stepTitle: 'Impact Measurement',
+      stepId: 'impact-calculator',
+      stepTitle: 'Impact Calculator',
       answers: impactAnswers
     });
   }
@@ -80,7 +67,7 @@ export default function CustomerAnswersTracker({ answers, currentStepId }: Custo
 
   return (
     <Card className="hidden lg:block fixed right-4 top-20 w-80 bg-card/95 backdrop-blur-sm border-border shadow-lg z-40">
-      <div 
+      <div
         className="flex items-center justify-between p-4 cursor-pointer border-b border-border"
         onClick={() => setIsExpanded(!isExpanded)}
       >
@@ -101,11 +88,11 @@ export default function CustomerAnswersTracker({ answers, currentStepId }: Custo
         <ScrollArea className="h-[calc(100vh-200px)]">
           <div className="p-4 space-y-4">
             {mirroredSections.map((section) => (
-              <div 
+              <div
                 key={section.stepId}
                 className={`p-3 rounded-lg border ${
-                  section.stepId === currentStepId 
-                    ? 'bg-accent/20 border-accent' 
+                  section.stepId === currentStepId
+                    ? 'bg-accent/20 border-accent'
                     : 'bg-background/50 border-border/50'
                 }`}
               >
@@ -127,7 +114,7 @@ export default function CustomerAnswersTracker({ answers, currentStepId }: Custo
 
       <div className="p-2 border-t border-border bg-muted/30">
         <p className="text-xs text-muted-foreground text-center">
-          💡 Reference these when repeating back
+          Reference these when repeating back
         </p>
       </div>
     </Card>

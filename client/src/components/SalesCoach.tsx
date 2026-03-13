@@ -19,14 +19,10 @@ interface SalesCoachProps {
 
 // Section-specific prompts for what to capture
 const SECTION_PROMPTS: Record<string, string> = {
-  'problem-exposure': '💡 Capture their answers: What slows them down? How do they find footage? Time spent searching?',
-  'alternative-solutions': '💡 Capture: What have they tried? Why didn\'t it work? How much invested?',
-  'dream-outcome': '💡 Capture: Their magic wand solution. What would it solve? Financial impact?',
-  'price-anchor': '💡 Capture: Reasonable price? Unreasonable price?',
-  'demo-ask-loop': '💡 Capture: Their reaction to each feature. Any objections?',
-  'impact-measurement': '💡 Capture: Hours saved per week. Number of editors. Hourly rate.',
-  'recap': '💡 Time to repeat EVERYTHING back - check your notes!',
-  'the-offer': '💡 Capture: Their reaction to Founders Circle. Price objection?'
+  'discovery': '💡 Capture: Process, time wasted, what they tried, their magic wand solution',
+  'demo': '💡 Capture: Their reaction to features. Which had biggest impact? Any concerns?',
+  'impact-calculator': '💡 Capture: Hours per week searching. Cost per wasted video.',
+  'recap-and-close': '💡 Read recap → Bridge → Offer → SILENCE after price. Capture their reaction.'
 };
 
 export function SalesCoach({ currentStep, answers }: SalesCoachProps) {
