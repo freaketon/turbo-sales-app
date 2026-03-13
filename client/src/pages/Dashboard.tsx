@@ -60,8 +60,8 @@ export default function Dashboard() {
     let csv = 'Date,Prospect Name,Company,Email,Outcome,Annual Cost,Monthly Cost\n';
     records.forEach(record => {
       const date = new Date(record.timestamp).toLocaleDateString();
-      const annualCost = record.costAnalysis?.annualCost || 0;
-      const monthlyCost = record.costAnalysis?.monthlyCost || 0;
+      const annualCost = record.costAnalysis?.totalAnnualWaste || 0;
+      const monthlyCost = annualCost ? Math.round(annualCost / 12) : 0;
       csv += `${date},"${record.prospectInfo.name}","${record.prospectInfo.company}","${record.prospectInfo.email}",${record.outcome},${annualCost},${monthlyCost}\n`;
     });
     return csv;
@@ -285,7 +285,7 @@ export default function Dashboard() {
                         </td>
                         <td className="py-3 px-2 text-sm text-foreground/80 text-right font-mono">
                           {record.costAnalysis 
-                            ? `$${record.costAnalysis.annualCost.toLocaleString()}`
+                            ? `$${record.costAnalysis.totalAnnualWaste.toLocaleString()}`
                             : '-'
                           }
                         </td>

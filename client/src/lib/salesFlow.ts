@@ -1,19 +1,12 @@
-// OUTLIER Discovery Call Script - 12 Sections (20 Minutes)
-// Updated to match new script structure
+// OUTLIER Discovery Call Script - 5 Sections (15 Minutes)
+// Optimized for closing: Quick discovery → Demo while energy is high → Calculator agitation → Close
 
-export type StepType = 
+export type StepType =
   | 'frame-call'
-  | 'problem-exposure'
-  | 'alternative-solutions'
-  | 'dream-outcome'
-  | 'price-anchor'
-  | 'transition-demo'
-  | 'demo-ask-loop'
-  | 'impact-measurement'
-  | 'recap'
-  | 'availability-check'
-  | 'the-offer'
-  | 'close'
+  | 'discovery'
+  | 'demo'
+  | 'impact-calculator'
+  | 'recap-and-close'
   | 'disqualify'
   | 'success';
 
@@ -49,13 +42,13 @@ export interface Step {
 }
 
 export const salesFlow: Step[] = [
-  // SECTION 1 — FRAME THE CALL (2 min)
+  // SECTION 1 — FRAME THE CALL (1 min)
   {
     id: 'frame-call',
     type: 'frame-call',
     title: 'Section 1: Frame the Call',
-    subtitle: 'Set expectations and get agreement (2 minutes)',
-    duration: '2 min',
+    subtitle: 'Set expectations and get agreement (1 minute)',
+    duration: '1 min',
     content: [
       'Start by framing what today\'s call is about.',
       'Get their agreement before diving in.',
@@ -68,43 +61,43 @@ export const salesFlow: Step[] = [
     ],
     tips: [
       'Keep it casual and founder-to-founder',
-      'The pause after "Sound fair?" is critical - wait for their yes',
+      'The pause after "Cool?" is critical - wait for their yes',
       'You\'re asking permission, not pitching yet'
     ],
-    nextStep: 'problem-exposure'
+    nextStep: 'discovery'
   },
 
-  // SECTION 2 — PROBLEM EXPOSURE (8–10 min)
+  // SECTION 2 — DISCOVERY (4 min)
+  // Merged: Problem Exposure + Alternative Solutions + Dream Outcome
+  // Every question serves the close
   {
-    id: 'problem-exposure',
-    type: 'problem-exposure',
-    title: 'Section 2: Problem Exposure',
-    subtitle: 'Discovery Questions - Do NOT mention OUTLIER (8-10 minutes)',
-    duration: '8-10 min',
+    id: 'discovery',
+    type: 'discovery',
+    title: 'Section 2: Discovery',
+    subtitle: 'Uncover pain, failed attempts, and their ideal state (4 minutes)',
+    duration: '4 min',
     content: [
-      'Ask open-ended questions to understand their pain.',
-      'Do NOT mention OUTLIER or any solution yet.',
-      'Let them talk. Take notes in the chat.',
-      'After all questions, mirror back what you heard.'
+      'Four questions that each serve the close.',
+      'Do NOT mention OUTLIER yet — let them describe their pain.',
+      'Their answer to Q4 becomes your bridge to the demo.'
     ],
     scriptLines: [
-      'Ask these questions:',
+      'Ask these 4 questions — let them talk after each one:',
       '',
       '1. "How do you currently figure out what content to post next week?"',
-      '2. "How much time do you spend scrolling competitors or discovery pages each week?"',
-      '3. "What percentage of that time actually leads to a usable idea?"',
-      '4. "When you spot a trend and post on it — how often does it feel too late?"',
-      '5. "What does it feel like when a competitor posts something that blows up and you missed it?"',
-      '6. "What\'s the hardest part about knowing what to post consistently?"',
-      '7. "Have you ever posted something you were confident in that completely flopped? What happened?"',
-      '8. "What tools are you using now to figure out what\'s working in your niche?"',
+      '   → Exposes the chaos. Sets up the Outlier Feed demo.',
       '',
-      '[Let them talk. Capture their answers in the chat.]',
+      '2. "How much time per week does that take, and what percentage actually leads to something usable?"',
+      '   → Gets the number for the calculator AND makes them feel the waste.',
       '',
-      'Then mirror back:',
-      '"So what I\'m hearing is: you\'re spending roughly [X hours] a week manually scrolling, you feel like you\'re always one step behind, and by the time you spot something it\'s already saturated. Did I get that right?"',
+      '3. "What have you tried to fix this, and why didn\'t it work?"',
+      '   → Kills competitors before you even demo. If they say "nothing" they\'re not a buyer.',
       '',
-      '[Pause]'
+      '4. "If you could wave a magic wand, what would the perfect solution look like?"',
+      '   → Their answer becomes your demo script.',
+      '',
+      'Bridge to demo:',
+      '"Funny you say that — let me show you something."'
     ],
     questions: [
       {
@@ -112,250 +105,71 @@ export const salesFlow: Step[] = [
         text: 'How do you currently figure out what content to post next week?',
         type: 'text',
         placeholder: 'Type their answer here...',
-        guidance: 'Capture their exact words in the chat'
+        guidance: 'Capture their exact words — this exposes the chaos'
       },
       {
         id: 'problem-2',
-        text: 'How much time do you spend scrolling competitors or discovery pages each week?',
+        text: 'How much time per week does that take, and what percentage actually leads to something usable?',
         type: 'text',
-        placeholder: 'e.g., "5-10 hours per week"'
+        placeholder: 'e.g., "5-10 hours, maybe 20% works"'
       },
       {
-        id: 'problem-3',
-        text: 'What percentage of that time actually leads to a usable idea?',
+        id: 'tried-and-failed',
+        text: 'What have you tried to fix this, and why didn\'t it work?',
         type: 'text',
-        placeholder: 'e.g., "Maybe 20%"'
+        placeholder: 'e.g., "Later, Sprout Social — but they don\'t show what\'s trending"'
       },
-      {
-        id: 'problem-4',
-        text: 'When you spot a trend and post on it — how often does it feel too late?',
-        type: 'text',
-        placeholder: 'Type their answer here...'
-      },
-      {
-        id: 'problem-5',
-        text: 'What does it feel like when a competitor posts something that blows up and you missed it?',
-        type: 'text',
-        placeholder: 'Type their answer here...'
-      },
-      {
-        id: 'problem-6',
-        text: 'What\'s the hardest part about knowing what to post consistently?',
-        type: 'text',
-        placeholder: 'Type their answer here...'
-      },
-      {
-        id: 'problem-7',
-        text: 'Have you ever posted something you were confident in that completely flopped? What happened?',
-        type: 'text',
-        placeholder: 'Type their answer here...'
-      },
-      {
-        id: 'problem-8',
-        text: 'What tools are you using now to figure out what\'s working in your niche?',
-        type: 'text',
-        placeholder: 'e.g., "Later, Sprout, Social Blade"'
-      }
-    ],
-    tips: [
-      'Do NOT mention OUTLIER yet',
-      'Let them talk - resist the urge to jump in',
-      'Use the chat to capture their exact phrases',
-      'The mirror is critical - repeat their words, not yours'
-    ],
-    nextStep: 'alternative-solutions'
-  },
-
-  // SECTION 3 — ALTERNATIVE SOLUTIONS
-  {
-    id: 'alternative-solutions',
-    type: 'alternative-solutions',
-    title: 'Section 3: Alternative Solutions',
-    subtitle: 'What have they tried? Why didn\'t it work?',
-    content: [
-      'Understand what they\'ve already attempted.',
-      'This reveals their sophistication and pain level.',
-      'Mirror back their attempts and why they failed.'
-    ],
-    scriptLines: [
-      '"What have you tried to solve this?"',
-      '',
-      '[Let them answer]',
-      '',
-      '"Tools like Later, Sprout, Social Blade — have any of those helped?"',
-      '',
-      '[Let them answer]',
-      '',
-      '"Why hasn\'t that fully solved it?"',
-      '',
-      '[Let them answer]',
-      '',
-      '"How much time or money have you put into trying to crack this?"',
-      '',
-      '[Let them answer]',
-      '',
-      'Mirror:',
-      '"So you\'ve tried [A, B, C], but you\'re still spending [X hours/week] guessing. Fair?"'
-    ],
-    questions: [
-      {
-        id: 'tried-1',
-        text: 'What have you tried to solve this?',
-        type: 'text',
-        placeholder: 'e.g., "Later, Sprout Social, Social Blade, manual scrolling"'
-      },
-      {
-        id: 'tried-2',
-        text: 'Tools like Later, Sprout, Social Blade — have any of those helped?',
-        type: 'text',
-        placeholder: 'Type their answer...'
-      },
-      {
-        id: 'why-failed',
-        text: 'Why hasn\'t that fully solved it?',
-        type: 'text',
-        placeholder: 'Capture why their attempts didn\'t work'
-      },
-      {
-        id: 'investment',
-        text: 'How much time or money has gone into trying to fix it?',
-        type: 'text',
-        placeholder: 'e.g., "$10k on consultants, 3 months of team time"'
-      }
-    ],
-    tips: [
-      'This shows you understand their journey',
-      'Failed attempts = higher pain = more likely to buy',
-      'Use their exact words when mirroring'
-    ],
-    nextStep: 'dream-outcome'
-  },
-
-  // SECTION 4 — DREAM OUTCOME
-  {
-    id: 'dream-outcome',
-    type: 'dream-outcome',
-    title: 'Section 4: Dream Outcome',
-    subtitle: 'Magic wand question - let them define ideal state',
-    content: [
-      'Let them paint the picture of the perfect solution.',
-      'This gives you their buying criteria.',
-      'Summarize their ideal state back to them.'
-    ],
-    scriptLines: [
-      '"If you could wave a magic wand — what would the perfect content intelligence tool look like?"',
-      '',
-      '[Let them answer]',
-      '',
-      '"What would it tell you, and when?"',
-      '',
-      '[Let them answer]',
-      '',
-      '"What would that unlock for your posting schedule or your results?"',
-      '',
-      '[Let them answer]',
-      '',
-      '"What would that mean for your business or your clients?"',
-      '',
-      '[Let them answer]',
-      '',
-      'Summarize:',
-      '"So ideally you\'d wake up, know exactly what\'s breaking out in your niche right now, and have a clear idea ready to film. Accurate?"'
-    ],
-    questions: [
       {
         id: 'magic-wand',
         text: 'If you could wave a magic wand, what would the perfect solution look like?',
         type: 'text',
-        placeholder: 'Capture their ideal solution...'
-      },
-      {
-        id: 'what-solve',
-        text: 'What would it tell you, and when?',
-        type: 'text',
-        placeholder: 'Type their answer...'
-      },
-      {
-        id: 'what-unlock',
-        text: 'What would that unlock for your posting schedule or your results?',
-        type: 'text',
-        placeholder: 'Type their answer...'
-      },
-      {
-        id: 'financial-impact',
-        text: 'What would that mean for your business or your clients?',
-        type: 'text',
-        placeholder: 'e.g., "More followers, more leads, faster growth"'
+        placeholder: 'Their answer becomes your demo script...',
+        guidance: 'Bridge: "Funny you say that — let me show you something."'
       }
     ],
     tips: [
-      'Let them define success - don\'t lead them',
-      'Their words = your demo script',
-      'This is their buying criteria - write it down'
+      'Do NOT mention OUTLIER yet',
+      'Let them talk — resist the urge to jump in',
+      'Q3: if they say "nothing" they may not be a serious buyer',
+      'Q4 is your bridge: "Funny you say that — let me show you something."'
     ],
-    nextStep: 'price-anchor'
+    nextStep: 'demo'
   },
 
-  // SECTION 5 — PRICE ANCHOR (Before Demo)
+  // SECTION 3 — DEMO (4 min)
+  // Moved earlier — show value while energy is HIGH
+  // Permission gate + AI-prioritized features + 2 validation questions
   {
-    id: 'price-anchor',
-    type: 'price-anchor',
-    title: 'Section 5: Price Anchor',
-    subtitle: 'Discover their price expectations BEFORE showing anything',
+    id: 'demo',
+    type: 'demo',
+    title: 'Section 3: Demo',
+    subtitle: 'Show value while energy is high (4 minutes)',
+    duration: '4 min',
     content: [
-      'This is critical - anchor price before the demo.',
-      'You need to know their internal budget range.',
-      'Two questions: reasonable price and unreasonable price.'
+      'Show features that directly address their pain.',
+      'The AI will prioritize which features to show based on their answers.',
+      'Don\'t log every objection — just demo and validate.'
     ],
     scriptLines: [
-      '"Hypothetically — if something eliminated the guesswork and the manual scrolling completely, what would that be worth to you per month?"',
+      '"Let me show you something we\'re building — it\'s rough, still beta, but I\'d love your reaction."',
       '',
-      '[Let them answer]',
+      '🖥️ Open OUTLIER Demo → https://app.outliervid.io/setup',
       '',
-      'Then:',
-      '"And at what price would it feel unreasonable, even if it worked perfectly?"',
+      'Feature 1 — Outlier Feed',
+      '"You mentioned [their pain]. OUTLIER flags Reels outperforming their account baseline by 5–50x within the first 6 hours — before they hit the discovery page."',
       '',
-      '[Let them answer]',
+      'Feature 2 — Why It\'s Working Breakdown',
+      '"OUTLIER breaks down the hook, audio, format, and topic angle of every flagged Reel."',
       '',
-      'Now you have their internal anchor.'
-    ],
-    questions: [
-      {
-        id: 'reasonable-price',
-        text: 'If something eliminated the guesswork and the manual scrolling completely, what would that be worth to you per month?',
-        type: 'text',
-        placeholder: 'e.g., "$200-$500 per month"'
-      },
-      {
-        id: 'unreasonable-price',
-        text: 'At what price would this be so expensive, there\'s no way you\'d buy it even if it was the perfect solution?',
-        type: 'text',
-        placeholder: 'e.g., "$50k+ would be too much"'
-      }
-    ],
-    tips: [
-      'This is BEFORE the demo - critical sequencing',
-      'Now you know if $5k is a steal or a stretch',
-      'If they say "$2k max" you might disqualify or adjust offer'
-    ],
-    nextStep: 'transition-demo'
-  },
-
-  // SECTION 6 — TRANSITION TO DEMO
-  {
-    id: 'transition-demo',
-    type: 'transition-demo',
-    title: 'Section 6: Transition to Demo',
-    subtitle: 'Set expectations - it\'s rough, early, feedback-focused',
-    content: [
-      'Lower expectations before showing anything.',
-      'Frame it as early prototype, not finished product.',
-      'Ask permission to show it.'
-    ],
-    scriptLines: [
-      '"If you have a few more minutes, I can show you an early prototype of OUTLIER. It\'s rough — still beta. But I\'d love your reaction. Up for it?"',
+      'Feature 3 — Content Brief Generator',
+      '"Based on what\'s breaking out in your niche right now, OUTLIER generates 3 ready-to-shoot briefs in under 60 seconds."',
       '',
-      '[Wait for yes]'
+      'Feature 4 — Trend Lifecycle Score',
+      '"OUTLIER scores every trend — emerging, peaking, or saturated — so you know if you\'re early or too late."',
+      '',
+      'After showing features, ask:',
+      '"Which of those would make the biggest difference for you?"',
+      '"Any concerns so far?"'
     ],
     questions: [
       {
@@ -363,175 +177,57 @@ export const salesFlow: Step[] = [
         text: 'Did they agree to see the demo?',
         type: 'binary',
         options: [
-          { value: 'yes', label: 'Yes - show demo', nextStep: 'demo-ask-loop' },
+          { value: 'yes', label: 'Yes - show demo' },
           { value: 'no', label: 'No - not interested', nextStep: 'disqualify', isDisqualifying: true }
         ]
+      },
+      {
+        id: 'biggest-impact-feature',
+        text: 'Which feature would make the biggest difference for them?',
+        type: 'text',
+        placeholder: 'e.g., "Outlier Feed — they\'re tired of being late to trends"'
+      },
+      {
+        id: 'demo-concerns',
+        text: 'Any concerns raised during demo?',
+        type: 'text',
+        placeholder: 'e.g., "Worried about niche coverage" or "None — they loved it"',
+        optional: true
       }
     ],
     tips: [
-      'Lower expectations = easier to exceed them',
-      'If they say no, they\'re not qualified'
+      'Lower expectations: "It\'s rough, still beta"',
+      'Only show features that address THEIR pain from Q1-Q4',
+      'Use their exact words when connecting pain to features',
+      'If they\'re not excited after 2-3 features, they may not be qualified'
     ],
-    nextStep: 'demo-ask-loop'
+    nextStep: 'impact-calculator'
   },
 
-  // SECTION 7 — DEMO-ASK LOOP (Max 3-5 Features)
+  // SECTION 4 — IMPACT CALCULATOR (2 min)
+  // Now they WANT the numbers to be big — the demo created desire
+  // Calculator is your price anchor (not a hypothetical question)
   {
-    id: 'demo-ask-loop',
-    type: 'demo-ask-loop',
-    title: 'Section 7: Demo-Ask Loop',
-    subtitle: 'Show 3-5 features based on what they said (Max 3-5 features)',
+    id: 'impact-calculator',
+    type: 'impact-calculator',
+    title: 'Section 4: The Invisible Tax',
+    subtitle: 'Make the cost of inaction painful (2 minutes)',
+    duration: '2 min',
     content: [
-      'Show features that directly address their pain.',
-      'After each feature: validate, surface objections, handle them.',
-      'Use the Acknowledge → Agree → Reframe pattern for objections.'
+      'Now that they\'ve seen the product and want it, quantify what guesswork is costing them.',
+      'The calculator is your price anchor — when it shows $28k/year in waste, $5k feels like nothing.',
+      'Get agreement on the math before moving to the close.'
     ],
     scriptLines: [
-      '🖥️ Open OUTLIER Demo → https://app.outliervid.io/setup',
-      '',
-      'Feature 1 — Outlier Feed',
-      '"You mentioned you feel like you\'re always a step behind."',
-      '"OUTLIER flags Reels outperforming their account baseline by 5–50x within the first 6 hours — before they hit the discovery page."',
-      '',
-      'Validation:',
-      '"Would this work for you?"',
-      '"Could you see yourself using this?"',
-      '',
-      'Objection surfacing:',
-      '"What wouldn\'t work about this?"',
-      '',
-      'Handle objection with ACR pattern',
-      '',
-      '---',
-      '',
-      'Feature 2 — Why It\'s Working Breakdown',
-      '"You said you don\'t just want to see what went viral — you want to know why."',
-      '"OUTLIER breaks down the hook, audio, format, and topic angle of every flagged Reel."',
-      '',
-      'Validation:',
-      '"Would that help you understand what to replicate?"',
-      '',
-      '---',
-      '',
-      'Feature 3 — Content Brief Generator',
-      '"You mentioned the hardest part is knowing what to post."',
-      '"Based on what\'s breaking out in your niche right now, OUTLIER generates 3 ready-to-shoot briefs."',
-      '"You go from zero ideas to 3 evidence-backed ones in under 60 seconds."',
-      '',
-      'Validation:',
-      '"Would this save you research time?"',
-      '',
-      '---',
-      '',
-      'Feature 4 — Trend Lifecycle Score',
-      '"You said by the time you spot something it\'s already dead."',
-      '"OUTLIER scores every trend — emerging, peaking, or saturated — so you know if you\'re early or too late."',
-      '',
-      'Validation:',
-      '"Would this help you time your posts better?"'
-    ],
-    questions: [
-      {
-        id: 'feature-1-validation',
-        text: 'Feature 1 (Outlier Feed) - Would this work for them?',
-        type: 'binary',
-        options: [
-          { value: 'yes', label: 'Yes - they see value' },
-          { value: 'objection', label: 'They raised objection' }
-        ]
-      },
-      {
-        id: 'feature-1-objection',
-        text: 'If objection: What was their concern?',
-        type: 'text',
-        placeholder: 'e.g., "Worried about niche coverage", "Too many false positives"',
-        optional: true
-      },
-      {
-        id: 'feature-1-handled',
-        text: 'Did you handle the objection successfully?',
-        type: 'binary',
-        options: [
-          { value: 'yes', label: 'Yes - resolved' },
-          { value: 'no', label: 'No - still concerned' }
-        ],
-        optional: true
-      },
-      {
-        id: 'feature-2-validation',
-        text: 'Feature 2 (Why It\'s Working Breakdown) - Would this help them understand what to replicate?',
-        type: 'binary',
-        options: [
-          { value: 'yes', label: 'Yes - they see value' },
-          { value: 'no', label: 'Not convinced' }
-        ]
-      },
-      {
-        id: 'feature-3-validation',
-        text: 'Feature 3 (Content Brief Generator) - Would this save them research time?',
-        type: 'binary',
-        options: [
-          { value: 'yes', label: 'Yes - they see value' },
-          { value: 'no', label: 'Not convinced' }
-        ]
-      },
-      {
-        id: 'feature-4-validation',
-        text: 'Feature 4 (Trend Lifecycle Score) - Would this help them time posts better?',
-        type: 'binary',
-        options: [
-          { value: 'yes', label: 'Yes - they see value' },
-          { value: 'no', label: 'Not convinced' }
-        ]
-      },
-      {
-        id: 'additional-features',
-        text: 'Did you show any additional features? (Optional)',
-        type: 'text',
-        optional: true,
-        placeholder: 'List any other features shown and their reaction...'
-      }
-    ],
-    tips: [
-      'Only show features that address THEIR pain',
-      'Validate after each feature - don\'t keep going if they\'re not excited',
-      'Objections are buying signals - handle them with ACR pattern',
-      'If they\'re not excited after 3 features, they\'re not qualified'
-    ],
-    nextStep: 'impact-measurement'
-  },
-
-  // SECTION 8 — IMPACT MEASUREMENT (Product Agitation)
-  {
-    id: 'impact-measurement',
-    type: 'impact-measurement',
-    title: 'Section 8: Impact Measurement',
-    subtitle: 'Calculate the real cost of guessing — product agitation',
-    content: [
-      'Do the math with them in real-time to show what guesswork is costing them.',
-      'Three buckets: time wasted on trend research, money burned on failed content, and the growth they\'re missing.',
-      'This is product agitation — make the cost of inaction painful.'
-    ],
-    scriptLines: [
-      '"Let\'s put some numbers to this."',
+      '"Let\'s put some numbers to what we talked about."',
       '',
       '"How many hours a week do you spend scrolling, searching for trends, figuring out what to post?"',
+      '[Capture number]',
       '',
-      '[Let them answer — capture the number]',
+      '"What does it cost to produce one video that doesn\'t work? Including your time, editing, production?"',
+      '[Capture number]',
       '',
-      '"And out of all the videos you produce in a month, how many would you say just… don\'t work? Missed shots, wrong timing, flopped content?"',
-      '',
-      '[Let them answer]',
-      '',
-      '"What does it cost you to produce one of those videos? Including your time, editing, maybe a videographer?"',
-      '',
-      '[Let them answer]',
-      '',
-      '"And what\'s your growth goal? Where do you want to be in terms of followers per month?"',
-      '',
-      '[Let them answer]',
-      '',
-      '[The calculator will show the total annual waste]',
+      '[Calculator shows total annual waste]',
       '',
       '"So you\'re spending roughly $[X]/year on research that leads nowhere and videos that flop. Does that math sound directionally right to you?"',
       '',
@@ -545,133 +241,52 @@ export const salesFlow: Step[] = [
         placeholder: 'e.g., 8'
       },
       {
-        id: 'missed-shots',
-        text: 'Out of all the videos you produce each month, how many just don\'t work? (missed timing, flopped)',
-        type: 'number',
-        placeholder: 'e.g., 5'
-      },
-      {
         id: 'cost-per-video',
-        text: 'What does it cost to produce one video? (your time, editing, production)',
+        text: 'What does it cost to produce one video that doesn\'t work? (your time, editing, production)',
         type: 'number',
         placeholder: 'e.g., 200'
-      },
-      {
-        id: 'monthly-follower-goal',
-        text: 'What\'s your monthly follower growth goal?',
-        type: 'number',
-        placeholder: 'e.g., 5000'
       }
     ],
     tips: [
-      'Do this calculation OUT LOUD with them — let them see the waste',
-      'The production waste (failed videos) is the most emotional number',
+      'They just saw the demo — they WANT the numbers to be big (justifies buying)',
+      'The calculator is more powerful than asking "what would you pay?"',
       'Frame it as: "This is money you already spent that produced zero return"',
-      'The missed growth opportunity is the agitation kicker — their competitors ARE growing',
-      'If annual waste is under $15k, they might not be a fit for $5k/year'
+      'If annual waste is under $15k, they might not be a fit for $5k/year',
+      'Get agreement on the math: "Does that sound directionally right?"'
     ],
-    nextStep: 'recap'
+    nextStep: 'recap-and-close'
   },
 
-  // SECTION 9 — RECAP
+  // SECTION 5 — RECAP + OFFER + CLOSE (4 min)
+  // One fluid motion: mirror everything → bridge → offer → silence
   {
-    id: 'recap',
-    type: 'recap',
-    title: 'Section 9: Recap',
-    subtitle: 'The Ultimate Mirror - Everything They Said',
+    id: 'recap-and-close',
+    type: 'recap-and-close',
+    title: 'Section 5: Recap & Close',
+    subtitle: 'Mirror, bridge, offer, silence (4 minutes)',
+    duration: '4 min',
     content: [
-      'This is the BIGGEST mirror of the entire call.',
-      'The AI will auto-generate a comprehensive recap of ALL the pain points, problems, and statements they shared.',
-      'Read it back to them word-for-word, then pause and wait for confirmation.'
-    ],
-    scriptLines: [],
-    // NO questions - this section auto-populates from all previous mirrors
-    questions: [],
-    tips: [
-      'This is your trial close - if they don\'t agree here, don\'t move forward',
-      'Use their exact words from the auto-generated recap',
-      'The pause after "Did I get all that right?" is critical',
-      'This section summarizes EVERYTHING from Problem Exposure, Alternative Solutions, and Dream Outcome'
-    ],
-    nextStep: 'availability-check'
-  },
-
-  // SECTION 10 — AVAILABILITY CHECK (Soft Close)
-  {
-    id: 'availability-check',
-    type: 'availability-check',
-    title: 'Section 10: Availability Check',
-    subtitle: 'Soft close - would they implement if available today?',
-    content: [
-      'This is the soft close.',
-      'If they hesitate, isolate the objection before mentioning price.',
-      'If they say yes, move to the offer.'
+      'This is ONE fluid motion — don\'t break it into pieces.',
+      '1. Read the AI-generated recap of everything they said.',
+      '2. Bridge: "You\'re exactly the kind of person we want shaping OUTLIER."',
+      '3. Present the Founders Circle offer — read bullets verbatim.',
+      '4. Silence. Do not speak after the price.'
     ],
     scriptLines: [
-      '"If OUTLIER were available today, would you want to use it?"',
+      '━━━ STEP 1: THE RECAP (Trial Close) ━━━',
       '',
-      '[Wait for answer]',
+      '[Read the AI-generated recap below word-for-word]',
+      '"Did I get all that right?"',
+      '[Wait for yes — if they don\'t agree, don\'t move forward]',
       '',
-      'If yes → move forward to the offer.',
-      'If hesitation → isolate and handle the objection before any price mention.'
-    ],
-    questions: [
-      {
-        id: 'would-implement',
-        text: 'If this were available today, would you want to implement it?',
-        type: 'binary',
-        options: [
-          { value: 'yes', label: 'Yes - they want it', nextStep: 'the-offer' },
-          { value: 'hesitation', label: 'Hesitation/objection' }
-        ]
-      },
-      {
-        id: 'hesitation-reason',
-        text: 'If hesitation: What\'s their concern?',
-        type: 'text',
-        placeholder: 'Capture the objection...'
-      },
-      {
-        id: 'objection-resolved',
-        text: 'Did you resolve the objection?',
-        type: 'binary',
-        options: [
-          { value: 'yes', label: 'Yes - resolved, moving forward' },
-          { value: 'no', label: 'No - still hesitant', nextStep: 'disqualify', isDisqualifying: true }
-        ]
-      }
-    ],
-    tips: [
-      'If they say yes immediately, they\'re ready to buy',
-      'If they hesitate, handle the objection BEFORE mentioning price',
-      'If you can\'t resolve hesitation, they\'re not qualified'
-    ],
-    nextStep: 'the-offer'
-  },
-
-  // SECTION 11 — THE OFFER (Founders Circle)
-  {
-    id: 'the-offer',
-    type: 'the-offer',
-    title: 'Section 11: The Offer',
-    subtitle: 'The Outliers Founding Partners Program',
-    content: [
-      'This is a 3-part structure: Bridge → Permission → Offer',
-      'Lower your tone - this is intimate and exclusive.',
-      'Read the offer bullets VERBATIM - don\'t paraphrase.'
-    ],
-    scriptLines: [
-      '━━━ PART 1: BRIDGE ━━━',
+      '━━━ STEP 2: BRIDGE ━━━',
       '',
       '"[Name], this has been incredibly helpful. You clearly understand the content game, and you\'re exactly the kind of person we want shaping OUTLIER while we build it."',
       '',
-      '━━━ PART 2: PERMISSION ━━━',
+      '"Would you be open to hearing about something exclusive we\'re doing for a very small group of founders?"',
+      '[Wait for YES]',
       '',
-      '"Before you go — if you\'ve got two more minutes, would you be open to hearing about something exclusive we\'re doing for a very small group of founders?"',
-      '',
-      '[Wait for their YES]',
-      '',
-      '━━━ PART 3: THE OFFER (Read these bullets verbatim, lower your tone) ━━━',
+      '━━━ STEP 3: THE OFFER (Read verbatim, lower your tone) ━━━',
       '',
       '"We\'re launching something called The Outliers. Ten founding partners. That\'s it. Here\'s what it means if you\'re in:"',
       '',
@@ -691,69 +306,43 @@ export const salesFlow: Step[] = [
       '',
       '"The investment is $5,000 for 12 months. Ten spots. When they\'re gone, they\'re gone."',
       '',
-      '[Full stop. Do not speak.]'
+      '[Full stop. Do not speak.]',
+      '',
+      '━━━ STEP 4: HANDLE RESPONSE ━━━',
+      '',
+      'If YES:',
+      '"Great. To get you in I just need four things — your niche, your Instagram handle, how many Reels you post per week, and five competitor accounts you\'re watching. Want to do that now or should I send you a quick form?"',
+      '',
+      'If PRICE OBJECTION:',
+      '"You\'re already losing more than $5K in wasted research time and missed trends. This redirects that bleed — and you\'re guaranteed results or your money back plus $500."',
+      '[Stop. Wait.]'
     ],
     questions: [
+      {
+        id: 'would-implement',
+        text: 'After the recap — if this were available today, would they want it?',
+        type: 'binary',
+        options: [
+          { value: 'yes', label: 'Yes - they want it' },
+          { value: 'hesitation', label: 'Hesitation/objection' }
+        ]
+      },
+      {
+        id: 'hesitation-reason',
+        text: 'If hesitation: What\'s their concern?',
+        type: 'text',
+        placeholder: 'Capture the objection...',
+        optional: true
+      },
       {
         id: 'interested-fc',
         text: 'Are they interested in The Outliers program?',
         type: 'binary',
         options: [
           { value: 'yes', label: 'Yes - interested' },
-          { value: 'no', label: 'No - not interested', nextStep: 'disqualify' }
+          { value: 'no', label: 'No - not interested', nextStep: 'disqualify', isDisqualifying: true }
         ]
       },
-      {
-        id: 'price-reaction',
-        text: 'What was their reaction to the $5k price?',
-        type: 'multiple',
-        options: [
-          { value: 'yes', label: 'Yes - ready to buy', nextStep: 'close' },
-          { value: 'thinking', label: 'Thinking/considering' },
-          { value: 'objection', label: 'Price objection' }
-        ]
-      },
-      {
-        id: 'price-objection-notes',
-        text: 'If price objection: What did they say?',
-        type: 'text',
-        placeholder: 'Capture their concern...'
-      }
-    ],
-    tips: [
-      'Lower your tone - this is intimate and exclusive',
-      'The silence after "You in?" is critical - DO NOT break it',
-      'If price objection, return to the math from Section 8',
-      'Remind them: "You\'re already losing more than $5k. This just redirects the bleed."'
-    ],
-    nextStep: 'close'
-  },
-
-  // SECTION 12 — CLOSE
-  {
-    id: 'close',
-    type: 'close',
-    title: 'Section 12: Close',
-    subtitle: 'Get the commitment - activate now or schedule',
-    content: [
-      'If they said yes, close immediately.',
-      'Give them two options: activate now or schedule.',
-      'If price objection, return to the math and stop talking.'
-    ],
-    scriptLines: [
-      'If yes:',
-      '',
-      '"Great. To get you in I just need four things — your niche, your Instagram handle, how many Reels you post per week, and five competitor accounts you\'re watching. Want to do that now or should I send you a quick form?"',
-      '',
-      '[Wait for answer]',
-      '',
-      'If price objection:',
-      '',
-      '"You\'re already losing more than $5K in wasted research time and missed trends. This redirects that bleed — and you\'re guaranteed results or your money back plus $500."',
-      '',
-      '[Stop. Wait.]'
-    ],
-    questions: [
       {
         id: 'close-decision',
         text: 'What did they decide?',
@@ -762,20 +351,24 @@ export const salesFlow: Step[] = [
           { value: 'activate-now', label: 'Activate now', nextStep: 'success' },
           { value: 'schedule', label: 'Schedule activation', nextStep: 'success' },
           { value: 'think', label: 'Need to think about it' },
-          { value: 'no', label: 'Not moving forward', nextStep: 'disqualify' }
+          { value: 'no', label: 'Not moving forward', nextStep: 'disqualify', isDisqualifying: true }
         ]
       },
       {
         id: 'next-steps',
         text: 'What are the next steps?',
         type: 'text',
-        placeholder: 'e.g., "Send payment link", "Schedule onboarding call for Friday"'
+        placeholder: 'e.g., "Send payment link", "Schedule onboarding call for Friday"',
+        optional: true
       }
     ],
     tips: [
-      'If they need to "think about it", they\'re not qualified or you missed something',
-      'The silence after price objection handling is your close',
-      'If they say yes, move fast - get payment or calendar invite before call ends'
+      'This is ONE fluid motion — recap → bridge → offer → silence',
+      'The silence after "$5,000 for 12 months" is your close — DO NOT break it',
+      'If price objection, return to the calculator math',
+      '"You\'re already losing more than $5k. This just redirects the bleed."',
+      'If they say yes, move fast — get payment or calendar invite before call ends',
+      'If they need to "think about it", you missed something earlier'
     ],
     nextStep: 'success'
   },
@@ -809,7 +402,7 @@ export const salesFlow: Step[] = [
   {
     id: 'success',
     type: 'success',
-    title: 'Deal Closed! 🎉',
+    title: 'Deal Closed!',
     subtitle: 'Capture prospect details for your records',
     content: [
       'Congratulations! You closed an Outliers founding partner.',
@@ -864,10 +457,8 @@ export const getStepIndex = (id: string): number => {
 };
 
 export const isQualified = (answers: Record<string, string>): boolean => {
-  // Check if they passed key qualification gates
   const demoPermission = answers['demo-permission'] === 'yes';
-  const wouldImplement = answers['would-implement'] === 'yes';
   const interestedFC = answers['interested-fc'] === 'yes';
-  
-  return demoPermission && wouldImplement && interestedFC;
+
+  return demoPermission && interestedFC;
 };

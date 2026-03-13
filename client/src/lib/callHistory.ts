@@ -15,12 +15,14 @@ export interface CallRecord {
   mirrorTexts?: Record<string, string>; // stepId -> mirror text generated
   costAnalysis?: {
     hoursSearching: number;
-    missedShotsPerMonth: number;
     costPerVideo: number;
-    monthlyFollowerGoal: number;
     researchWaste: number;
     productionWaste: number;
     totalAnnualWaste: number;
+    /** @deprecated kept for backward compat with old saved history */
+    missedShotsPerMonth?: number;
+    /** @deprecated kept for backward compat with old saved history */
+    monthlyFollowerGoal?: number;
   };
   /** @deprecated old cost model — kept for backward compat with saved history */
   legacyCostAnalysis?: {
