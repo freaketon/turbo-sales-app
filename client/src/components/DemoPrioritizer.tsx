@@ -37,27 +37,27 @@ const FEATURE_DETAILS: Record<string, {
   validation: string;
 }> = {
   'outlier-feed': {
-    title: 'Outlier Feed',
+    title: 'Turbo Feed',
     icon: <Zap className="w-5 h-5" />,
-    demoScreen: 'Dashboard → Outlier Feed tab',
+    demoScreen: 'Dashboard → Turbo Feed tab',
     demoAction: 'Show the live feed of flagged Reels. Click into one to show the 5-50x multiplier badge and timestamp.',
     script: (pain) => [
       `"You mentioned: ${pain}"`,
-      '"OUTLIER flags Reels outperforming their account baseline by 5–50x within the first 6 hours — before they hit the discovery page."',
+      '"TURBO flags Reels outperforming their account baseline by 5–50x within the first 6 hours — before they hit the discovery page."',
       '',
-      '👉 SHOW: Dashboard → Outlier Feed. Click a flagged Reel to show the multiplier.',
+      '👉 SHOW: Dashboard → Turbo Feed. Click a flagged Reel to show the multiplier.',
     ],
     validation: '"Would this work for you? Could you see yourself using this?"',
   },
   'why-working': {
     title: 'Why It\'s Working Breakdown',
     icon: <Search className="w-5 h-5" />,
-    demoScreen: 'Outlier Feed → Click any Reel → "Why It\'s Working" panel',
+    demoScreen: 'Turbo Feed → Click any Reel → "Why It\'s Working" panel',
     demoAction: 'Click into a flagged Reel and expand the breakdown: hook, audio, format, topic angle.',
     script: (pain) => [
       `"You said: ${pain}"`,
       '',
-      '"OUTLIER breaks down the hook, audio, format, and topic angle of every flagged Reel."',
+      '"TURBO breaks down the hook, audio, format, and topic angle of every flagged Reel."',
       '"You don\'t just see what went viral — you understand WHY."',
       '',
       '👉 SHOW: Click a Reel → expand "Why It\'s Working" breakdown panel.',
@@ -72,7 +72,7 @@ const FEATURE_DETAILS: Record<string, {
     script: (pain) => [
       `"You mentioned: ${pain}"`,
       '',
-      '"Based on what\'s breaking out in your niche right now, OUTLIER generates 3 ready-to-shoot briefs."',
+      '"Based on what\'s breaking out in your niche right now, TURBO generates 3 ready-to-shoot briefs."',
       '"You go from zero ideas to 3 evidence-backed ones in under 60 seconds."',
       '',
       '👉 SHOW: Content Briefs section. Click a brief to show full shoot-ready details.',
@@ -82,12 +82,12 @@ const FEATURE_DETAILS: Record<string, {
   'trend-lifecycle': {
     title: 'Trend Lifecycle Score',
     icon: <TrendingUp className="w-5 h-5" />,
-    demoScreen: 'Outlier Feed → Trend Score badge on each Reel',
+    demoScreen: 'Turbo Feed → Trend Score badge on each Reel',
     demoAction: 'Point out the lifecycle badge (emerging/peaking/saturated) on a few Reels. Show one "emerging" vs one "saturated".',
     script: (pain) => [
       `"You said: ${pain}"`,
       '',
-      '"OUTLIER scores every trend — emerging, peaking, or saturated."',
+      '"TURBO scores every trend — emerging, peaking, or saturated."',
       '"So you know if you\'re early or too late."',
       '',
       '👉 SHOW: Compare an "Emerging" Reel vs a "Saturated" one in the feed.',
@@ -102,7 +102,7 @@ const FEATURE_DETAILS: Record<string, {
     script: (pain) => [
       `"You mentioned: ${pain}"`,
       '',
-      '"OUTLIER replaces hours of scrolling with a single dashboard."',
+      '"TURBO replaces hours of scrolling with a single dashboard."',
       '"Everything you need to know about what\'s working — right now."',
       '',
       '👉 SHOW: Full dashboard overview — feed + briefs + lifecycle in one view.',
@@ -212,11 +212,11 @@ export default function DemoPrioritizer({ answers }: DemoPrioritizerProps) {
         </p>
       </div>
 
-      {/* OUTLIER Demo MVP Link */}
+      {/* TURBO Demo MVP Link */}
       <div className="mb-6 p-4 rounded-xl bg-primary/10 border border-primary/30">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-primary">Open OUTLIER Demo</p>
+            <p className="text-sm font-semibold text-primary">Open TURBO Demo</p>
             <p className="text-xs text-muted-foreground mt-0.5">Share your screen and walk through features live</p>
           </div>
           <Button

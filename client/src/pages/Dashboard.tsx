@@ -49,7 +49,7 @@ export default function Dashboard() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `outlier-sales-history-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `turbo-sales-history-${new Date().toISOString().slice(0, 10)}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -60,7 +60,7 @@ export default function Dashboard() {
     let csv = 'Date,Prospect Name,Company,Email,Outcome,Annual Cost,Monthly Cost\n';
     records.forEach(record => {
       const date = new Date(record.timestamp).toLocaleDateString();
-      const annualCost = record.costAnalysis?.totalAnnualWaste || 0;
+      const annualCost = record.costAnalysis?.annualTimeSaved || 0;
       const monthlyCost = annualCost ? Math.round(annualCost / 12) : 0;
       csv += `${date},"${record.prospectInfo.name}","${record.prospectInfo.company}","${record.prospectInfo.email}",${record.outcome},${annualCost},${monthlyCost}\n`;
     });
@@ -285,7 +285,7 @@ export default function Dashboard() {
                         </td>
                         <td className="py-3 px-2 text-sm text-foreground/80 text-right font-mono">
                           {record.costAnalysis 
-                            ? `$${record.costAnalysis.totalAnnualWaste.toLocaleString()}`
+                            ? `$${record.costAnalysis.annualTimeSaved.toLocaleString()}`
                             : '-'
                           }
                         </td>

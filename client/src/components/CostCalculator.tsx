@@ -1,5 +1,5 @@
 /*
-Design: OUTLIER Agitation Calculator
+Design: TURBO Agitation Calculator
 - Time wasted searching for trends
 - Cost of videos that don't work
 - Total annual waste = your price anchor

@@ -33,7 +33,7 @@ const objectionResponses: ObjectionResponse[] = [
           '',
           '"One editor losing 5 hours a week costs you $13–26k a year."',
           '',
-          '"With two editors, this pays for itself even if OUTLIER only works halfway."',
+          '"With two editors, this pays for itself even if TURBO only works halfway."',
           '',
           'Anchor:',
           '"$5k isn\'t the cost. It\'s the cap on how much this can fail."',
@@ -105,7 +105,7 @@ const objectionResponses: ObjectionResponse[] = [
           '"Makes sense. Most tools add workflow."',
           '',
           'Differentiate:',
-          '"OUTLIER removes work. Editors stop searching. Nothing else changes."',
+          '"TURBO removes work. Editors stop searching. Nothing else changes."',
           '',
           'Guarantee again:',
           '"And if it doesn\'t change behavior, you get your money back."'

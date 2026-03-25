@@ -14,15 +14,9 @@ export interface CallRecord {
   fullTranscript?: string;
   mirrorTexts?: Record<string, string>; // stepId -> mirror text generated
   costAnalysis?: {
-    hoursSearching: number;
-    costPerVideo: number;
-    researchWaste: number;
-    productionWaste: number;
-    totalAnnualWaste: number;
-    /** @deprecated kept for backward compat with old saved history */
-    missedShotsPerMonth?: number;
-    /** @deprecated kept for backward compat with old saved history */
-    monthlyFollowerGoal?: number;
+    hoursSaved: number;
+    hourlyRate: number;
+    annualTimeSaved: number;
   };
   /** @deprecated old cost model — kept for backward compat with saved history */
   legacyCostAnalysis?: {
@@ -34,7 +28,7 @@ export interface CallRecord {
   };
 }
 
-const HISTORY_KEY = 'outlier-sales-call-history';
+const HISTORY_KEY = 'turbo-sales-call-history';
 
 export function saveCallToHistory(record: CallRecord): void {
   try {
@@ -89,7 +83,7 @@ export function calculateStats(history: CallRecord[]): CallStats {
   
   const callsWithCosts = history.filter(c => c.costAnalysis || c.legacyCostAnalysis);
   const totalAnnualCost = callsWithCosts.reduce((sum, c) => {
-    if (c.costAnalysis) return sum + c.costAnalysis.totalAnnualWaste;
+    if (c.costAnalysis) return sum + c.costAnalysis.annualTimeSaved;
     if (c.legacyCostAnalysis) return sum + c.legacyCostAnalysis.annualCost;
     return sum;
   }, 0);

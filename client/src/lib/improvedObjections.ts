@@ -99,7 +99,7 @@ export const improvedObjectionResponses: ObjectionResponse[] = [
       '[Wait for answer]',
       '"Because we agreed the problem costs you $[annual waste] per year. So this is [calculate %] of what you\'re already spending on the problem."'
     ],
-    reframe: '"You\'re not spending $5K. You\'re redirecting money you\'re already burning. The current system costs you $[monthly waste] per month. OUTLIER costs $417/month. You\'re spending [X times] more to keep the problem than to fix it. And if it doesn\'t work, you get your money back plus $500."',
+    reframe: '"You\'re not spending $5K. You\'re redirecting money you\'re already burning. The current system costs you $[monthly waste] per month. TURBO costs $417/month. You\'re spending [X times] more to keep the problem than to fix it. And if it doesn\'t work, you get your money back plus $500."',
     reclose: '"So the question is: Do you want to keep spending $[monthly waste]/month on the problem, or redirect $417/month to the solution with zero risk?"'
   },
   {
@@ -109,7 +109,7 @@ export const improvedObjectionResponses: ObjectionResponse[] = [
     clarify: [
       '"What ROI would make this a no-brainer for you?"',
       '[Wait for answer]',
-      '"And we agreed you\'re burning $[annual waste] per year. If OUTLIER saves even 25% of that, is that enough ROI?"'
+      '"And we agreed you\'re burning $[annual waste] per year. If TURBO saves even 25% of that, is that enough ROI?"'
     ],
     reframe: '"The guarantee is the ROI proof. You get 90 days to measure it. If you don\'t recover at least 50 hours - which at your rate is $[calculate] - you get a full refund plus $500. You\'re getting a paid trial with downside protection. The ROI is guaranteed or you pay nothing."',
     reclose: '"So: Do you want to test the ROI with zero risk, or keep the system that definitely has negative ROI?"'
@@ -137,7 +137,7 @@ export const improvedObjectionResponses: ObjectionResponse[] = [
       '[Wait for answer]',
       '"And when a topic spikes and you need every clip on that topic across your research, how long does that take?"'
     ],
-    reframe: '"Organization and intelligence are different problems. You\'ve solved organization - files are findable. But OUTLIER solves intelligence - moments are findable. Your system tells you which file. OUTLIER tells you which second inside which file. That\'s the difference."',
+    reframe: '"Organization and intelligence are different problems. You\'ve solved organization - files are findable. But TURBO solves intelligence - moments are findable. Your system tells you which file. TURBO tells you which second inside which file. That\'s the difference."',
     reclose: '"So the question is: Do you want to keep your file organization and add moment-finding intelligence, or stay with file-level search only?"'
   },
   {
@@ -149,7 +149,7 @@ export const improvedObjectionResponses: ObjectionResponse[] = [
       '[Wait for answer]',
       '"And when you search for something, do you get file-level results or moment-level results?"'
     ],
-    reframe: '"DAMs are great for asset management. But they require tagging, which means the hunt happens during ingest instead of search. OUTLIER requires zero tagging - you upload and search immediately. And you get moment-level results, not file-level. You can keep your DAM for asset management and use OUTLIER for intelligent search."',
+    reframe: '"DAMs are great for asset management. But they require tagging, which means the hunt happens during ingest instead of search. TURBO requires zero tagging - you upload and search immediately. And you get moment-level results, not file-level. You can keep your DAM for asset management and use TURBO for intelligent search."',
     reclose: '"So: Do you want to add zero-tag moment-finding on top of your DAM, or keep the current tag-dependent system?"'
   },
   {
@@ -163,8 +163,8 @@ export const improvedObjectionResponses: ObjectionResponse[] = [
       '[Wait for answer]',
       '"What happens if your internal solution doesn\'t work or takes longer than expected?"'
     ],
-    reframe: '"Here\'s the math: If your internal solution takes 6 months, that\'s $[calculate 6 months of waste] burned while you build. OUTLIER costs $5K for 12 months and goes live in days. Even if your solution works perfectly, you\'re spending more to wait than to fix it now. And if it doesn\'t work, you\'ve burned time and money with no fallback."',
-    reclose: '"So: Do you want to stop the bleeding now with OUTLIER while you build your internal solution, or keep burning money while you hope your build works?"'
+    reframe: '"Here\'s the math: If your internal solution takes 6 months, that\'s $[calculate 6 months of waste] burned while you build. TURBO costs $5K for 12 months and goes live in days. Even if your solution works perfectly, you\'re spending more to wait than to fix it now. And if it doesn\'t work, you\'ve burned time and money with no fallback."',
+    reclose: '"So: Do you want to stop the bleeding now with TURBO while you build your internal solution, or keep burning money while you hope your build works?"'
   }
 ];
 

@@ -49,10 +49,18 @@ import {
   FileDown,
   Moon,
   Sun,
-  Loader2
+  Loader2,
+  Sparkles,
+  DollarSign,
+  Play,
+  TrendingUp,
+  ClipboardCheck,
+  ThumbsUp,
+  Gift,
+  Gavel
 } from 'lucide-react';
 
-const STORAGE_KEY = 'outlier-sales-call-data';
+const STORAGE_KEY = 'turbo-sales-call-data';
 
 export default function Home() {
   const { theme, toggleTheme } = useTheme();
@@ -89,10 +97,16 @@ export default function Home() {
 
   const stepIcons: Record<StepType, React.ReactNode> = {
     'frame-call': <MessageSquare className="w-6 h-6" />,
-    'discovery': <AlertTriangle className="w-6 h-6" />,
+    'problem-exposure': <AlertTriangle className="w-6 h-6" />,
+    'dream-outcome': <Sparkles className="w-6 h-6" />,
+    'price-anchor': <DollarSign className="w-6 h-6" />,
+    'transition-to-demo': <Play className="w-6 h-6" />,
     'demo': <CheckCircle2 className="w-6 h-6" />,
-    'impact-calculator': <BarChart3 className="w-6 h-6" />,
-    'recap-and-close': <Target className="w-6 h-6" />,
+    'roi': <TrendingUp className="w-6 h-6" />,
+    'recap': <ClipboardCheck className="w-6 h-6" />,
+    'availability-check': <ThumbsUp className="w-6 h-6" />,
+    'the-offer': <Gift className="w-6 h-6" />,
+    'close': <Gavel className="w-6 h-6" />,
     disqualify: <XCircle className="w-6 h-6" />,
     success: <PartyPopper className="w-6 h-6" />
   };
@@ -203,27 +217,23 @@ export default function Home() {
           ? 'disqualified' as const
           : 'in-progress' as const;
 
-      // Calculate cost analysis from calculator inputs
+      // Calculate cost analysis from ROI inputs
       let costAnalysis;
-      const hoursSearching = answers['hours-searching'] ? parseInt(answers['hours-searching']) : null;
-      const costPerVideo = answers['cost-per-video'] ? parseInt(answers['cost-per-video']) : null;
+      const hoursSaved = answers['hours-saved'] ? parseInt(answers['hours-saved']) : null;
+      const hourlyRate = answers['hourly-rate'] ? parseInt(answers['hourly-rate']) : null;
 
-      if (hoursSearching && costPerVideo) {
-        const researchWaste = hoursSearching * 75 * 48;
-        const productionWaste = costPerVideo * 12; // ~1 wasted video/month estimate
-        const totalAnnualWaste = researchWaste + productionWaste;
+      if (hoursSaved && hourlyRate) {
+        const annualTimeSaved = hoursSaved * hourlyRate * 52;
         costAnalysis = {
-          hoursSearching,
-          costPerVideo,
-          researchWaste,
-          productionWaste,
-          totalAnnualWaste,
+          hoursSaved,
+          hourlyRate,
+          annualTimeSaved,
         };
       }
 
       // Collect mirror texts from answers (keys like 'problem-exposure-mirror-confirmation' etc.)
       const mirrorTexts: Record<string, string> = {};
-      const mirrorSteps = ['discovery'];
+      const mirrorSteps = ['problem-exposure'];
       for (const stepId of mirrorSteps) {
         const confirmKey = `${stepId}-mirror-confirmation`;
         if (answers[confirmKey]) {
@@ -297,19 +307,19 @@ export default function Home() {
               <ul className="space-y-3 text-foreground/80">
                 <li className="flex items-start gap-3">
                   <span className="text-primary mt-1">•</span>
-                  <span><strong>Discovery (4 min):</strong> 4 killer questions that each serve the close</span>
+                  <span><strong>Problem Exposure (3–4 min):</strong> 4 questions that expose chaos and pain</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-primary mt-1">•</span>
-                  <span><strong>Demo (4 min):</strong> Show value while energy is high</span>
+                  <span><strong>Dream Outcome + Price Anchor (2 min):</strong> Set value frame before the demo</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-primary mt-1">•</span>
-                  <span><strong>The Invisible Tax (2 min):</strong> Calculator makes cost of inaction painful</span>
+                  <span><strong>Demo + ROI (4–5 min):</strong> Show features that match their pain, quantify value</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-primary mt-1">•</span>
-                  <span><strong>Recap & Close (4 min):</strong> Mirror → Offer → Silence</span>
+                  <span><strong>Recap → Offer → Close (4 min):</strong> Mirror → Bridge → Silence</span>
                 </li>
               </ul>
             </div>
@@ -457,72 +467,8 @@ export default function Home() {
           stepTitle={currentStep.title}
         />
 
-        {/* Main step card - with special layout for impact-calculator */}
+        {/* Main step card */}
         <AnimatePresence mode="wait">
-          {currentStep.id === 'impact-calculator' ? (
-            // Special two-column layout for impact-calculator step
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Left: Questions */}
-              <StepCard key={currentStep.id}>
-                <StepHeader
-                  title={currentStep.title}
-                  subtitle={currentStep.subtitle}
-                  icon={stepIcons[currentStep.type]}
-                />
-                <StepContent content={currentStep.content} />
-
-                {currentStep.scriptLines && currentStep.scriptLines.length > 0 && (
-                  <ScriptBox lines={currentStep.scriptLines} />
-                )}
-
-                {currentStep.questions && currentStep.questions.length > 0 && (
-                  <div className="mb-6">
-                    {currentStep.questions.map((question) => (
-                      <QuestionCard
-                        key={question.id}
-                        question={question}
-                        onAnswer={handleAnswer}
-                        currentAnswer={answers[question.id]}
-                      />
-                    ))}
-                  </div>
-                )}
-
-                {currentStep.tips && currentStep.tips.length > 0 && (
-                  <TipsBox tips={currentStep.tips} />
-                )}
-
-                {/* Navigation buttons */}
-                {currentStep.nextStep && (!currentStep.questions || (currentStep.questions && currentStep.questions.every(q => answers[q.id]))) && (
-                  <motion.div
-                    className="mt-8 flex gap-3 justify-between"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.5 }}
-                  >
-                    {canGoBack() && (
-                      <Button size="lg" variant="outline" onClick={handleBack} className="gap-2">
-                        Back
-                      </Button>
-                    )}
-                    <Button size="lg" onClick={handleNext} className="gap-2 group ml-auto">
-                      Continue
-                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    </Button>
-                  </motion.div>
-                )}
-              </StepCard>
-
-              {/* Right: Sticky Calculator */}
-              <div className="lg:sticky lg:top-6 lg:self-start">
-                <CostCalculator
-                  hoursSearching={answers['hours-searching'] ? parseInt(answers['hours-searching']) : undefined}
-                  costPerVideo={answers['cost-per-video'] ? parseInt(answers['cost-per-video']) : undefined}
-                />
-              </div>
-            </div>
-          ) : (
-            // Standard single-column layout for all other steps
             <StepCard key={currentStep.id}>
               <StepHeader
                 title={currentStep.title}
@@ -541,15 +487,15 @@ export default function Home() {
                 </div>
               )}
 
-              {/* Curiosity Tonality Coach for discovery step */}
-              {currentStep.id === 'discovery' && (
+              {/* Curiosity Tonality Coach for problem-exposure step */}
+              {currentStep.id === 'problem-exposure' && (
                 <div className="mb-6">
                   <CuriosityTonalityCoach />
                 </div>
               )}
 
-              {/* Helpful Reinforcement Nudge for discovery step */}
-              {currentStep.id === 'discovery' && (
+              {/* Helpful Reinforcement Nudge for problem-exposure step */}
+              {currentStep.id === 'problem-exposure' && (
                 <div className="mb-6">
                   <HelpfulReinforcementNudge />
                 </div>
@@ -570,8 +516,8 @@ export default function Home() {
                 <DemoPrioritizer answers={answers} />
               )}
 
-              {/* Recap Summary for recap-and-close step */}
-              {currentStep.id === 'recap-and-close' && (
+              {/* Recap Summary for recap step */}
+              {currentStep.id === 'recap' && (
                 <div className="mb-6">
                   <RecapSummary answers={answers} />
                 </div>
@@ -579,9 +525,9 @@ export default function Home() {
 
               {/* Only show script lines if there are NO questions (questions ARE the script) */}
               {/* Also exclude frame-call since it has CallFrameOpener component */}
-              {/* EXCEPT for the-offer which needs to show verbatim bullets */}
+              {/* EXCEPT for the-offer and recap which need to show verbatim scripts */}
               {currentStep.scriptLines && currentStep.scriptLines.length > 0 &&
-                (!currentStep.questions || currentStep.id === 'recap-and-close') &&
+                (!currentStep.questions || currentStep.id === 'the-offer' || currentStep.id === 'recap' || currentStep.id === 'close') &&
                 currentStep.id !== 'frame-call' && (
                 <ScriptBox lines={currentStep.scriptLines} />
               )}
@@ -654,7 +600,6 @@ export default function Home() {
                 </motion.div>
               )}
             </StepCard>
-          )}
         </AnimatePresence>
       </div>
 
@@ -662,7 +607,7 @@ export default function Home() {
       <Dialog open={objectionGuideOpen} onOpenChange={setObjectionGuideOpen}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-2xl">OUTLIER Objection Guide</DialogTitle>
+            <DialogTitle className="text-2xl">TURBO Objection Guide</DialogTitle>
           </DialogHeader>
           <ObjectionGuide />
         </DialogContent>
