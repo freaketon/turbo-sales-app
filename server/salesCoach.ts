@@ -2,9 +2,9 @@ import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import { invokeLLM } from "./_core/llm";
 
-const SALES_COACH_SYSTEM_PROMPT = `You are an expert sales coach specializing in the OUTLIER sales framework for founder-to-founder B2B sales. Your role is to analyze sales call notes in real-time and provide strategic, actionable guidance.
+const SALES_COACH_SYSTEM_PROMPT = `You are an expert sales coach specializing in the TURBO sales framework for founder-to-founder B2B sales. Your role is to analyze sales call notes in real-time and provide strategic, actionable guidance.
 
-**OUTLIER Framework Overview:**
+**TURBO Framework Overview:**
 - Opening: Binary question to surface pain immediately
 - Problem Install: Quantify the "Invisible Tax" with real numbers
 - Qualification: Hard gates (3+ editors, frequent reuse, operational impact)
@@ -76,7 +76,7 @@ Analyze these answers and:
    - Urgency indicators ("always", "every day", "constantly")
    - Consequences mentioned (missed deadlines, re-shoots, delays)
 
-2. For each pain, determine which OUTLIER feature best solves it:
+2. For each pain, determine which TURBO feature best solves it:
    - outlier-feed: Flags Reels outperforming by 5-50x within 6 hours, before discovery page. Solves being late to trends, always a step behind.
    - why-working: Breaks down hook, audio, format, topic angle of every flagged Reel. Solves not knowing WHY content works.
    - content-briefs: Generates 3 ready-to-shoot briefs from what's breaking out in their niche. Solves not knowing what to post.
@@ -245,7 +245,7 @@ Return ONLY the JSON array, no other text.`;
           messages: [
             {
               role: "system",
-              content: `You are an expert sales coach specializing in the OUTLIER 3A Loop objection handling framework.
+              content: `You are an expert sales coach specializing in the TURBO 3A Loop objection handling framework.
 
 **The 3A Loop Framework:**
 1. **Acknowledge** - Mirror their exact concern in their words
@@ -254,7 +254,7 @@ Return ONLY the JSON array, no other text.`;
 4. **Bridge** - "If we can solve that cleanly, does it make sense to move forward today?"
 5. **Re-close** - "Want me to send the payment link now?"
 
-**Context: OUTLIER Product**
+**Context: TURBO Product**
 - AI-powered video asset search for production teams
 - $5k for 12 months (Founders Circle early adopter pricing)
 - Zero-Touch setup, grandfathered pricing, direct access to founders
@@ -345,7 +345,7 @@ Return ONLY valid JSON with these exact keys: acknowledge, associate, ask, bridg
         };
       }
 
-      const gradingPrompt = `You are grading a sales call based on the OUTLIER 12-section discovery call framework.
+      const gradingPrompt = `You are grading a sales call based on the TURBO 12-section discovery call framework.
 
 ANSWERS CAPTURED:
 ${answersText}
@@ -383,7 +383,7 @@ Return ONLY valid JSON:
           messages: [
             {
               role: "system",
-              content: "You are an expert sales coach who grades sales calls based on the OUTLIER 12-section discovery framework. You provide honest, actionable scoring and feedback. Grade fairly but push for excellence.",
+              content: "You are an expert sales coach who grades sales calls based on the TURBO 12-section discovery framework. You provide honest, actionable scoring and feedback. Grade fairly but push for excellence.",
             },
             { role: "user", content: gradingPrompt },
           ],
