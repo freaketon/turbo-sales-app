@@ -287,7 +287,7 @@ export default function Home() {
               }}
               transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
             >
-              <img src="/logowordmark.png" alt="OUTLIER" className="w-64 md:w-80 mx-auto" />
+              <img src="/logowordmark.png" alt="TURBO" className="w-64 md:w-80 mx-auto" />
             </motion.div>
 
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
@@ -377,7 +377,7 @@ export default function Home() {
         {/* Header with restart button */}
         <div className="flex flex-col sm:flex-row items-start justify-between mb-8 gap-4">
           <div className="flex flex-col items-start gap-1">
-            <img src="/logowordmark.png" alt="OUTLIER" className="w-32 md:w-40" />
+            <img src="/logowordmark.png" alt="TURBO" className="w-32 md:w-40" />
             <h1 className="text-lg md:text-xl font-bold text-foreground">
               Sales Guide
             </h1>
